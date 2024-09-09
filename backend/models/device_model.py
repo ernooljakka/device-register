@@ -1,6 +1,7 @@
 from typing import List, Dict
 from backend.utils.database_Init import db
 
+
 class Device(db.Model):
     __tablename__ = 'devices'
 

@@ -1,5 +1,6 @@
 blinker==1.8.2
 click==8.1.7
+coverage==7.6.1
 exceptiongroup==1.2.2
 Flask==3.0.3
 Flask-SQLAlchemy==3.1.1
@@ -11,6 +12,7 @@ MarkupSafe==2.1.5
 packaging==24.1
 pluggy==1.5.0
 pytest==8.3.2
+pytest-cov==5.0.0
 SQLAlchemy==2.0.34
 tomli==2.0.1
 typing_extensions==4.12.2

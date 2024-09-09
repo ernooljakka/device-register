@@ -5,6 +5,5 @@
 5. flask run
 
 To run in debug mode:
-5. cd .. (to the root directory)
-6. python3 -m backend.app
-
+- cd .. (to the root directory)
+- python3 -m backend.app
