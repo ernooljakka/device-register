@@ -9,7 +9,7 @@ def create_app():
 
     db.init_app(app)
 
-    from api.deviceApi import device_api
+    from backend.api.deviceApi import device_api
     app.register_blueprint(device_api, url_prefix='/api/devices')
 
     with app.app_context():
