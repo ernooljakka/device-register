@@ -1,22 +1,23 @@
 from flask import Flask
-from backend.models.deviceModel import Device
-from backend.utils.databaseInit import db
+from backend.models.device_model import Device
+from backend.utils.database_Init import db
+from typing import Optional
 
-def create_app():
+def create_app() -> Flask:
     app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     db.init_app(app)
 
-    from backend.api.deviceApi import device_api
+    from backend.api.device_api import device_api
     app.register_blueprint(device_api, url_prefix='/api/devices')
 
     with app.app_context():
         db.create_all()
 
-        # Adding a tests device, remove later
-        existing_device = Device.query.filter_by(dev_serial="123456").first()
+        # Adding a test device, remove later
+        existing_device: Optional[Device] = Device.query.filter_by(dev_serial="123456").first()
 
         if not existing_device:
             test_device = Device(
@@ -31,7 +32,7 @@ def create_app():
             print("Test device already exists.")
 
     @app.route('/')
-    def index():
+    def index() -> str:
         return "Hello from Flask with SQLAlchemy!"
 
     return app

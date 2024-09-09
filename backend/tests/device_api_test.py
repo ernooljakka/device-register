@@ -1,7 +1,7 @@
 import pytest
 from backend.app import create_app
-from backend.utils.databaseInit import db
-from backend.models.deviceModel import Device
+from backend.utils.database_Init import db
+from backend.models.device_model import Device
 
 @pytest.fixture
 def app():
