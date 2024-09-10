@@ -1,9 +1,35 @@
-1. cd backend
-2. python3 -m venv venv
-3. source /venv/bin/activate
-4. pip3 install -r requirements.txt
-5. flask run
+Setup linux:
+```
+sudo apt update
+sudo apt install python3
+python3 --version (check if correctly installed)
+sudo apt install python3-pip
+```
 
-To run in debug mode:
-- cd .. (to the root directory)
-- python3 -m backend.app
+```
+cd backend
+python3 -m venv venv
+source venv/bin/activate
+pip3 install -r requirements.txt
+```
+   
+without debug mode:
+```
+flask run
+```
+
+With debug mode:
+```
+cd .. (to the root directory)
+python3 -m backend.app
+```
+
+To run tests:
+```
+pytest
+```
+
+Run test with coverage:
+```
+pytest --cov=backend --cov-report=term-missing
+```
