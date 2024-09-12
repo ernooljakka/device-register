@@ -2,10 +2,12 @@ from flask import Flask
 from backend.models.device_model import Device
 from backend.utils.database_Init import db
 from typing import Optional
+from flask_cors import CORS
 
 
 def create_app() -> Flask:
     app = Flask(__name__)
+    CORS(app)
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
