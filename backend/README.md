@@ -9,7 +9,7 @@ sudo apt install python3-pip
 ```
 cd backend
 python3 -m venv venv
-source venv/bin/activate
+source venv/bin/activate (windows: .\venv\Scripts\activate)
 pip3 install -r requirements.txt
 ```
    
