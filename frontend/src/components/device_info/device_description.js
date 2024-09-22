@@ -1,6 +1,4 @@
-import React from 'react';
-
-const device_description = () => {
+const Device_description = () => {
 
   return (
     <div>
@@ -9,4 +7,4 @@ const device_description = () => {
   );
 };
 
-export default device_description;
+export default Device_description;

@@ -1,8 +1,9 @@
-import React from 'react';
-import DeviceRegisterGrid from '../components/device_register/device_register_grid';
+import DeviceRegisterGrid from '../components/device_register/device_register_grid'
+import NavigationBar from '../components/shared/navigation_bar'
+import TextField from '../components/shared/text_field'
 
 
-const device_register_view = () => {
+const Device_register_view = () => {
 
   return (
     <div>
@@ -11,4 +12,4 @@ const device_register_view = () => {
   );
 };
 
-export default device_register_view;
+export default Device_register_view;

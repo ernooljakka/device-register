@@ -1,7 +1,6 @@
-import React from 'react';
+import TableGrid from '../shared/grid_table.js'
 
-
-const event_grid = () => {
+const Event_grid = () => {
 
   return (
     <div>
@@ -10,4 +9,4 @@ const event_grid = () => {
   );
 };
 
-export default event_grid;
+export default Event_grid;

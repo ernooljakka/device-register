@@ -1,7 +1,8 @@
-import React from 'react';
+import NavigationBar from '../components/shared/navigation_bar'
+import TextField from '../components/shared/text_field'
+import EventGrid from '../components/event_view_components/event_grid'
 
-
-const event_view = () => {
+const Event_view = () => {
 
   return (
     <div>
@@ -10,4 +11,4 @@ const event_view = () => {
   );
 };
 
-export default event_view;
+export default Event_view;

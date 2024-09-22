@@ -1,13 +1,10 @@
-import React from 'react';
+const Search_bar = () => {
 
-
-const search_bar = () => {
-
-  return (
-    <div>
-        
-    </div>
-  );
-};
-
-export default search_bar;
+    return (
+      <div>
+          
+      </div>
+    );
+  };
+  
+  export default Search_bar;
