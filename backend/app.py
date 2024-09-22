@@ -1,7 +1,6 @@
 from flask import Flask
 from backend.models.device_model import Device
 from backend.utils.database_Init import db
-from typing import Optional
 from flask_cors import CORS
 
 
@@ -20,7 +19,7 @@ def create_app() -> Flask:
         db.create_all()
 
         # Adding a test device, remove later
-        existing_device: Optional[Device] = (
+        existing_device: Device | None = (
             Device.query.filter_by(dev_serial="123456").first()
         )
 

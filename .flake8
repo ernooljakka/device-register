@@ -1,0 +1,10 @@
+[flake8]
+exclude =
+    backend/venv,
+    backend/.pytest_cache,
+    __pycache__,
+    .git,
+    .tox,
+    .venv,
+    env
+max-line-length = 88
