@@ -1,13 +1,12 @@
-import React from 'react';
+import TableGrid from '../shared/grid_table.js'
 
-
-const device_info_grid = () => {
+const Device_info_grid = () => {
 
   return (
     <div>
-        
+      
     </div>
   );
 };
 
-export default device_info_grid;
+export default Device_info_grid;

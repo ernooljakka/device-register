@@ -1,7 +1,9 @@
-import React from 'react';
+import NavigationBar from '../components/shared/navigation_bar'
+import LinkButton from '../components/shared/link_button'
+import deviceDescription from '../components/device_info/device_description'
+import deviceGrid from '../components/device_info/device_info_grid' 
 
-
-const device_info_view = () => {
+const Device_info_view = () => {
 
   return (
     <div>
@@ -10,4 +12,4 @@ const device_info_view = () => {
   );
 };
 
-export default device_info_view;
+export default Device_info_view;
