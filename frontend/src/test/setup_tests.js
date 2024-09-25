@@ -1,0 +1,1 @@
+// global configurations for tests can be set here. If needed file jest.config.json needs setupFilesAfterEnv property.

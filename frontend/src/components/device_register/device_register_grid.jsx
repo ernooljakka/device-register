@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import TableGrid from '../shared/grid_table.js'
+import TableGrid from '../shared/grid_table.jsx'
 
 const Device_register_grid = () => {
 

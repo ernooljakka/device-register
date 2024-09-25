@@ -10,6 +10,10 @@
 
 # production
 /build
+/dist
+
+# Vite cache
+.vite
 
 # misc
 .DS_Store
@@ -17,6 +21,12 @@
 .env.development.local
 .env.test.local
 .env.production.local
+.env
+.env.*
+
+# Editor
+.vscode/
+.idea/
 
 npm-debug.log*
 yarn-debug.log*
