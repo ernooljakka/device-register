@@ -1,4 +1,4 @@
-import TableGrid from '../shared/grid_table.js'
+import TableGrid from '../shared/grid_table.jsx'
 
 const Device_info_grid = () => {
 

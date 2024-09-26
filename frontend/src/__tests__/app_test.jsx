@@ -1,7 +1,6 @@
-// App.test.js
-import React from 'react';
+// App.test.jsx
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom/';
 import App from '../app';
 
 test('Renders move device heading', () => {
