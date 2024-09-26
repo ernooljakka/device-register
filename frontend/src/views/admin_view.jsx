@@ -1,5 +1,4 @@
 import Box from '@mui/material/Box';
-import { useFetchData } from '../services/fetch_data/fetch_data';
 
 function Admin_view() {
   return (
