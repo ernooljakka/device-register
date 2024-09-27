@@ -1,11 +1,12 @@
 import TextField from '@mui/material/TextField';
+import PropTypes from 'prop-types';
 
 const Text_field = ({
-  label = 'Enter',
+  label,
   value,
   onChange,
-  variant = 'outlined',
-  required = false
+  variant,
+  required = false  //If we need to indicate that field is required
 }) => {
 
 
@@ -14,12 +15,19 @@ const Text_field = ({
         label={label}
         value={value}
         onChange={onChange}
-        variant={variant}
-        required = {required}
+        variant="outlined"
+        required = {required} 
       
       />
           
     );
   };
+  Text_field.propTypes = {
+    label: PropTypes.string.isRequired,
+    value: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired,
+    required: PropTypes.bool,
+  };
+
   
   export default Text_field;
