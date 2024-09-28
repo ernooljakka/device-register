@@ -4,7 +4,7 @@ import Function_button from '../components/shared/function_button';
 
 describe('Text_field', () => {
     test('renders with correct text', () => {
-        render(<Function-button text="test-text" onClick={() => {}} />);
+        render(<Function_button text="test-text" onClick={() => {}} />);
         const button = screen.getByRole('button');
         expect(button).toHaveTextContent('test-text');
     })
