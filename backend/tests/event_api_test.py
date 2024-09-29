@@ -56,3 +56,15 @@ def test_event_to_dict(app):
         assert event_dict['user_id'] == str(event.user_id)
         assert event_dict['loc_name'] == event.loc_name
         assert event_dict['move_time'] == event.move_time.isoformat()
+
+
+def test_get_all_events(client):
+    # Test the GET /api/events endpoint.
+    response = client.get('/api/events/')
+    assert response.status_code == 200
+
+    data = response.get_json()
+    assert len(data) == 1
+    assert data[0]['dev_id'] == "1"
+    assert data[0]['user_id'] == "1"
+    assert data[0]['loc_name'] == "Lab"

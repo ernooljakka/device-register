@@ -19,3 +19,7 @@ class Event(db.Model):
             'move_time': self.move_time.isoformat() if self.move_time else None,
             'loc_name': self.loc_name
         }
+
+    @staticmethod
+    def get_all_events() -> list['Event']:
+        return Event.query.all()
