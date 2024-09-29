@@ -82,3 +82,15 @@ def test_get_event_by_id(client):
 
     response_404 = client.get('/api/events/9999')
     assert response_404.status_code == 404
+
+
+def test_remove_event(client):
+    # Test the DELETE /api/events/int:event_id endpoint.
+    response_delete = client.delete('/api/events/1')
+    assert response_delete.status_code == 200
+
+    response_get_deleted = client.get('/api/events/1')
+    assert response_get_deleted.status_code == 404
+
+    response_delete_404 = client.delete('/api/events/9999')
+    assert response_delete_404.status_code == 404

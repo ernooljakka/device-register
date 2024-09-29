@@ -18,4 +18,11 @@ def get_event_by_id(event_id: int) -> tuple[Response, int]:
         event_dict = one_event.to_dict()
         return jsonify(event_dict), 200
     else:
-        return jsonify({'error': "Event not found"}), 404
+        return jsonify({'error': f'No event exists with provided Id: {event_id}'}), 404
+
+
+def remove_event(event_id: int) -> tuple[Response, int]:
+    if Event.remove_event(event_id):
+        return jsonify({'message': f'Deleted event with provided Id: {event_id}'}), 200
+    else:
+        return jsonify({'error': f'No event exists with provided Id: {event_id}'}), 404
