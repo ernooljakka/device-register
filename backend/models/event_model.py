@@ -23,3 +23,7 @@ class Event(db.Model):
     @staticmethod
     def get_all_events() -> list['Event']:
         return Event.query.all()
+
+    @staticmethod
+    def get_event_by_id(event_id: int) -> 'Event':
+        return Event.query.get(event_id)

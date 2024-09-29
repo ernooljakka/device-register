@@ -68,3 +68,17 @@ def test_get_all_events(client):
     assert data[0]['dev_id'] == "1"
     assert data[0]['user_id'] == "1"
     assert data[0]['loc_name'] == "Lab"
+
+
+def test_get_event_by_id(client):
+    # Test the GET /api/events/int:event_id endpoint.
+    response = client.get('/api/events/1')
+    assert response.status_code == 200
+
+    data = response.get_json()
+    assert data['dev_id'] == "1"
+    assert data['user_id'] == "1"
+    assert data['loc_name'] == "Lab"
+
+    response_404 = client.get('/api/events/9999')
+    assert response_404.status_code == 404
