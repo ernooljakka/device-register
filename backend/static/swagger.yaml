@@ -1,0 +1,241 @@
+swagger: "2.0"
+info:
+  title: Device register API
+  version: 1.0.0
+  description: API documentation for device register application.
+
+tags:
+  - name: Devices
+    description: API endpoints related to devices
+  - name: Users
+    description: API endpoints related to users
+  - name: Events
+    description: API endpoints related to events
+
+paths:
+  /api/devices/:
+    get:
+      tags:
+        - Devices
+      summary: Get all devices
+      responses:
+        '200':
+          description: A list of devices
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Device'
+    post:
+      tags:
+        - Devices
+      summary: Add new devices
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/NewDevice'
+      responses:
+        '201':
+          description: Devices created
+        '400':
+          description: Invalid input
+
+  /api/devices/{dev_id}:
+    get:
+      tags:
+        - Devices
+      summary: Get device by ID
+      parameters:
+        - name: dev_id
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: A single device
+          schema:
+            $ref: '#/definitions/Device'
+        '404':
+          description: Device not found
+
+  /api/users/:
+    get:
+      tags:
+        - Users
+      summary: Get all users
+      responses:
+        '200':
+          description: A list of users
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+    post:
+      tags:
+        - Users
+      summary: Add new users
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/NewUser'
+      responses:
+        '201':
+          description: Users created
+        '400':
+          description: Invalid input
+
+  /api/users/{user_id}:
+    get:
+      tags:
+        - Users
+      summary: Get user by ID
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: A single user
+          schema:
+            $ref: '#/definitions/User'
+        '404':
+          description: User not found
+
+  /api/events/:
+    get:
+      tags:
+        - Events
+      summary: Get all events
+      responses:
+        '200':
+          description: A list of events
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Event'
+    post:
+      tags:
+        - Events
+      summary: Add new events
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/NewEvent'
+      responses:
+        '201':
+          description: Events created
+        '400':
+          description: Invalid input
+
+  /api/events/{event_id}:
+    get:
+      tags:
+        - Events
+      summary: Get event by ID
+      parameters:
+        - name: event_id
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: A single event
+          schema:
+            $ref: '#/definitions/Event'
+        '404':
+          description: Event not found
+    delete:
+      tags:
+        - Events
+      summary: Delete event by ID
+      parameters:
+        - name: event_id
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Event deleted
+        '404':
+          description: Event not found
+
+definitions:
+  Device:
+    type: object
+    properties:
+      dev_id:
+        type: integer
+      dev_name:
+        type: string
+      dev_manufacturer:
+        type: string
+      dev_model:
+        type: string
+      dev_class:
+        type: string
+      dev_comments:
+        type: string
+
+  NewDevice:
+    type: object
+    properties:
+      name:
+        type: string
+      manufacturer:
+        type: string
+      model:
+        type: string
+      class:
+        type: string
+      comments:
+        type: string
+
+  User:
+    type: object
+    properties:
+      user_id:
+        type: integer
+      user_name:
+        type: string
+      user_email:
+        type: string
+
+  NewUser:
+    type: object
+    properties:
+      name:
+        type: string
+      email:
+        type: string
+
+  Event:
+    type: object
+    properties:
+      event_id:
+        type: integer
+      event_name:
+        type: string
+      event_date:
+        type: string
+        format: date-time
+
+  NewEvent:
+    type: object
+    properties:
+      name:
+        type: string
+      date:
+        type: string
+        format: date-time
