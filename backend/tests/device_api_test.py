@@ -49,3 +49,20 @@ def test_get_devices(client):
     assert data[0]['dev_model'] == "Model S"
     assert data[0]['dev_class'] == "class A"
     assert data[0]['dev_comments'] == "Location: Herwood xyz"
+
+
+def test_get_device_by_id(client):
+    # Test the GET /api/devices/int:dev_id endpoint.
+    response = client.get('/api/devices/1')
+    assert response.status_code == 200
+
+    data = response.get_json()
+    assert data['dev_id'] == "1"
+    assert data['dev_name'] == "Device"
+    assert data['dev_manufacturer'] == "Manfact A"
+    assert data['dev_model'] == "Model S"
+    assert data['dev_class'] == "class A"
+    assert data['dev_comments'] == "Location: Herwood xyz"
+
+    response_404 = client.get('/api/users/9999')
+    assert response_404.status_code == 404

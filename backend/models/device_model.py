@@ -24,3 +24,7 @@ class Device(db.Model):
     @staticmethod
     def get_all() -> list['Device']:
         return Device.query.all()
+
+    @staticmethod
+    def get_device_by_id(dev_id: int) -> 'Device':
+        return db.session.get(Device, dev_id)
