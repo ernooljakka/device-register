@@ -15,6 +15,9 @@ def create_app() -> Flask:
     from backend.api.device_api import device_api
     app.register_blueprint(device_api, url_prefix='/api/devices')
 
+    from backend.api.user_api import user_api
+    app.register_blueprint(user_api, url_prefix='/api/users')
+
     from backend.api.event_api import event_api
     app.register_blueprint(event_api, url_prefix='/api/events')
 
@@ -23,14 +26,16 @@ def create_app() -> Flask:
 
         # Adding a test device, remove later
         existing_device: Device | None = (
-            Device.query.filter_by(dev_serial="123456").first()
+            Device.query.filter_by(dev_name="Device", dev_model="Model S").first()
         )
 
         if not existing_device:
             test_device = Device(
-                dev_name="Test",
-                dev_type="Type",
-                dev_serial="123456",
+                dev_name="Device",
+                dev_manufacturer="Manfact A",
+                dev_model="Model S",
+                dev_class="class A",
+                dev_comments="Location: Herwood xyz"
             )
             db.session.add(test_device)
             db.session.commit()

@@ -6,7 +6,7 @@ from backend.models.device_model import Device
 
 @pytest.fixture
 def app():
-    # Create and configure a new app instance for each tests.
+    # Create and configure a new app instance for each test.
     app = create_app()
     app.config['TESTING'] = True
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
@@ -16,8 +16,10 @@ def app():
         db.create_all()
         # Add a tests device to the database
         test_device = Device(dev_name="Device",
-                             dev_type="Type A",
-                             dev_serial="Test123")
+                             dev_manufacturer="Manfact A",
+                             dev_model="Model S",
+                             dev_class="class A",
+                             dev_comments="Location: Herwood xyz")
         db.session.add(test_device)
         db.session.commit()
 
@@ -42,6 +44,8 @@ def test_get_devices(client):
 
     data = response.get_json()
     assert len(data) == 2
-    assert data[1]['dev_name'] == "Device"
-    assert data[1]['dev_type'] == "Type A"
-    assert data[1]['dev_serial'] == "Test123"
+    assert data[0]['dev_name'] == "Device"
+    assert data[0]['dev_manufacturer'] == "Manfact A"
+    assert data[0]['dev_model'] == "Model S"
+    assert data[0]['dev_class'] == "class A"
+    assert data[0]['dev_comments'] == "Location: Herwood xyz"

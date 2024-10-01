@@ -6,8 +6,7 @@ class Event(db.Model):
 
     event_id = db.Column(db.Integer, primary_key=True)
     dev_id = db.Column(db.Integer, db.ForeignKey('devices.dev_id'), nullable=False)
-    # TODO: Add below db.ForeignKey('users.user_id')
-    user_id = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     move_time = db.Column(db.DateTime, nullable=False)
     loc_name = db.Column(db.String(200), nullable=False)
 
