@@ -22,6 +22,7 @@ def app():
                              dev_model="Model S",
                              dev_class="class A",
                              dev_comments="Location: Herwood xyz")
+
         db.session.add(test_device)
         db.session.commit()
 
