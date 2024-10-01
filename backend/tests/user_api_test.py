@@ -7,10 +7,7 @@ from backend.models.user_model import User
 @pytest.fixture
 def app():
     # Create and configure a new app instance for each test.
-    app = create_app()
-    app.config['TESTING'] = True
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app = create_app(testing=True)
 
     with app.app_context():
         db.create_all()
