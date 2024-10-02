@@ -37,11 +37,54 @@ paths:
             type: array
             items:
               $ref: '#/definitions/NewDevice'
+            example:
+              - name: "Device 1"
+                model: "Model 1"
+                class: "Class 1"
+                manufacturer: "Company 1"
+                location: "Room 101"
+                comments: "Some comments"
+              - name: "Device 2"
+                model: "Model 2"
+                class: "Class 2"
+                manufacturer: "Company 2"
+                location: "Room 102"
+                comments: "Some comments"
       responses:
         '201':
           description: Devices created
         '400':
           description: Invalid input
+        '500':
+          description: Database error
+    delete:
+      tags:
+        - Devices
+      summary: Delete devices
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+            example:
+              - id: 2
+              - id: 3
+
+      responses:
+        '200':
+          description: Devices deleted
+        '400':
+          description: Invalid input
+        '404':
+          description: Devices not found
+        '500':
+          description: Database error
 
   /api/devices/{dev_id}:
     get:
@@ -104,6 +147,23 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Event'
+    post:
+      tags:
+        - Events
+      summary: Add new events
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/NewEvent'
+      responses:
+        '201':
+          description: Events created
+        '400':
+          description: Invalid input
+        '500':
+          description: Database error
 
   /api/events/{event_id}:
     get:
@@ -206,9 +266,11 @@ definitions:
     properties:
       dev_id:
         type: integer
+        example: 1
       move_time:
         type: string
         format: date-time
+        example: "2024-12-11 11:11:11"
       loc_name:
         type: string
       user:
