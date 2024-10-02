@@ -73,23 +73,6 @@ paths:
             type: array
             items:
               $ref: '#/definitions/User'
-    post:
-      tags:
-        - Users
-      summary: Add new users
-      parameters:
-        - in: body
-          name: body
-          required: true
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/NewUser'
-      responses:
-        '201':
-          description: Users created
-        '400':
-          description: Invalid input
 
   /api/users/{user_id}:
     get:
@@ -121,23 +104,6 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Event'
-    post:
-      tags:
-        - Events
-      summary: Add new events
-      parameters:
-        - in: body
-          name: body
-          required: true
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/NewEvent'
-      responses:
-        '201':
-          description: Events created
-        '400':
-          description: Invalid input
 
   /api/events/{event_id}:
     get:
@@ -225,17 +191,25 @@ definitions:
     properties:
       event_id:
         type: integer
-      event_name:
-        type: string
-      event_date:
+      dev_id:
+        type: integer
+      move_time:
         type: string
         format: date-time
+      loc_name:
+        type: string
+      user:
+        $ref: '#/definitions/NewUser'
 
   NewEvent:
     type: object
     properties:
-      name:
-        type: string
-      date:
+      dev_id:
+        type: integer
+      move_time:
         type: string
         format: date-time
+      loc_name:
+        type: string
+      user:
+        $ref: '#/definitions/NewUser'
