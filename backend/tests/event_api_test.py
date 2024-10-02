@@ -3,6 +3,7 @@ from backend.app import create_app
 from backend.utils.database_Init import db
 from backend.models.device_model import Device
 from backend.models.event_model import Event
+from backend.models.user_model import User
 from sqlalchemy.sql import func
 
 
@@ -21,6 +22,12 @@ def app():
                              dev_comments="Location: Herwood xyz")
 
         db.session.add(test_device)
+        db.session.commit()
+
+        # Add a test user to the database
+        test_user = User(user_name="User",
+                         user_email="user@mail.com")
+        db.session.add(test_user)
         db.session.commit()
 
         # Add a test event to the database
@@ -82,6 +89,89 @@ def test_get_event_by_id(client):
 
     response_404 = client.get('/api/events/9999')
     assert response_404.status_code == 404
+
+
+def test_create_event(client):
+    payload1 = {
+        'dev_id': 1,
+        'move_time': "2024-10-02 14:14:28",
+        'loc_name': "Room 1",
+        'user': {
+            'name': 'User',
+            'email': 'user@mail.com'
+        }
+    }
+    response1 = client.post('/api/events/', json=payload1)
+    assert response1.status_code == 201
+
+    payload2 = [
+        {
+            'dev_id': 1,
+            'move_time': "2024-10-02 14:14:28",
+            'loc_name': "Room 1",
+            'user': {
+                'name': 'User',
+                'email': 'user@mail.com'
+            }
+        }
+    ]
+    response2 = client.post('/api/events/', json=payload2)
+    assert response2.status_code == 400
+
+    payload3 = {
+        'dev_id': 1,
+        'move_time': "2024-10-02 14:14:28",
+        'user': {
+            'name': 'User',
+            'email': 'user@mail.com'
+        }
+    }
+    response3 = client.post('/api/events/', json=payload3)
+    assert response3.status_code == 400
+
+    payload4 = {
+        'dev_id': 1,
+        'move_time': "2024-10-02 14:14",
+        'loc_name': "Room 1",
+        'user': {
+            'name': 'User',
+            'email': 'user@mail.com'
+        }
+    }
+    response4 = client.post('/api/events/', json=payload4)
+    assert response4.status_code == 400
+
+    payload5 = {
+        'dev_id': 1,
+        'move_time': "2024-10-02 14:14:28",
+        'loc_name': "Room 1",
+        'user': 1
+    }
+    response5 = client.post('/api/events/', json=payload5)
+    assert response5.status_code == 400
+
+    payload6 = {
+        'dev_id': 1,
+        'move_time': "2024-10-02 14:14:28",
+        'loc_name': "Room 1",
+        'user': {
+            'name': 'User'
+        }
+    }
+    response6 = client.post('/api/events/', json=payload6)
+    assert response6.status_code == 400
+
+    payload7 = {
+        'dev_id': 9999,
+        'move_time': "2024-10-02 14:14:28",
+        'loc_name': "Room 1",
+        'user': {
+            'name': 'User',
+            'email': 'user@mail.com'
+        }
+    }
+    response7 = client.post('/api/events/', json=payload7)
+    assert response7.status_code == 500
 
 
 def test_remove_event(client):

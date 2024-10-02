@@ -1,4 +1,5 @@
 from backend.utils.database_Init import db
+from sqlalchemy.exc import SQLAlchemyError
 
 
 class Event(db.Model):
@@ -26,6 +27,17 @@ class Event(db.Model):
     @staticmethod
     def get_event_by_id(event_id: int) -> 'Event':
         return db.session.get(Event, event_id)
+
+    @staticmethod
+    def create_event(new_event: 'Event') -> tuple['bool', 'str']:
+        try:
+            db.session.add(new_event)
+            db.session.commit()
+        except SQLAlchemyError as error:
+            db.session.rollback()
+            return False, str(error)
+
+        return True, ""
 
     @staticmethod
     def remove_event(event_id: int) -> 'bool':
