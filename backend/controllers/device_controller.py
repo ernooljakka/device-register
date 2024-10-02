@@ -50,6 +50,22 @@ def get_device_by_id(dev_id: int) -> tuple[Response, int]:
     return jsonify({'error': 'Device not found'}), 404
 
 
+def update_device(
+        dev_id: int, device_data: dict[str, str | int]) -> tuple[Response, int]:
+    valid_fields = {
+        'dev_name', 'dev_manufacturer', 'dev_model', 'dev_class', 'dev_comments'}
+
+    if not any(key in valid_fields for key in device_data):
+        return jsonify({'error': 'No valid fields provided to update'}), 400
+
+    updated_device, success = Device.update_device_by_id(dev_id, device_data)
+
+    if success:
+        return jsonify(updated_device.to_dict()), 200
+    else:
+        return jsonify({'error': 'Device not found'}), 404
+
+
 def remove_devices() -> tuple[Response, int]:
     id_list_json = request.get_json()
 
