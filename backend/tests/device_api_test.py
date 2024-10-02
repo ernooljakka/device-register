@@ -133,3 +133,51 @@ def test_get_device_by_id(client):
 
     response_404 = client.get('/api/users/9999')
     assert response_404.status_code == 404
+
+
+def test_remove_devices(client, app):
+    # Test the DELETE /api/devices/ endpoint.
+    with app.app_context():
+
+        test_device1 = Device(dev_name="Device 1",
+                              dev_manufacturer="Manfact A",
+                              dev_model="Model S",
+                              dev_class="class A",
+                              dev_comments="Location: Herwood xyz")
+        test_device2 = Device(dev_name="Device 2",
+                              dev_manufacturer="Manfact A",
+                              dev_model="Model T",
+                              dev_class="class A",
+                              dev_comments="Location: Herwood xyz")
+        db.session.add(test_device1)
+        db.session.add(test_device2)
+        db.session.commit()
+
+        payload1 = [{'id': 2}, {'id': 3}]
+        response1 = client.delete('/api/devices/', json=payload1)
+        assert response1.status_code == 200
+
+        payload2 = {'id': 1}
+        response2 = client.delete('/api/devices/', json=payload2)
+        assert response2.status_code == 400
+
+        payload3 = [1, 2]
+        response3 = client.delete('/api/devices/', json=payload3)
+        assert response3.status_code == 400
+
+        payload4 = [{'id': 12}, {'a': 3}]
+        response4 = client.delete('/api/devices/', json=payload4)
+        assert response4.status_code == 400
+
+        payload5 = [{'id': 12, 'too_much': "info"}]
+        response5 = client.delete('/api/devices/', json=payload5)
+        assert response5.status_code == 400
+
+        payload6 = [{'id': 9999}]
+        response6 = client.delete('/api/devices/', json=payload6)
+        assert response6.status_code == 404
+
+        assert db.session.get(Device, 2) is None
+        assert db.session.get(Device, 3) is None
+
+        assert len(Device.query.all()) == 1

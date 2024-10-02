@@ -48,3 +48,31 @@ def get_device_by_id(dev_id: int) -> tuple[Response, int]:
     if device:
         return jsonify(device.to_dict()), 200
     return jsonify({'error': 'Device not found'}), 404
+
+
+def remove_devices() -> tuple[Response, int]:
+    id_list_json = request.get_json()
+
+    if not isinstance(id_list_json, list):
+        return jsonify({'error': "Expected a list of devices"}), 400
+
+    device_id_list = []
+    for item in id_list_json:
+        if not isinstance(item, dict):
+            return jsonify({'error': "Each device must be an object"}), 400
+
+        if 'id' not in item or len(item) != 1:
+            return jsonify({'error': "Each device object must have only"
+                                     " 'id' attribute"}), 400
+
+        device_id_list.append(item['id'])
+
+    database_response = Device.remove_devices(device_id_list)
+
+    if database_response[0] == 200:
+        return jsonify({'message': "Devices deleted successfully"}), 200
+    elif database_response[0] == 404:
+        return (jsonify({'error': f"Failed to delete devices. "
+                                  f"{database_response[1]}"}), 404)
+    else:
+        return jsonify({'error': f"Database error: {database_response[1]}"}), 500
