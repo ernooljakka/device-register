@@ -50,6 +50,13 @@ def get_device_by_id(dev_id: int) -> tuple[Response, int]:
     return jsonify({'error': 'Device not found'}), 404
 
 
+def get_events_by_device_id(dev_id: int) -> tuple[Response, int]:
+    events, status_code = Device.get_events_by_device_id(dev_id)
+    if status_code == 404:
+        return jsonify({'error': 'Device not found'}), 404
+    return jsonify([event.to_dict() for event in events]), 200
+
+
 def update_device(
         dev_id: int, device_data: dict[str, str | int]) -> tuple[Response, int]:
     valid_fields = {

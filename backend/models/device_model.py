@@ -1,3 +1,4 @@
+from backend.models.event_model import Event
 from backend.utils.database_Init import db
 from sqlalchemy import delete
 from sqlalchemy.exc import SQLAlchemyError
@@ -74,3 +75,10 @@ class Device(db.Model):
         except SQLAlchemyError as error:
             db.session.rollback()
             return 500, str(error)
+
+    @staticmethod
+    def get_events_by_device_id(dev_id: int) -> tuple[list['Event'] | None, int]:
+        device = Device.get_device_by_id(dev_id)
+        if device:
+            return device.events, 200
+        return None, 404
