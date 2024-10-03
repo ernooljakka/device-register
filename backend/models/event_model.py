@@ -40,6 +40,16 @@ class Event(db.Model):
         return True, ""
 
     @staticmethod
+    def update_event() -> tuple['bool', 'str']:
+        try:
+            db.session.commit()
+        except SQLAlchemyError as error:
+            db.session.rollback()
+            return False, str(error)
+
+        return True, ""
+
+    @staticmethod
     def remove_event(event_id: int) -> 'bool':
         event = Event.get_event_by_id(event_id)
 

@@ -3,6 +3,7 @@ from backend.controllers.event_controller import (
     get_all_events,
     get_event_by_id,
     create_event,
+    update_event,
     remove_event
 )
 
@@ -22,6 +23,11 @@ def event_by_id(event_id: int) -> tuple[Response, int]:
 @event_api.route('/', methods=['POST'])
 def add_event() -> tuple[Response, int]:
     return create_event()
+
+
+@event_api.route('/<int:event_id>', methods=['PATCH'])
+def modify_event(event_id: int) -> tuple[Response, int]:
+    return update_event(event_id)
 
 
 @event_api.route('/<int:event_id>', methods=['DELETE'])
