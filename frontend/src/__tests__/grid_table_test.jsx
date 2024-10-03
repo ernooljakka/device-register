@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import '@testing-library/jest-dom/';
 import GridTable from '../components/shared/grid_table';
 
@@ -28,7 +28,7 @@ describe('GridTable Component', () => {
     test('renders the correct number of rows', () => {
         const { getAllByRole } = render(<GridTable rowData={rowData} columnDefs={columnDefs} />);
         const rows = getAllByRole('row');
-        expect(rows.length).toBe(4); // Take in account header and floating filter rows.
+        expect(rows.length).toBe(3); // Take in account header row.
     });
 
     test('renders the correct data cells', () => {
