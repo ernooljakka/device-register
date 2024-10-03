@@ -1,4 +1,4 @@
-from backend.utils.database_Init import db
+from backend.setup.database_Init import db
 
 
 class User(db.Model):

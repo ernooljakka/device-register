@@ -1,6 +1,6 @@
 import pytest
 from backend.app import create_app
-from backend.utils.database_Init import db
+from backend.setup.database_Init import db
 from backend.models.user_model import User
 from backend.controllers.user_controller import (add_or_update_user,
                                                  get_user_by_id,

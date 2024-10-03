@@ -1,5 +1,5 @@
+from backend.setup.database_Init import db
 from backend.models.event_model import Event
-from backend.utils.database_Init import db
 from sqlalchemy import delete
 from sqlalchemy.exc import SQLAlchemyError
 

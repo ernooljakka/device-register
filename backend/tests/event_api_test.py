@@ -1,6 +1,6 @@
 import pytest
 from backend.app import create_app
-from backend.utils.database_Init import db
+from backend.setup.database_Init import db
 from backend.models.device_model import Device
 from backend.models.event_model import Event
 from backend.models.user_model import User
@@ -97,8 +97,8 @@ def test_create_event(client):
         'move_time': "2024-10-02 14:14:28",
         'loc_name': "Room 1",
         'user': {
-            'name': 'User',
-            'email': 'user@mail.com'
+            'user_name': 'User',
+            'user_email': 'user@mail.com'
         }
     }
     response1 = client.post('/api/events/', json=payload1)
@@ -110,8 +110,8 @@ def test_create_event(client):
             'move_time': "2024-10-02 14:14:28",
             'loc_name': "Room 1",
             'user': {
-                'name': 'User',
-                'email': 'user@mail.com'
+                'user_name': 'User',
+                'user_email': 'user@mail.com'
             }
         }
     ]
@@ -122,8 +122,8 @@ def test_create_event(client):
         'dev_id': 1,
         'move_time': "2024-10-02 14:14:28",
         'user': {
-            'name': 'User',
-            'email': 'user@mail.com'
+            'user_name': 'User',
+            'user_email': 'user@mail.com'
         }
     }
     response3 = client.post('/api/events/', json=payload3)
@@ -134,8 +134,8 @@ def test_create_event(client):
         'move_time': "2024-10-02 14:14",
         'loc_name': "Room 1",
         'user': {
-            'name': 'User',
-            'email': 'user@mail.com'
+            'user_name': 'User',
+            'user_email': 'user@mail.com'
         }
     }
     response4 = client.post('/api/events/', json=payload4)
@@ -155,7 +155,7 @@ def test_create_event(client):
         'move_time': "2024-10-02 14:14:28",
         'loc_name': "Room 1",
         'user': {
-            'name': 'User'
+            'user_name': 'User'
         }
     }
     response6 = client.post('/api/events/', json=payload6)
@@ -166,8 +166,8 @@ def test_create_event(client):
         'move_time': "2024-10-02 14:14:28",
         'loc_name': "Room 1",
         'user': {
-            'name': 'User',
-            'email': 'user@mail.com'
+            'user_name': 'User',
+            'user_email': 'user@mail.com'
         }
     }
     response7 = client.post('/api/events/', json=payload7)

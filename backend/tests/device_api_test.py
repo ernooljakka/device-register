@@ -1,6 +1,6 @@
 import pytest
 from backend.app import create_app
-from backend.utils.database_Init import db
+from backend.setup.database_Init import db
 from backend.models.device_model import Device
 from backend.models.event_model import Event
 from backend.models.user_model import User
@@ -57,46 +57,46 @@ def test_post_devices(client, app):
     # Test the POST /api/devices/ endpoint.
     payload1 = [
         {
-            "name": "Device 1",
-            "manufacturer": "Company A",
-            "model": "M1",
-            "class": "C1",
-            "comments": ""
+            "dev_name": "Device 1",
+            "dev_manufacturer": "Company A",
+            "dev_model": "M1",
+            "dev_class": "C1",
+            "dev_comments": ""
         },
         {
-            "name": "Device 2",
-            "manufacturer": "Company A",
-            "model": "M2",
-            "class": "C1",
-            "comments": ""
+            "dev_name": "Device 2",
+            "dev_manufacturer": "Company A",
+            "dev_model": "M2",
+            "dev_class": "C1",
+            "dev_comments": ""
         }
     ]
     response1 = client.post('/api/devices/', json=payload1)
     assert response1.status_code == 201
 
     payload2 = {
-            "name": "Device 3",
-            "manufacturer": "Company A",
-            "model": "M3",
-            "class": "C1",
-            "comments": ""
+            "dev_name": "Device 3",
+            "dev_manufacturer": "Company A",
+            "dev_model": "M3",
+            "dev_class": "C1",
+            "dev_comments": ""
     }
     response_not_list = client.post('/api/devices/', json=payload2)
     assert response_not_list.status_code == 400
 
     payload3 = [
         {
-            "name": "Device 4",
-            "manufacturer": "Company A",
-            "model": "M4",
-            "class": "C1",
-            "comments": ""
+            "dev_name": "Device 4",
+            "dev_manufacturer": "Company A",
+            "dev_model": "M4",
+            "dev_class": "C1",
+            "dev_comments": ""
         },
         {
-            "name": "Device 5",
-            "manufacturer": "Company B",
-            "model": "M5",
-            "comments": ""
+            "dev_name": "Device 5",
+            "dev_manufacturer": "Company B",
+            "dev_model": "M5",
+            "dev_comments": ""
         }
     ]
     response_missing_field = client.post('/api/devices/', json=payload3)

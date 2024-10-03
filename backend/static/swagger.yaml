@@ -38,18 +38,18 @@ paths:
             items:
               $ref: '#/definitions/NewDevice'
             example:
-              - name: "Device 1"
-                model: "Model 1"
-                class: "Class 1"
-                manufacturer: "Company 1"
-                location: "Room 101"
-                comments: "Some comments"
-              - name: "Device 2"
-                model: "Model 2"
-                class: "Class 2"
-                manufacturer: "Company 2"
-                location: "Room 102"
-                comments: "Some comments"
+              - dev_name: "Device 1"
+                dev_model: "Model 1"
+                dev_class: "Class 1"
+                dev_manufacturer: "Company 1"
+                dev_location: "Room 101"
+                dev_comments: "Some comments"
+              - dev_name: "Device 2"
+                dev_model: "Model 2"
+                dev_class: "Class 2"
+                dev_manufacturer: "Company 2"
+                dev_location: "Room 102"
+                dev_comments: "Some comments"
       responses:
         '201':
           description: Devices created
@@ -101,6 +101,50 @@ paths:
           description: A single device
           schema:
             $ref: '#/definitions/Device'
+        '404':
+          description: Device not found
+
+    patch:
+        tags:
+            - Devices
+        summary: Update device by ID
+        parameters:
+        - name: dev_id
+          in: path
+          required: true
+          type: integer
+        - in: body
+          name: body
+          required: true
+          schema:
+              $ref: '#/definitions/NewDevice'
+        responses:
+            '200':
+              description: Device updated
+            '400':
+              description: Invalid input
+            '404':
+              description: Device not found
+            '500':
+              description: Database error
+
+  /api/devices/{dev_id}/events:
+    get:
+      tags:
+        - Devices
+      summary: Get all events for device
+      parameters:
+        - name: dev_id
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: A list of events
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Event'
         '404':
           description: Device not found
 
@@ -217,15 +261,15 @@ definitions:
   NewDevice:
     type: object
     properties:
-      name:
+      dev_name:
         type: string
-      manufacturer:
+      dev_manufacturer:
         type: string
-      model:
+      dev_model:
         type: string
-      class:
+      dev_class:
         type: string
-      comments:
+      dev_comments:
         type: string
 
   User:
@@ -241,9 +285,9 @@ definitions:
   NewUser:
     type: object
     properties:
-      name:
+      user_name:
         type: string
-      email:
+      user_email:
         type: string
 
   Event:
@@ -258,8 +302,8 @@ definitions:
         format: date-time
       loc_name:
         type: string
-      user:
-        $ref: '#/definitions/NewUser'
+      user_id:
+        type: integer
 
   NewEvent:
     type: object

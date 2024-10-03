@@ -19,8 +19,8 @@ def create_devices() -> tuple[Response, int]:
 
     device_list = []
     for item in device_json:
-        if not all(key in item for key in ('name', 'manufacturer', 'model',
-                                           'class', 'comments')):
+        if not all(key in item for key in ('dev_name', 'dev_manufacturer', 'dev_model',
+                                           'dev_class', 'dev_comments')):
             return (jsonify({'error': "All devices must have"
                                       " name,"
                                       " manufacturer,"
@@ -28,11 +28,11 @@ def create_devices() -> tuple[Response, int]:
                                       " class and comments"}),
                     400)
 
-        new_device = Device(dev_name=item['name'],
-                            dev_manufacturer=item['manufacturer'],
-                            dev_model=item['model'],
-                            dev_class=item['class'],
-                            dev_comments=item['comments'])
+        new_device = Device(dev_name=item['dev_name'],
+                            dev_manufacturer=item['dev_manufacturer'],
+                            dev_model=item['dev_model'],
+                            dev_class=item['dev_class'],
+                            dev_comments=item['dev_comments'])
 
         device_list.append(new_device)
 
