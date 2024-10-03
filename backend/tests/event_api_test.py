@@ -195,8 +195,8 @@ def test_patch_event(client):
         'move_time': "2024-10-03 14:14:29",
         'loc_name': "Room 2",
         'user': {
-            'name': 'No longer User',
-            'email': 'user@othermail.com'
+            'user_name': 'No longer User',
+            'user_email': 'user@othermail.com'
         }
     }
     response2 = client.patch('/api/events/1', json=payload2)
@@ -257,7 +257,7 @@ def test_patch_event(client):
         'move_time': "2024-10-03 14:14:29",
         'loc_name': "Room 2",
         'user': {
-            'name': 'No longer User',
+            'user_name': 'No longer User',
             'eeem': 'user@othermail.com'
         }
     }
@@ -270,7 +270,7 @@ def test_patch_event(client):
         'loc_name': "Room 2",
         'user': [
             {
-                'name': 'No longer User',
+                'user_name': 'No longer User',
                 'eeem': 'user@othermail.com'
             }
         ]

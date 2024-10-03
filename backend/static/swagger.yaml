@@ -241,6 +241,30 @@ paths:
         '404':
           description: Event not found
 
+    patch:
+      tags:
+        - Events
+      summary: Update event by ID
+      parameters:
+      - name: event_id
+        in: path
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/NewEvent'
+      responses:
+        '200':
+          description: Event updated
+        '400':
+          description: Invalid input
+        '404':
+          description: Event not found
+        '500':
+          description: Database error
+
 definitions:
   Device:
     type: object

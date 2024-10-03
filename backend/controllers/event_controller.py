@@ -97,7 +97,7 @@ def update_event(event_id: int) -> tuple[Response, int]:
         if not isinstance(user_info, dict):
             return jsonify({'error': "Expected user attribute to be an object"}), 400
 
-        if 'name' in user_info and 'email' in user_info:
+        if 'user_name' in user_info and 'user_email' in user_info:
             not_ok_status, response_str = add_or_update_user_util(user_info)
             if not_ok_status:
                 return jsonify({'error': f'Problem adding or updating user: '
@@ -105,7 +105,8 @@ def update_event(event_id: int) -> tuple[Response, int]:
             else:
                 event.user_id = response_str
         else:
-            return jsonify({'error': "User object must contain name and email"}), 400
+            return jsonify({'error': "User object must contain user_name"
+                                     " and user_email"}), 400
 
     if 'move_time' in event_json:
         try:
@@ -134,8 +135,6 @@ def remove_event(event_id: int) -> tuple[Response, int]:
 
 
 def add_or_update_user_util(user_info) -> tuple['int', 'str']:
-    user_info['user_email'] = user_info.pop('email')
-    user_info['user_name'] = user_info.pop('name')
     user_response = add_or_update_user(user_info)
     if user_response[1] in (200, 201):
         return 0, user_response[0].get_json()['user_id']
