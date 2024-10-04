@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import { AgGridReact } from 'ag-grid-react';
 import SearchBar from './search_bar';
+import PropTypes from 'prop-types';
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 
@@ -44,6 +45,11 @@ const Grid_table = ({ rowData, columnDefs }) => {
       />
     </Box>
   );
+};
+
+Grid_table.propTypes = {
+  rowData: PropTypes.array.isRequired,
+  columnDefs: PropTypes.array.isRequired,
 };
 
 export default Grid_table;
