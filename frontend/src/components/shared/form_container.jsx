@@ -1,10 +1,14 @@
-const Form_container = ({}) => {
+import React from 'react';
+
+const Form_container = () => {
 
     return (
-        <form>
-            
-        </form>
+      <form>
+        
+      </form>
     );
   };
+
+
   
 export default Form_container;
