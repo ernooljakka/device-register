@@ -5,7 +5,6 @@ const Text_field = ({
   label,
   value,
   onChange,
-  variant,
   required = false  //If we need to indicate that field is required
 }) => {
 
