@@ -1,15 +1,17 @@
+from typing import Union
+
 from flask import jsonify, Response
 from backend.models.user_model import User
 
 
 def get_user_by_id(user_id: int) -> tuple[Response, int]:
-    user: User | None = User.get_user_by_id(user_id)
+    user: Union[User, None] = User.get_user_by_id(user_id)
     if user:
         return jsonify(user.to_dict()), 200
     return jsonify({'error': 'User not found'}), 404
 
 
-def add_or_update_user(user_data: dict[str, str | int]) -> tuple[Response, int]:
+def add_or_update_user(user_data: dict[str, Union[str, int]]) -> tuple[Response, int]:
     try:
         updated_user, created = User.add_or_update_user(user_data)
 
