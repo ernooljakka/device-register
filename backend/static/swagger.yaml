@@ -1,0 +1,347 @@
+swagger: "2.0"
+info:
+  title: Device register API
+  version: 1.0.0
+  description: API documentation for device register application.
+
+basePath: /api/
+
+tags:
+  - name: Devices
+    description: API endpoints related to devices
+  - name: Users
+    description: API endpoints related to users
+  - name: Events
+    description: API endpoints related to events
+
+paths:
+  /devices/:
+    get:
+      tags:
+        - Devices
+      summary: Get all devices
+      responses:
+        '200':
+          description: A list of devices
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Device'
+    post:
+      tags:
+        - Devices
+      summary: Add new devices
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/NewDevice'
+            example:
+              - dev_name: "Device 1"
+                dev_model: "Model 1"
+                dev_class: "Class 1"
+                dev_manufacturer: "Company 1"
+                dev_location: "Room 101"
+                dev_comments: "Some comments"
+              - dev_name: "Device 2"
+                dev_model: "Model 2"
+                dev_class: "Class 2"
+                dev_manufacturer: "Company 2"
+                dev_location: "Room 102"
+                dev_comments: "Some comments"
+      responses:
+        '201':
+          description: Devices created
+        '400':
+          description: Invalid input
+        '500':
+          description: Database error
+    delete:
+      tags:
+        - Devices
+      summary: Delete devices
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+            example:
+              - id: 2
+              - id: 3
+
+      responses:
+        '200':
+          description: Devices deleted
+        '400':
+          description: Invalid input
+        '404':
+          description: Devices not found
+        '500':
+          description: Database error
+
+  /devices/{dev_id}:
+    get:
+      tags:
+        - Devices
+      summary: Get device by ID
+      parameters:
+        - name: dev_id
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: A single device
+          schema:
+            $ref: '#/definitions/Device'
+        '404':
+          description: Device not found
+
+    patch:
+        tags:
+            - Devices
+        summary: Update device by ID
+        parameters:
+        - name: dev_id
+          in: path
+          required: true
+          type: integer
+        - in: body
+          name: body
+          required: true
+          schema:
+              $ref: '#/definitions/NewDevice'
+        responses:
+            '200':
+              description: Device updated
+            '400':
+              description: Invalid input
+            '404':
+              description: Device not found
+            '500':
+              description: Database error
+
+  /devices/{dev_id}/events:
+    get:
+      tags:
+        - Devices
+      summary: Get all events for device
+      parameters:
+        - name: dev_id
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: A list of events
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Event'
+        '404':
+          description: Device not found
+
+  /users/:
+    get:
+      tags:
+        - Users
+      summary: Get all users
+      responses:
+        '200':
+          description: A list of users
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+
+  /users/{user_id}:
+    get:
+      tags:
+        - Users
+      summary: Get user by ID
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: A single user
+          schema:
+            $ref: '#/definitions/User'
+        '404':
+          description: User not found
+
+  /events/:
+    get:
+      tags:
+        - Events
+      summary: Get all events
+      responses:
+        '200':
+          description: A list of events
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Event'
+    post:
+      tags:
+        - Events
+      summary: Add new events
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/NewEvent'
+      responses:
+        '201':
+          description: Events created
+        '400':
+          description: Invalid input
+        '500':
+          description: Database error
+
+  /events/{event_id}:
+    get:
+      tags:
+        - Events
+      summary: Get event by ID
+      parameters:
+        - name: event_id
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: A single event
+          schema:
+            $ref: '#/definitions/Event'
+        '404':
+          description: Event not found
+    delete:
+      tags:
+        - Events
+      summary: Delete event by ID
+      parameters:
+        - name: event_id
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Event deleted
+        '404':
+          description: Event not found
+
+    patch:
+      tags:
+        - Events
+      summary: Update event by ID
+      parameters:
+      - name: event_id
+        in: path
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/NewEvent'
+      responses:
+        '200':
+          description: Event updated
+        '400':
+          description: Invalid input
+        '404':
+          description: Event not found
+        '500':
+          description: Database error
+
+definitions:
+  Device:
+    type: object
+    properties:
+      dev_id:
+        type: integer
+      dev_name:
+        type: string
+      dev_manufacturer:
+        type: string
+      dev_model:
+        type: string
+      dev_class:
+        type: string
+      dev_comments:
+        type: string
+
+  NewDevice:
+    type: object
+    properties:
+      dev_name:
+        type: string
+      dev_manufacturer:
+        type: string
+      dev_model:
+        type: string
+      dev_class:
+        type: string
+      dev_comments:
+        type: string
+
+  User:
+    type: object
+    properties:
+      user_id:
+        type: integer
+      user_name:
+        type: string
+      user_email:
+        type: string
+
+  NewUser:
+    type: object
+    properties:
+      user_name:
+        type: string
+      user_email:
+        type: string
+
+  Event:
+    type: object
+    properties:
+      event_id:
+        type: integer
+      dev_id:
+        type: integer
+      move_time:
+        type: string
+        format: date-time
+      loc_name:
+        type: string
+      user_id:
+        type: integer
+
+  NewEvent:
+    type: object
+    properties:
+      dev_id:
+        type: integer
+        example: 1
+      move_time:
+        type: string
+        format: date-time
+        example: "2024-12-11 11:11:11"
+      loc_name:
+        type: string
+      user:
+        $ref: '#/definitions/NewUser'

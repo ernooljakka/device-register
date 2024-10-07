@@ -1,44 +1,41 @@
 import React from 'react';
-import { useEffect, useState } from 'react';
+import GridTable from '../shared/grid_table.jsx';
+import Typography from '@mui/material/Typography';
+import useFetchData from '../shared/fetch_data';
 
 const Device_register_grid = () => {
+    const { data: devices, loading, error } = useFetchData('devices');
 
-  const [devices, setDevices] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+    const columnDefs = [
+        { field: "dev_id", filter: "agTextColumnFilter", headerName: "ID", flex: 2 },
+        { field: "dev_class", filter: "agTextColumnFilter", headerName: "Type", flex: 2 },
+        { field: "dev_name", filter: "agTextColumnFilter", headerName: "Device", flex: 2.5 },
+        { field: "dev_manufacturer", filter: "agTextColumnFilter", headerName: "Location", flex: 2.5 },
+    ];
 
-  //Fetch devices from the api
-  useEffect(() => {
-    const fetchDevices = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/api/devices');
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        setDevices(data);
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    fetchDevices();
-    
-  }, []);
-
-  useEffect(() => {
-    if (devices.length > 0) {
-      console.log('devices:', devices[0]);
+    if (loading) {
+        return (
+            <Typography sx={{ mt: 7, fontSize: 'clamp(1.5rem, 10vw, 2.4rem)' }}>
+                Loading devices...
+            </Typography>
+        );
     }
-  }, [devices]);
 
-  return (
-    <div>
+    if (error) {
+        return (
+            <Typography sx={{ mt: 7, fontSize: 'clamp(1.5rem, 9vw, 2.4rem)', color: 'red' }}>
+                Failed to load devices.<br />
+                Please try again later.<br />
+            </Typography>
+        );
+    }
 
-    </div>
-  );
+    return (
+        <GridTable 
+            rowData={devices.length > 0 ? devices : []} 
+            columnDefs={columnDefs}
+        />
+    );
 };
 
 export default Device_register_grid;
