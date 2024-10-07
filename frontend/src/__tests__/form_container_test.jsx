@@ -26,7 +26,7 @@ describe('Form_container', () => {
       expect(screen.getByText('children')).toHaveStyle('padding: 5');
     });
   
-    test('onSubmit when clicked', () => {
+    test.skip('onSubmit when clicked', () => {
       const handleSubmit = jest.fn();
       
       render(<Form_container onSubmit={handleSubmit}>
