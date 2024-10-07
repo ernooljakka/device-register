@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 const Text_field = ({
   label,
+  name,
   value,
   onChange,
   required = false  //If we need to indicate that field is required
@@ -12,6 +13,7 @@ const Text_field = ({
     return (
       <TextField
         label={label}
+        name={name}
         value={value}
         onChange={onChange}
         variant="outlined"
@@ -23,6 +25,7 @@ const Text_field = ({
   };
   Text_field.propTypes = {
     label: PropTypes.string.isRequired,
+    name: PropTypes.string,
     value: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
     required: PropTypes.bool,
