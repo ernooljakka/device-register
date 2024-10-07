@@ -13,7 +13,7 @@ def set_sqlite_pragma(dbapi_connection, connection_record) -> None:
     cursor.close()
 
 
-def create_app(testing: bool = False) -> Flask:
+def create_app(testing: bool = True) -> Flask:
     deployment_path = '/'
     app = Flask(__name__)
     CORS(app)
