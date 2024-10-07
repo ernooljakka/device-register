@@ -4,6 +4,8 @@ info:
   version: 1.0.0
   description: API documentation for device register application.
 
+basePath: /api/
+
 tags:
   - name: Devices
     description: API endpoints related to devices
@@ -13,7 +15,7 @@ tags:
     description: API endpoints related to events
 
 paths:
-  /api/devices/:
+  /devices/:
     get:
       tags:
         - Devices
@@ -86,7 +88,7 @@ paths:
         '500':
           description: Database error
 
-  /api/devices/{dev_id}:
+  /devices/{dev_id}:
     get:
       tags:
         - Devices
@@ -128,7 +130,7 @@ paths:
             '500':
               description: Database error
 
-  /api/devices/{dev_id}/events:
+  /devices/{dev_id}/events:
     get:
       tags:
         - Devices
@@ -148,7 +150,7 @@ paths:
         '404':
           description: Device not found
 
-  /api/users/:
+  /users/:
     get:
       tags:
         - Users
@@ -161,7 +163,7 @@ paths:
             items:
               $ref: '#/definitions/User'
 
-  /api/users/{user_id}:
+  /users/{user_id}:
     get:
       tags:
         - Users
@@ -179,7 +181,7 @@ paths:
         '404':
           description: User not found
 
-  /api/events/:
+  /events/:
     get:
       tags:
         - Events
@@ -209,7 +211,7 @@ paths:
         '500':
           description: Database error
 
-  /api/events/{event_id}:
+  /events/{event_id}:
     get:
       tags:
         - Events

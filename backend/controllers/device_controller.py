@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+from typing import Union
+
 from flask import jsonify, request, Response
 from backend.models.device_model import Device
 
@@ -58,7 +62,7 @@ def get_events_by_device_id(dev_id: int) -> tuple[Response, int]:
 
 
 def update_device(
-        dev_id: int, device_data: dict[str, str | int]) -> tuple[Response, int]:
+        dev_id: int, device_data: dict[str, Union[str, int]]) -> tuple[Response, int]:
     valid_fields = {
         'dev_name', 'dev_manufacturer', 'dev_model', 'dev_class', 'dev_comments'}
 
