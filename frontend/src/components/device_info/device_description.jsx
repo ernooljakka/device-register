@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types'
 import { Card, CardContent, Typography } from '@mui/material';
 
 const Device_description = ({ devClass, devComments, devManufacturer, devModel }) => {
@@ -38,6 +39,13 @@ const Device_description = ({ devClass, devComments, devManufacturer, devModel }
     </CardContent>
   </Card>
   );
+};
+
+Device_description.propTypes = {
+  devClass: PropTypes.string,
+  devComments: PropTypes.string,    
+  devManufacturer: PropTypes.string,
+  devModel: PropTypes.string
 };
 
 export default Device_description;
