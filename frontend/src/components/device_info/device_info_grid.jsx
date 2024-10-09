@@ -2,6 +2,7 @@ import React from 'react';
 import GridTable from '../shared/grid_table.jsx';
 import Typography from '@mui/material/Typography';
 import useFetchData from '../shared/fetch_data';
+import PropTypes from 'prop-types'
 
 const Device_info_grid = ({ id }) => {
   const { data: events, loading, error } = useFetchData('devices/' + id + '/events');
@@ -37,5 +38,9 @@ const Device_info_grid = ({ id }) => {
       />
   );
 };
+
+Device_info_grid.propTypes = {
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
+  };
 
 export default Device_info_grid;
