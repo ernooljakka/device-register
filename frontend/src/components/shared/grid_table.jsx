@@ -18,7 +18,7 @@ const Grid_table = ({ rowData, columnDefs }) => {
         flexDirection: 'column',
         alignItems: 'center',
         mt: 1,
-        mb: 4,
+        mb: 6,
         maxWidth: 1000,
       }}
       className="ag-theme-quartz"
