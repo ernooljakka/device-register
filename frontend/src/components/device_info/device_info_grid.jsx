@@ -10,7 +10,7 @@ const Device_info_grid = ({ id }) => {
       { field: "event_id", filter: "agTextColumnFilter", headerName: "ID", flex: 2 },
       { field: "user_id", filter: "agTextColumnFilter", headerName: "User", flex: 2 },
       { field: "move_time", filter: "agTextColumnFilter", headerName: "Date/Time", flex: 2.5 },
-      { field: "loc_time", filter: "agTextColumnFilter", headerName: "Location", flex: 2.5 },
+      { field: "loc", filter: "agTextColumnFilter", headerName: "Location", flex: 2.5 },
   ];
 
   if (loading) {
