@@ -11,7 +11,9 @@ import useFetchData from '../components/shared/fetch_data';
 const Device_info_view = () => {
   const { id } = useParams();
 
-  const { data: device, loading, error } = useFetchData('devices/' + id);
+  const { data: device, error } = useFetchData('devices/' + id);
+
+  
 
   const devName = String(device.dev_name);
   const devClass = String(device.dev_class);
@@ -39,7 +41,7 @@ const Device_info_view = () => {
           mt: 8, 
           mb: 3,
         }}>
-        {devName === "undefined"?  "Device not found!" : devName}
+        {error ?  "Device not found!" : devName}
         </Typography>
         <Device_description devClass={devClass} devModel={devModel} devManufacturer={devManufacturer} devComments={devComments}/>
 
