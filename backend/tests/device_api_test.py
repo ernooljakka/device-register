@@ -1,3 +1,4 @@
+import os
 import pytest
 from backend.app import create_app
 from backend.setup.database_Init import db
@@ -73,6 +74,19 @@ def test_post_devices(client, app):
     ]
     response1 = client.post('/api/devices/', json=payload1)
     assert response1.status_code == 201
+
+    with app.app_context():
+        devices = Device.query.all()
+
+        assert len(devices) == 3
+
+        # Clean up the created QR images
+        for device in devices:
+            dev_id = device.dev_id
+            qr_image_path = os.path.join(os.getcwd(), 'static', 'qr',
+                                         f"{dev_id}.png")
+            if os.path.exists(qr_image_path):
+                os.remove(qr_image_path)
 
     payload2 = {
             "dev_name": "Device 3",
@@ -189,7 +203,8 @@ def test_get_events_by_device_id(client, app):
             dev_id=1,
             user_id=1,
             move_time=func.now(),
-            loc_name='Lab')
+            loc_name='Lab',
+            comment='Hello')
         db.session.add(test_event1)
         db.session.commit()
 
@@ -197,7 +212,8 @@ def test_get_events_by_device_id(client, app):
             dev_id=1,
             user_id=1,
             move_time=func.now(),
-            loc_name='Labz')
+            loc_name='Labz',
+            comment='Hi')
         db.session.add(test_event2)
         db.session.commit()
 
@@ -209,9 +225,11 @@ def test_get_events_by_device_id(client, app):
         assert data[0]['dev_id'] == "1"
         assert data[0]['user_id'] == "1"
         assert data[0]['loc_name'] == "Lab"
+        assert data[0]['comment'] == "Hello"
         assert data[1]['dev_id'] == "1"
         assert data[1]['user_id'] == "1"
         assert data[1]['loc_name'] == "Labz"
+        assert data[1]['comment'] == "Hi"
 
         response_404 = client.get('/api/devices/25565/events')
         assert response_404.status_code == 404
@@ -235,9 +253,14 @@ def test_remove_devices(client, app):
         db.session.add(test_device2)
         db.session.commit()
 
+        dev_id1 = test_device1.dev_id
+        dev_id2 = test_device2.dev_id
+
         payload1 = [{'id': 2}, {'id': 3}]
         response1 = client.delete('/api/devices/', json=payload1)
         assert response1.status_code == 200
+        assert db.session.get(Device, dev_id1) is None
+        assert db.session.get(Device, dev_id2) is None
 
         payload2 = {'id': 1}
         response2 = client.delete('/api/devices/', json=payload2)
@@ -258,8 +281,5 @@ def test_remove_devices(client, app):
         payload6 = [{'id': 9999}]
         response6 = client.delete('/api/devices/', json=payload6)
         assert response6.status_code == 404
-
-        assert db.session.get(Device, 2) is None
-        assert db.session.get(Device, 3) is None
 
         assert len(Device.query.all()) == 1

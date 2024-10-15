@@ -4,6 +4,7 @@ from typing import Union
 
 from flask import jsonify, request, Response
 from backend.models.device_model import Device
+from backend.utils.qr_generator import generate_qr, remove_qr
 
 
 def get_devices() -> tuple[Response, int]:
@@ -42,6 +43,9 @@ def create_devices() -> tuple[Response, int]:
 
     database_response = Device.create_devices(device_list)
     if database_response[0]:
+        for device in device_list:
+            generate_qr(device.dev_id)
+
         return jsonify({'message': "Devices created successfully"}), 201
     else:
         return jsonify({'error': f"Database error: {database_response[1]}"}), 500
@@ -97,6 +101,8 @@ def remove_devices() -> tuple[Response, int]:
     database_response = Device.remove_devices(device_id_list)
 
     if database_response[0] == 200:
+        for dev_id in device_id_list:
+            remove_qr(dev_id)
         return jsonify({'message': "Devices deleted successfully"}), 200
     elif database_response[0] == 404:
         return (jsonify({'error': f"Failed to delete devices. "
