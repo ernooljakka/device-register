@@ -35,7 +35,7 @@ describe('DeviceRegisterGrid Component', () => {
                 { 
                     dev_id: 1, 
                     user_id: '020202', 
-                    move_time: '2024-10-03T21:12:17.840Z', 
+                    move_time: '2024-11-03T21:12:17.840Z', 
                     loc_name: 'Test Laboratory' 
                 },
             ],
@@ -47,7 +47,7 @@ describe('DeviceRegisterGrid Component', () => {
 
         // Cells
         expect(screen.getByText('020202')).toBeInTheDocument();
-        expect(screen.getByText('2024-10-03')).toBeInTheDocument();
+        expect(screen.getByText('03/11/2024')).toBeInTheDocument(); 
         expect(screen.getByText('Test Laboratory')).toBeInTheDocument();
         // Headers
         expect(screen.getByText('DEV')).toBeInTheDocument();
