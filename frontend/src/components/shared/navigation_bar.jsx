@@ -33,7 +33,7 @@ const Navigation_bar = () => (
           }}
       />
       <LinkButton
-          href="/home"
+          href="/"
           icon={<Home aria-label="Home"/>}
           variant="text"
           iconsx={{
