@@ -16,8 +16,6 @@ const Move_view = () => {
 
   const {
     result: eventResult,
-    loading: eventLoading,
-    error: eventError,
     postData: postEventData,
   } = usePostData('events');
 
@@ -50,7 +48,7 @@ const Move_view = () => {
     }
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = () => {
     const MoveData = {
       ...deviceMoveData,
       move_time: new Date().toISOString().slice(0, 19).replace('T', ' '),
@@ -58,13 +56,11 @@ const Move_view = () => {
     postEventData(MoveData);
   };
   
+  //when postData is called, check if message is right
   useEffect(() => {
     if (eventResult) {
-      console.log('Result:', eventResult);  // Print the result to console
-
-      // Check for a successful response and redirect
       if (eventResult.message === "Event created successfully") {
-        navigate('/');  // Redirect to the home page or another URL
+        navigate('/'); 
       }
     }
   }, [eventResult, navigate]);
