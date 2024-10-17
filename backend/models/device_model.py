@@ -84,3 +84,46 @@ class Device(db.Model):
         if device:
             return device.events, 200
         return None, 404
+
+    @staticmethod
+    def get_current_locations() -> list[dict[str, Union[str, None]]]:
+        latest_event_subquery = (
+            db.session.query(
+                Event.dev_id,
+                db.func.max(Event.move_time).label('latest_time')
+            )
+            .group_by(Event.dev_id)
+            .subquery()
+        )
+
+        results = (
+            db.session.query(
+                Device,
+                Event.loc_name,
+                Event.move_time
+            )
+            .outerjoin(
+                latest_event_subquery,
+                Device.dev_id == latest_event_subquery.c.dev_id
+            )
+            .outerjoin(
+                Event,
+                (latest_event_subquery.c.dev_id == Event.dev_id) &
+                (latest_event_subquery.c.latest_time == Event.move_time)
+            )
+            .all()
+        )
+
+        devices_with_locations = [
+            {
+                "device_id": str(device.dev_id),
+                "device_name": device.dev_name,
+                "device_model": device.dev_model,
+                "dev_manufacturer": device.dev_manufacturer,
+                "loc_name": loc_name,
+                "move_time": move_time.isoformat() if move_time else None
+            }
+            for device, loc_name, move_time in results
+        ]
+
+        return devices_with_locations

@@ -109,3 +109,8 @@ def remove_devices() -> tuple[Response, int]:
                                   f"{database_response[1]}"}), 404)
     else:
         return jsonify({'error': f"Database error: {database_response[1]}"}), 500
+
+
+def current_locations() -> tuple[Response, int]:
+    locations = Device.get_current_locations()
+    return jsonify(locations), 200
