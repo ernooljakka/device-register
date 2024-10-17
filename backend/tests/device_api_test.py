@@ -338,15 +338,15 @@ def test_get_current_locations(client, app):
         data = response.get_json()
         assert len(data) == 3
 
-        assert data[1]['device_id'] == str(test_device1.dev_id)
-        assert data[1]['device_name'] == test_device1.dev_name
-        assert data[1]['device_model'] == test_device1.dev_model
+        assert data[1]['dev_id'] == str(test_device1.dev_id)
+        assert data[1]['dev_name'] == test_device1.dev_name
+        assert data[1]['dev_model'] == test_device1.dev_model
         assert data[1]['dev_manufacturer'] == test_device1.dev_manufacturer
         assert data[1]['loc_name'] == "Location 1"
 
-        assert data[2]['device_id'] == str(test_device2.dev_id)
-        assert data[2]['device_name'] == test_device2.dev_name
-        assert data[2]['device_model'] == test_device2.dev_model
+        assert data[2]['dev_id'] == str(test_device2.dev_id)
+        assert data[2]['dev_name'] == test_device2.dev_name
+        assert data[2]['dev_model'] == test_device2.dev_model
         assert data[2]['dev_manufacturer'] == test_device2.dev_manufacturer
         assert data[2]['loc_name'] == "Location 2"
 

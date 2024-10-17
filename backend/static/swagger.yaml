@@ -167,14 +167,15 @@ paths:
                   type: integer
                 dev_name:
                   type: string
-                dev_class:
-                  type: string
                 dev_manufacturer:
                   type: string
                 dev_model:
                   type: string
-                dev_location:
+                loc_name:
                   type: string
+                move_time:
+                  type: string
+                  format: date-time
         '500':
           description: Database error
 

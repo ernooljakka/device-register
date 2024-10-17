@@ -118,9 +118,9 @@ class Device(db.Model):
 
         devices_with_locations = [
             {
-                "device_id": str(device.dev_id),
-                "device_name": device.dev_name,
-                "device_model": device.dev_model,
+                "dev_id": str(device.dev_id),
+                "dev_name": device.dev_name,
+                "dev_model": device.dev_model,
                 "dev_manufacturer": device.dev_manufacturer,
                 "loc_name": loc_name,
                 "move_time": move_time.isoformat() if move_time else None
