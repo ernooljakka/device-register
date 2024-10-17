@@ -35,8 +35,8 @@ describe('Device_info_grid Component', () => {
                 { 
                     event_id: 1, 
                     user_id: '2', 
-                    move_time: '2024-10-08T12:34:56', 
-                    loc: 'Labra' 
+                    move_time: '2024-10-08 12:34:56', 
+                    loc_name: 'Labra' 
                 },
             ],
             loading: false,
@@ -47,7 +47,7 @@ describe('Device_info_grid Component', () => {
 
         // Cells
         expect(screen.getByText('2')).toBeInTheDocument();
-        expect(screen.getByText('2024-10-08T12:34:56')).toBeInTheDocument();
+        expect(screen.getByText('2024-10-08 12:34:56')).toBeInTheDocument();
         expect(screen.getByText('Labra')).toBeInTheDocument();
         // Headers
         expect(screen.getByText('ID')).toBeInTheDocument();

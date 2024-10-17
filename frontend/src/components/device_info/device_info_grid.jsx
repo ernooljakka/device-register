@@ -10,8 +10,16 @@ const Device_info_grid = ({ id }) => {
   const columnDefs = [
       { field: "event_id", filter: "agTextColumnFilter", headerName: "ID", flex: 2 },
       { field: "user_id", filter: "agTextColumnFilter", headerName: "User", flex: 2 },
-      { field: "move_time", filter: "agTextColumnFilter", headerName: "Date/Time", flex: 2.5 },
-      { field: "loc", filter: "agTextColumnFilter", headerName: "Location", flex: 2.5 },
+      { field: "move_time", filter: "agTextColumnFilter", headerName: "Date/Time", flex: 2.5, 
+        //formatting date right
+        valueFormatter: (params) => {
+            if (params.value) {
+              return params.value.replace('T', ' '); 
+            }
+            return params.value;
+          }
+      },
+      { field: "loc_name", filter: "agTextColumnFilter", headerName: "Location", flex: 2.5 },
   ];
 
   if (loading) {
@@ -30,6 +38,7 @@ const Device_info_grid = ({ id }) => {
           </Typography>
       );
   }
+
 
   return (
       <GridTable 

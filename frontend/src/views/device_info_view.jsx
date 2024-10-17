@@ -43,10 +43,17 @@ const Device_info_view = () => {
         }}>
         {error ?  "Device not found!" : devName}
         </Typography>
+        <Box sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          gap: 2
+        }}>
+          <Link_button href={`/move/${id}`} text= "Move"></Link_button>
+          <Link_button href={`/devices/${id}/qr`} text= "Get QR"></Link_button>
+        </Box>
         <Device_description devClass={devClass} devModel={devModel} devManufacturer={devManufacturer} devComments={devComments}/>
 
-        <Link_button href={`/move/${id}`} text= "Move"></Link_button>
-        <Link_button href={`/devices/${id}/qr`} text= "Get QR"></Link_button>
+        
 
         <Device_Info_Grid id = { id }/>
     </Box>
