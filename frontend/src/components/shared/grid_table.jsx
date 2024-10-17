@@ -9,9 +9,6 @@ import "ag-grid-community/styles/ag-theme-quartz.css";
 const Grid_table = ({ rowData, columnDefs }) => {
   const [quickFilterText, setQuickFilterText] = useState("");
 
-  console.log('Row Data:', rowData);
-  console.log('Column Definitions:', columnDefs);
-
   return (
     <Box
       sx={{
@@ -36,12 +33,15 @@ const Grid_table = ({ rowData, columnDefs }) => {
           resizable: false,
           sortable: true,
           filter: true,
+          suppressMovable: true,
           suppressHeaderFilterButton: true,
         }}
         animateRows={true}
         pagination={true}
-        paginationAutoPageSize={true}
+        paginationPageSize= {20}
+        paginationPageSizeSelector = {false}
         style={{ flexGrow: 1 }}
+        quickFilterText={quickFilterText}
       />
     </Box>
   );
