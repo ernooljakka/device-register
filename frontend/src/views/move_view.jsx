@@ -84,19 +84,28 @@ const Move_view = () => {
           fontSize: 'clamp(1.5rem, 5vw, 2.4rem)', 
           textAlign: 'center',
           mt: 8, 
-          mb: 3,
+          mb: 0,
         }}>
         Move Device
         </Typography>
         <Typography sx={{
           fontSize: 'clamp(1.5rem, 5vw, 2.4rem)', 
           textAlign: 'center',
-          mt: 8, 
-          mb: 3,
+          mt: 1, 
+          mb: 1,
         }}>
         {error ?  "Device not found!" : devName}
         </Typography>
-       <Form_container onSubmit={onSubmit}>
+
+        <Typography sx={{
+          fontSize: 'clamp(1rem, 2.5vw, 1.2rem)', 
+          textAlign: 'center',
+          mt: 0, 
+          mb: 3,
+        }}>
+        {error ?  "Device not found!" : "ID: "+id}
+        </Typography>
+       <Form_container onSubmit={onSubmit} childrenSx={{gap: 20}}>
 
           <TextField
             label="Location"
