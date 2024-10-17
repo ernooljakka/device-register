@@ -96,20 +96,22 @@ class Device(db.Model):
             .subquery()
         )
 
+        latest_event = db.aliased(Event)
+
         results = (
             db.session.query(
                 Device,
-                Event.loc_name,
-                Event.move_time
+                latest_event.loc_name,
+                latest_event.move_time
             )
             .outerjoin(
                 latest_event_subquery,
                 Device.dev_id == latest_event_subquery.c.dev_id
             )
             .outerjoin(
-                Event,
-                (latest_event_subquery.c.dev_id == Event.dev_id) &
-                (latest_event_subquery.c.latest_time == Event.move_time)
+                latest_event,
+                (Device.dev_id == latest_event.dev_id) &
+                (latest_event.move_time == latest_event_subquery.c.latest_time)
             )
             .all()
         )

@@ -150,6 +150,26 @@ paths:
         '404':
           description: Device not found
 
+  /devices/current_locations:
+    get:
+      tags:
+        - Devices
+      summary: Get current locations of all devices
+      responses:
+        '200':
+          description: List of devices with current locations
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                dev_id:
+                  type: integer
+                current_location:
+                  type: string
+        '500':
+          description: Database error
+
   /users/:
     get:
       tags:
@@ -342,6 +362,8 @@ definitions:
         format: date-time
         example: "2024-12-11 11:11:11"
       loc_name:
+        type: string
+      comment:
         type: string
       user:
         $ref: '#/definitions/NewUser'
