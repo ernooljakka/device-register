@@ -146,7 +146,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/Event'
+              $ref: '#/definitions/EventWithoutUserInfo'
         '404':
           description: Device not found
 
@@ -360,6 +360,12 @@ definitions:
         type: string
       user_id:
         type: integer
+      user_name:
+        type: string
+      user_email:
+        type: string
+      comment:
+        type: string
 
   NewEvent:
     type: object
@@ -377,3 +383,26 @@ definitions:
         type: string
       user:
         $ref: '#/definitions/NewUser'
+
+  EventWithoutUserInfo:
+    type: object
+    properties:
+      event_id:
+        type: integer
+        example: 1
+      dev_id:
+        type: integer
+        example: 1
+      move_time:
+        type: string
+        format: date-time
+        example: "2024-12-11T11:11:11"
+      loc_name:
+        type: string
+        example: "Room 101"
+      comment:
+        type: string
+        example: "Routine maintenance performed"
+      user_id:
+        type: integer
+        example: 1
