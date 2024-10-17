@@ -1,7 +1,7 @@
 import { FlatCompat } from "@eslint/eslintrc";
 import js from "@eslint/js";
-import React from "eslint-plugin-react"
-import Jest from "eslint-plugin-jest"
+import react from "eslint-plugin-react"
+import jest from "eslint-plugin-jest"
 
 const compat = new FlatCompat({
   recommendedConfig: js.configs.recommended,
@@ -19,8 +19,13 @@ export default [
   {
     files: ["**/*.js", "**/*.jsx"],
     plugins: {
-      React,
-      Jest,
+      react,
+      jest,
+    },
+    settings: {
+      react: {
+        version: "detect",
+      },
     },
     languageOptions: {
       ecmaVersion: 'latest',
@@ -31,7 +36,8 @@ export default [
         process: 'readonly',
         fetch: 'readonly', // Define fetch as a global to prevent ESLint errors
         global: 'readonly', // Define global as a readonly global
-        console: 'readonly'
+        console: 'readonly',
+        window: 'readonly'
       },
       parserOptions: {
         ecmaFeatures: {
@@ -42,6 +48,6 @@ export default [
     "rules": {
       "react/jsx-uses-react": "error",
       "react/jsx-uses-vars": "error",
-    }
+    },
   },
 ];
