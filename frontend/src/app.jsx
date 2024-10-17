@@ -10,10 +10,10 @@ function App() {
   return (
       <Router>
         <Routes>
-          <Route path="/" element={<MoveView />} />
-          <Route path="/home" element={<RegisterView/>} />
+          <Route path="/move/:id" element={<MoveView />} />
+          <Route path="/" element={<RegisterView/>} />
           <Route path="/events" element={<EventView/>} />
-          <Route path="/device_info/:id" element={<DeviceInfoView/>} />
+          <Route path="/devices/:id" element={<DeviceInfoView/>} />
           <Route path="/admin" element={<AdminView/>} /> 
         </Routes>
       </Router>
