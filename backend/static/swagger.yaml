@@ -165,10 +165,19 @@ paths:
               properties:
                 dev_id:
                   type: integer
-                current_location:
+                dev_name:
+                  type: string
+                dev_class:
+                  type: string
+                dev_manufacturer:
+                  type: string
+                dev_model:
+                  type: string
+                dev_location:
                   type: string
         '500':
           description: Database error
+
 
   /users/:
     get:
