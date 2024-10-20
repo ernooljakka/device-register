@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 import useFetchData from '../shared/fetch_data';
 
 const Device_register_grid = () => {
-    const { data: devices, loading, error } = useFetchData('devices');
+    const { data: devices, loading, error } = useFetchData('devices/current_locations');
 
     //linking to device info page
     const onRowClicked = (event) => {
@@ -17,12 +17,11 @@ const Device_register_grid = () => {
         return { cursor: 'pointer' };
     };
 
-
     const columnDefs = [
-        { field: "dev_id", filter: "agTextColumnFilter", headerName: "ID", flex: 2},
-        { field: "dev_class", filter: "agTextColumnFilter", headerName: "Type", flex: 2 },
-        { field: "dev_name", filter: "agTextColumnFilter", headerName: "Device", flex: 2.5 },
-        { field: "dev_manufacturer", filter: "agTextColumnFilter", headerName: "Location", flex: 2.5 },
+        { field: "dev_id", filter: "agTextColumnFilter", headerName: "ID", flex: 0.5, minWidth: 63 }, // Enough for 9999 devices
+        { field: "dev_model", filter: "agTextColumnFilter", headerName: "Type", flex: 1.4, minWidth: 130 }, // Not as important, 14 characters
+        { field: "dev_name", filter: "agTextColumnFilter", headerName: "Device", flex: 2,  minWidth: 250}, // Important, 34 characters 
+        { field: "loc_name", filter: "agTextColumnFilter", headerName: "Location", flex: 2, minWidth: 130}, // 14 characters
     ];
 
     if (loading) {
