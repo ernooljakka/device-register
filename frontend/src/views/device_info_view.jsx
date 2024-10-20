@@ -49,7 +49,11 @@ const Device_info_view = () => {
           gap: 2
         }}>
           <Link_button href={`/move/${id}`} text= "Move"></Link_button>
-          <Link_button href={`/devices/${id}/qr`} text= "Get QR"></Link_button>
+
+          <Link_button href={`http://localhost:5000/static/qr/${id}.png`} text= "Get QR"></Link_button>
+
+
+
         </Box>
         <Device_description devClass={devClass} devModel={devModel} devManufacturer={devManufacturer} devComments={devComments}/>
 

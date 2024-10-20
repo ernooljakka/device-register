@@ -5,10 +5,15 @@ import { Card, CardContent, Typography } from '@mui/material';
 const Device_description = ({ devClass, devComments, devManufacturer, devModel }) => {
 
   return (
-    <Card variant="outlined" sx={{ maxWidth: 400,
+    <Card variant="outlined" sx={{ maxWidth: 800,
+                                    width: '80%',
                                    margin: "auto",
-                                   padding: 2 }}>
-    <CardContent>
+                                   padding: 2,
+                                   }}>
+    <CardContent sx ={{ display: 'flex',      
+                                   flexDirection: 'column', 
+                                   justifyContent: 'center',
+                                   alignItems: 'center'}}>
       <Typography variant="h6" component="div">
         Device Class:
       </Typography>
