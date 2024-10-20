@@ -16,7 +16,13 @@ class Device(db.Model):
     dev_class = db.Column(db.String(50), nullable=False)
     dev_comments = db.Column(db.String(200), nullable=False)
 
-    events = db.relationship('Event', backref='device', lazy=True)
+    events = db.relationship(
+        'Event',
+        backref='device',
+        lazy=True,
+        cascade='all, delete-orphan',
+        passive_deletes=True
+    )
 
     def to_dict(self) -> dict[str, str]:
         return {

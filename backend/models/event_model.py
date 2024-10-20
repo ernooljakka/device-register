@@ -7,8 +7,10 @@ class Event(db.Model):
     __tablename__: str = 'events'
 
     event_id = db.Column(db.Integer, primary_key=True)
-    dev_id = db.Column(db.Integer, db.ForeignKey('devices.dev_id'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+    dev_id = db.Column(db.Integer, db.ForeignKey('devices.dev_id', ondelete='CASCADE'),
+                       nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id', ondelete='CASCADE'),
+                        nullable=False)
     move_time = db.Column(db.DateTime, nullable=False)
     loc_name = db.Column(db.String(200), nullable=False)
     comment = db.Column(db.String(500), nullable=False)

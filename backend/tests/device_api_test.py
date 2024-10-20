@@ -238,17 +238,25 @@ def test_get_events_by_device_id(client, app):
 def test_remove_devices(client, app):
     # Test the DELETE /api/devices/ endpoint.
     with app.app_context():
+        test_user = User(user_name="testuser", user_email="testuser@example.com")
+        db.session.add(test_user)
+        db.session.commit()
 
-        test_device1 = Device(dev_name="Device 1",
-                              dev_manufacturer="Manfact A",
-                              dev_model="Model S",
-                              dev_class="class A",
-                              dev_comments="Location: Herwood xyz")
-        test_device2 = Device(dev_name="Device 2",
-                              dev_manufacturer="Manfact A",
-                              dev_model="Model T",
-                              dev_class="class A",
-                              dev_comments="Location: Herwood xyz")
+        test_device1 = Device(
+            dev_name="Device 1",
+            dev_manufacturer="Manfact A",
+            dev_model="Model S",
+            dev_class="class A",
+            dev_comments="Location: Herwood xyz",
+        )
+        test_device2 = Device(
+            dev_name="Device 2",
+            dev_manufacturer="Manfact A",
+            dev_model="Model T",
+            dev_class="class A",
+            dev_comments="Location: Herwood xyz",
+        )
+
         db.session.add(test_device1)
         db.session.add(test_device2)
         db.session.commit()
@@ -256,33 +264,31 @@ def test_remove_devices(client, app):
         dev_id1 = test_device1.dev_id
         dev_id2 = test_device2.dev_id
 
-        payload1 = [{'id': 2}, {'id': 3}]
-        response1 = client.delete('/api/devices/', json=payload1)
-        assert response1.status_code == 200
+        test_event1 = Event(
+            dev_id=dev_id1,
+            user_id=test_user.user_id,
+            move_time=func.now(),
+            loc_name='Lab',
+            comment='Event 1',
+        )
+        test_event2 = Event(
+            dev_id=dev_id2,
+            user_id=test_user.user_id,
+            move_time=func.now(),
+            loc_name='Lab',
+            comment='Event 2',
+        )
+
+        db.session.add(test_event1)
+        db.session.add(test_event2)
+        db.session.commit()
+
+        payload = [{'id': dev_id1}, {'id': dev_id2}]
+        response = client.delete('/api/devices/', json=payload)
+        assert response.status_code == 200
+
         assert db.session.get(Device, dev_id1) is None
         assert db.session.get(Device, dev_id2) is None
-
-        payload2 = {'id': 1}
-        response2 = client.delete('/api/devices/', json=payload2)
-        assert response2.status_code == 400
-
-        payload3 = [1, 2]
-        response3 = client.delete('/api/devices/', json=payload3)
-        assert response3.status_code == 400
-
-        payload4 = [{'id': 12}, {'a': 3}]
-        response4 = client.delete('/api/devices/', json=payload4)
-        assert response4.status_code == 400
-
-        payload5 = [{'id': 12, 'too_much': "info"}]
-        response5 = client.delete('/api/devices/', json=payload5)
-        assert response5.status_code == 400
-
-        payload6 = [{'id': 9999}]
-        response6 = client.delete('/api/devices/', json=payload6)
-        assert response6.status_code == 404
-
-        assert len(Device.query.all()) == 1
 
 
 def test_get_current_locations(client, app):

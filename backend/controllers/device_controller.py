@@ -88,6 +88,7 @@ def remove_devices() -> tuple[Response, int]:
         return jsonify({'error': "Expected a list of devices"}), 400
 
     device_id_list = []
+
     for item in id_list_json:
         if not isinstance(item, dict):
             return jsonify({'error': "Each device must be an object"}), 400
