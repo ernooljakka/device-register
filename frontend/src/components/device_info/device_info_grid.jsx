@@ -8,9 +8,9 @@ const Device_info_grid = ({ id }) => {
   const { data: events, loading, error } = useFetchData('devices/' + id + '/events');
 
   const columnDefs = [
-      { field: "event_id", filter: "agTextColumnFilter", headerName: "ID", flex: 2 },
-      { field: "user_id", filter: "agTextColumnFilter", headerName: "User", flex: 2 },
-      { field: "move_time", filter: "agTextColumnFilter", headerName: "Date/Time", flex: 2.5, 
+      { field: "event_id", filter: "agTextColumnFilter", headerName: "ID", flex: 1, minWidth: 100}, //  Should be enough.
+      { field: "user_id", filter: "agTextColumnFilter", headerName: "User", flex: 1, minWidth: 63 }, // 9999 users
+      { field: "move_time", filter: "agTextColumnFilter", headerName: "Date/Time", flex: 2.0, minWidth: 160, // Enough for showing datetime
         //formatting date right
         valueFormatter: (params) => {
             if (params.value) {
@@ -19,7 +19,7 @@ const Device_info_grid = ({ id }) => {
             return params.value;
           }
       },
-      { field: "loc_name", filter: "agTextColumnFilter", headerName: "Location", flex: 2.5 },
+      { field: "loc_name", filter: "agTextColumnFilter", headerName: "Location", flex: 2.5, minWidth: 130 },
   ];
 
   if (loading) {

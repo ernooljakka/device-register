@@ -24,10 +24,10 @@ const Event_grid = () => {
     };
 
     const columnDefs = [
-      { field: "dev_id", filter: "agTextColumnFilter", headerName: "DEV", flex: 1.5},
-      { field: "user_id", filter: "agTextColumnFilter", headerName: "USER", flex: 1.5 },
-      { field: "move_time", filter: "agDateColumnFilter", headerName: "Date", flex: 2.5, suppressHeaderFilterButton: false },
-      { field: "loc_name", filter: "agTextColumnFilter", headerName: "Location", flex: 2.0 },
+      { field: "dev_id", filter: "agTextColumnFilter", headerName: "DEV", flex: 1, minWidth: 63}, // Enough for 9999 devices
+      { field: "user_id", filter: "agTextColumnFilter", headerName: "USER", flex: 1, minWidth: 63 }, // Enough for 9999 users
+      { field: "move_time", filter: "agDateColumnFilter", headerName: "Date", flex: 1.8, minWidth: 110, suppressHeaderFilterButton: false },
+      { field: "loc_name", filter: "agTextColumnFilter", headerName: "Location", flex: 2.0, minWidth: 130 }, // 14 characters
     ];
 
     if (loading) {
