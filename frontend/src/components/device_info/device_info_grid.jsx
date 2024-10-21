@@ -9,8 +9,8 @@ const Device_info_grid = ({ id }) => {
 
   const columnDefs = [
       { field: "event_id", filter: "agTextColumnFilter", headerName: "ID", flex: 1, minWidth: 100}, //  Should be enough.
-      { field: "user_id", filter: "agTextColumnFilter", headerName: "User", flex: 1, minWidth: 63 }, // 9999 users
-      { field: "move_time", filter: "agTextColumnFilter", headerName: "Date/Time", flex: 2.0, minWidth: 160, // Enough for showing datetime
+      { field: "comment", filter: "agTextColumnFilter", headerName: "Comment", flex: 2, minWidth: 200 },
+      { field: "move_time", filter: "agTextColumnFilter", headerName: "Date/Time", flex: 2.0, minWidth: 170, // Enough for showing datetime
         //formatting date right
         valueFormatter: (params) => {
             if (params.value) {

@@ -34,7 +34,7 @@ describe('Device_info_grid Component', () => {
             data: [
                 { 
                     event_id: 1, 
-                    user_id: '2', 
+                    comment: 'toimii', 
                     move_time: '2024-10-08 12:34:56', 
                     loc_name: 'Labra' 
                 },
@@ -46,12 +46,12 @@ describe('Device_info_grid Component', () => {
         render(<Device_info_grid id={1}/>);
 
         // Cells
-        expect(screen.getByText('2')).toBeInTheDocument();
+        expect(screen.getByText('toimii')).toBeInTheDocument();
         expect(screen.getByText('2024-10-08 12:34:56')).toBeInTheDocument();
         expect(screen.getByText('Labra')).toBeInTheDocument();
         // Headers
         expect(screen.getByText('ID')).toBeInTheDocument();
-        expect(screen.getByText('User')).toBeInTheDocument();
+        expect(screen.getByText('Comment')).toBeInTheDocument();
         expect(screen.getByText('Date/Time')).toBeInTheDocument();
         expect(screen.getByText('Location')).toBeInTheDocument();
     });
