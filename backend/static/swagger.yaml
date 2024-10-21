@@ -44,13 +44,11 @@ paths:
                 dev_model: "Model 1"
                 dev_class: "Class 1"
                 dev_manufacturer: "Company 1"
-                dev_location: "Room 101"
                 dev_comments: "Some comments"
               - dev_name: "Device 2"
                 dev_model: "Model 2"
                 dev_class: "Class 2"
                 dev_manufacturer: "Company 2"
-                dev_location: "Room 102"
                 dev_comments: "Some comments"
       responses:
         '201':

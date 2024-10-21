@@ -17,13 +17,11 @@ def get_all_events() -> tuple[Response, int]:
 
         event_list.append(event_dict)
 
-    print(event_list)
     return jsonify(event_list), 200
 
 
 def get_event_by_id(event_id: int) -> tuple[Response, int]:
     one_event: Event = Event.get_event_by_id(event_id)
-    print(one_event)
 
     if one_event is not None:
         event_dict = one_event.to_dict()
