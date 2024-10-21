@@ -42,8 +42,7 @@ class Device(db.Model):
     def create_devices(device_list: list['Device']) -> tuple['bool', 'str']:
         try:
             with db.session.begin():
-                for new_device in device_list:
-                    db.session.add(new_device)
+                db.session.add_all(device_list)
 
         except SQLAlchemyError as error:
             db.session.rollback()
