@@ -47,7 +47,7 @@ describe('Device_info_grid Component', () => {
 
         // Cells
         expect(screen.getByText('toimii')).toBeInTheDocument();
-        expect(screen.getByText('2024-10-08 12:34:56')).toBeInTheDocument();
+        expect(screen.getByText('08/10/2024 12:34:56')).toBeInTheDocument();
         expect(screen.getByText('Labra')).toBeInTheDocument();
         // Headers
         expect(screen.getByText('ID')).toBeInTheDocument();
