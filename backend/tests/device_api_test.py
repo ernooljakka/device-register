@@ -231,10 +231,12 @@ def test_get_events_by_device_id(client, app):
         assert data[0]['user_id'] == "1"
         assert data[0]['loc_name'] == "Lab"
         assert data[0]['comment'] == "Hello"
+        assert data[0]['user_name'] == "User"
         assert data[1]['dev_id'] == "1"
         assert data[1]['user_id'] == "1"
         assert data[1]['loc_name'] == "Labz"
         assert data[1]['comment'] == "Hi"
+        assert data[1]['user_name'] == "User"
 
         response_404 = client.get('/api/devices/25565/events')
         assert response_404.status_code == 404

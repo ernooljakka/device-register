@@ -146,7 +146,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/EventWithoutUserInfo'
+              $ref: '#/definitions/EventWithoutUserEmail'
         '404':
           description: Device not found
 
@@ -404,7 +404,7 @@ definitions:
       user:
         $ref: '#/definitions/NewUser'
 
-  EventWithoutUserInfo:
+  EventWithoutUserEmail:
     type: object
     properties:
       event_id:
@@ -426,3 +426,6 @@ definitions:
       user_id:
         type: integer
         example: 1
+      user_name:
+        type: string
+        example: "Testi Testinen"
