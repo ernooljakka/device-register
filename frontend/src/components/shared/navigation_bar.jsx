@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Grid2 from '@mui/material/Grid2';
 import LinkButton from './link_button';
-import { Home, List, Lock } from '@mui/icons-material';
+import { Home, Lock } from '@mui/icons-material';
 
 const Navigation_bar = () => (
     <Grid2
@@ -18,20 +18,10 @@ const Navigation_bar = () => (
             transform: 'translateX(-50%)',
             borderRadius: '16px',
             boxShadow: 2,
-            minWidth: '15%',
+            minWidth: '8%',
             maxHeight: 30,
         }}
     >
-      <LinkButton
-          href="/events"
-          icon={<List aria-label="Events Log"/>}
-          variant="text"
-          iconsx={{
-              minWidth: '20px',
-              minHeight: '20px',
-              fontSize: 'clamp(24px, 2vw, 32px)',
-          }}
-      />
       <LinkButton
           href="/"
           icon={<Home aria-label="Home"/>}
