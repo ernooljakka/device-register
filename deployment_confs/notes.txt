@@ -1,0 +1,13 @@
+just use system-wide python on the machine, saves headache with wsgi
+
+# for general tinkering, just do this to save time
+sudo chown -R $(whoami):$(whoami) /opt/device-register
+
+
+# need to be set so apache can write
+sudo chown -R apache:apache /opt/device-register
+sudo chmod -R 775 /opt/device-register
+sudo chcon -R -t httpd_sys_rw_content_t /opt/device-register
+
+# currently deployed @/var/www/html, change to project dir or something
+sudo cp -R /opt/device-register/frontend/dist/* /var/www/html/
