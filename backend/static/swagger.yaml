@@ -45,11 +45,13 @@ paths:
                 dev_class: "Class 1"
                 dev_manufacturer: "Company 1"
                 dev_comments: "Some comments"
+                dev_location: "Room 101"
               - dev_name: "Device 2"
                 dev_model: "Model 2"
                 dev_class: "Class 2"
                 dev_manufacturer: "Company 2"
                 dev_comments: "Some comments"
+                dev_location: "Room 102"
       responses:
         '201':
           description: Devices created
@@ -230,7 +232,25 @@ paths:
           name: body
           required: true
           schema:
-            $ref: '#/definitions/NewEvent'
+            type: array
+            items:
+              $ref: '#/definitions/NewEvent'
+            example:
+              - dev_id: 1
+                move_time: "2024-12-11 11:11:11"
+                loc_name: "Room123"
+                comment: "Move"
+                user:
+                  user_name: "Siirtäjä"
+                  user_email: "Siirtäjä@example.com"
+              - dev_id: 2
+                move_time: "2024-12-12 12:12:12"
+                loc_name: "Room345"
+                comment: "Move2"
+                user:
+                  user_name: "Päällikkö"
+                  user_email: "Päällikkö@example.com"
+
       responses:
         '201':
           description: Events created
@@ -324,6 +344,8 @@ definitions:
       dev_class:
         type: string
       dev_comments:
+        type: string
+      dev_location:
         type: string
 
   User:

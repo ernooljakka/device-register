@@ -62,6 +62,7 @@ def test_post_devices(client, app):
             "dev_manufacturer": "Company A",
             "dev_model": "M1",
             "dev_class": "C1",
+            "dev_location": "Lab",
             "dev_comments": ""
         },
         {
@@ -69,6 +70,7 @@ def test_post_devices(client, app):
             "dev_manufacturer": "Company A",
             "dev_model": "M2",
             "dev_class": "C1",
+            "dev_location": "lab",
             "dev_comments": ""
         }
     ]
