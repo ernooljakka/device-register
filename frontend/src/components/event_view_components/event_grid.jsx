@@ -53,7 +53,7 @@ const Event_grid = () => {
       { field: "dev_id", filter: "agTextColumnFilter", headerName: "DEV", flex: 1, minWidth: 63}, // Enough for 9999 devices
       { field: "user_id", filter: "agTextColumnFilter", headerName: "USER", flex: 1, minWidth: 63 }, // Enough for 9999 users
       { field: "move_time", filter: "agDateColumnFilter", headerName: "Date", flex: 1.8, minWidth: 110,
-                                             filterParams: filterParams, suppressHeaderFilterButton: false },
+                                             filterParams: filterParams, suppressHeaderFilterButton: false, sort: 'desc'},
       { field: "loc_name", filter: "agTextColumnFilter", headerName: "Location", flex: 2.0, minWidth: 130 }, // 14 characters
     ];
 

@@ -43,7 +43,8 @@ const Device_info_grid = ({ id }) => {
   const columnDefs = [
       { field: "event_id", filter: "agTextColumnFilter", headerName: "ID", flex: 1, minWidth: 100}, //  Should be enough.
       { field: "comment", filter: "agTextColumnFilter", headerName: "Comment", flex: 2, minWidth: 200 },
-      { field: "move_time", filter: "agDateColumnFilter", headerName: "Date/Time", flex: 2.0, minWidth: 170, filterParams:filterParams, suppressHeaderFilterButton: false,// Enough for showing datetime
+      { field: "move_time", filter: "agDateColumnFilter", headerName: "Date/Time", flex: 2.0, minWidth: 170,
+        filterParams:filterParams, suppressHeaderFilterButton: false, sort: 'desc'// Enough for showing datetime
       },
       { field: "loc_name", filter: "agTextColumnFilter", headerName: "Location", flex: 2.5, minWidth: 130 },
   ];
