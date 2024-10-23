@@ -22,6 +22,9 @@ def create_devices() -> tuple[Response, int]:
     if not isinstance(device_json, list):
         return jsonify({'error': "Expected a list of devices"}), 400
 
+    if not device_json:
+        return jsonify({'error': "Received an empty list of devices"}), 400
+
     device_list = []
     for item in device_json:
         if not all(key in item for key in ('dev_name', 'dev_manufacturer', 'dev_model',

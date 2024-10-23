@@ -116,6 +116,9 @@ def test_post_devices(client, app):
     response_missing_field = client.post('/api/devices/', json=payload3)
     assert response_missing_field.status_code == 400
 
+    response_empty_list = client.post('/api/devices/', json=[])
+    assert response_empty_list.status_code == 400
+
     with app.app_context():
         devices = Device.query.all()
 
