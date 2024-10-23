@@ -1,16 +1,18 @@
 swagger: "2.0"
 info:
   title: Device register API
-  version: 1.0.0
+  version: 1.0.1
   description: API documentation for device register application.
 
 tags:
   - name: Devices
     description: API endpoints related to devices
-  - name: Users
-    description: API endpoints related to users
+  - name: Classes
+    description: API endpoints related to device classes
   - name: Events
     description: API endpoints related to events
+  - name: Users
+    description: API endpoints related to users
 
 paths:
   /devices/:
@@ -163,17 +165,23 @@ paths:
               properties:
                 dev_id:
                   type: integer
+                  example: 1
                 dev_name:
                   type: string
+                  example: "Device 1"
                 dev_manufacturer:
                   type: string
+                  example: "Company 1"
                 dev_model:
                   type: string
+                  example: "Model 1"
                 loc_name:
                   type: string
+                  example: "Room 101"
                 move_time:
                   type: string
                   format: date-time
+                  example: "2024-12-11T11:11:11"
         '500':
           description: Database error
 
@@ -313,6 +321,53 @@ paths:
         '500':
           description: Database error
 
+  /classes/:
+    get:
+      tags:
+        - Classes
+      summary: Get all classes
+      responses:
+        '200':
+          description: List of classes
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Class'
+    post:
+      tags:
+        - Classes
+      summary: Create new class
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/NewClass'
+      responses:
+        '201':
+          description: Class created
+        '400':
+          description: Invalid input
+        '500':
+          description: Database error
+
+
+  /classes/{class_id}:
+    delete:
+      tags:
+        - Classes
+      summary: Delete class by ID
+      parameters:
+        - name: class_id
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Class deleted
+        '404':
+          description: Class not found
+
 definitions:
   Device:
     type: object
@@ -329,6 +384,13 @@ definitions:
         type: string
       dev_comments:
         type: string
+    example:
+        dev_id: 1
+        dev_name: "Hienosäädin"
+        dev_manufacturer: "TAMK"
+        dev_model: "Mahtava malli"
+        dev_class: "Säädin"
+        dev_comments: "Tosi hyvä laite"
 
   NewDevice:
     type: object
@@ -345,6 +407,13 @@ definitions:
         type: string
       dev_location:
         type: string
+    example:
+      dev_name: "Hienosäädin"
+      dev_manufacturer: "TAMK"
+      dev_model: "Mahtava malli"
+      dev_class: "Säädin"
+      dev_comments: "Tosi hyvä laite"
+      dev_location: "Room 101"
 
   User:
     type: object
@@ -369,21 +438,29 @@ definitions:
     properties:
       event_id:
         type: integer
+        example: 1
       dev_id:
         type: integer
+        example: 2
       move_time:
         type: string
         format: date-time
+        example: "2024-12-11T11:11:11"
       loc_name:
         type: string
+        example: "Room 101"
       user_id:
         type: integer
+        example: 1
       user_name:
         type: string
+        example: "Testi Testinen"
       user_email:
         type: string
+        example: "email@email.com"
       comment:
         type: string
+        example: "Rikki"
 
   NewEvent:
     type: object
@@ -427,3 +504,22 @@ definitions:
       user_name:
         type: string
         example: "Testi Testinen"
+
+  Class:
+    type: object
+    properties:
+      class_id:
+        type: integer
+      class_name:
+        type: string
+    example:
+        class_id: 1
+        class_name: "Lentokone"
+
+  NewClass:
+    type: object
+    properties:
+      class_name:
+        type: string
+    example:
+      class_name: "Kamera"
