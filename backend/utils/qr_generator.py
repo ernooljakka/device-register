@@ -1,22 +1,21 @@
 import qrcode
 import os
 
+from backend.utils.config import config
 
-QR_FOLDER = os.path.join(os.getcwd(), 'static', 'qr')
+QR_FOLDER = os.path.join(config.PROJECT_ROOT, 'backend', 'static', 'qr')
 
 os.makedirs(QR_FOLDER, exist_ok=True)
 
 
-def generate_qr(device_id: int, testing=False):
-    if testing:
-        base_url = 'http://localhost/'
-    else:
-        base_url = 'https://ens-phot-devreg.rd.tuni.fi'
+def generate_qr(device_id: int):
 
-    device_url = f"{base_url}/devices/{device_id}/move"
+    front_base_url = config.FRONTEND_ADDR+config.FRONTEND_BASEPATH
+
+    device_url = f"{front_base_url}/devices/{device_id}/move"
 
     qr_image = qrcode.make(device_url)
-
+    print(f"saving to {qr_path(device_id)}")
     qr_image.save(qr_path(device_id))
 
 

@@ -7,11 +7,13 @@ from backend.models.event_model import Event
 from backend.models.user_model import User
 from sqlalchemy.sql import func
 
+from backend.utils.config import config
+
 
 @pytest.fixture
 def app():
     # Create and configure a new app instance for each test.
-    app = create_app(testing=True)
+    app = create_app('.env-test')
 
     with app.app_context():
         db.create_all()
@@ -85,7 +87,7 @@ def test_post_devices(client, app):
         # Clean up the created QR images
         for device in devices:
             dev_id = device.dev_id
-            qr_image_path = os.path.join(os.getcwd(), 'static', 'qr',
+            qr_image_path = os.path.join(config.PROJECT_ROOT, 'backend', 'static', 'qr',
                                          f"{dev_id}.png")
             if os.path.exists(qr_image_path):
                 os.remove(qr_image_path)

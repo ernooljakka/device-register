@@ -1,16 +1,17 @@
 import pytest
+
 from backend.app import create_app
-from backend.setup.database_Init import db
-from backend.models.user_model import User
 from backend.controllers.user_controller import (add_or_update_user,
                                                  get_user_by_id,
                                                  get_all_users)
+from backend.models.user_model import User
+from backend.setup.database_Init import db
 
 
 @pytest.fixture
 def app():
     # Create and configure a new app instance for each test.
-    app = create_app(testing=True)
+    app = create_app(env_config_file='.env-test')
 
     with app.app_context():
         db.create_all()
