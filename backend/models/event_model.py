@@ -36,11 +36,13 @@ class Event(db.Model):
                 .first())
 
     @staticmethod
-    def create_event(new_event: 'Event') -> tuple['bool', 'str']:
+    def create_event(event_list: list['Event']) -> tuple['bool', 'str']:
         try:
-            db.session.add(new_event)
+            db.session.add_all(event_list)
             db.session.commit()
+
         except SQLAlchemyError as error:
+            print(error)
             db.session.rollback()
             return False, str(error)
 

@@ -128,12 +128,30 @@ def test_create_event(client):
                 'user_name': 'User',
                 'user_email': 'user@mail.com'
             }
+        },
+        {
+            'dev_id': 2,
+            'move_time': "2024-10-02 14:14:29",
+            'loc_name': "Room 1",
+            'comment': "You should clean your room",
+            'user': {
+                'user_name': 'User',
+                'user_email': 'user@mail.com'
+            }
         }
     ]
     response2 = client.post('/api/events/', json=payload2)
-    assert response2.status_code == 400
+    assert response2.status_code == 201
 
-    payload3 = {
+    payload3 = "this string is not a dict or list"
+    response3 = client.post('/api/events/', json=payload3)
+    assert response3.status_code == 400
+
+    payload4 = ["this string inside a list is not a dict"]
+    response4 = client.post('/api/events/', json=payload4)
+    assert response4.status_code == 400
+
+    payload5 = {
         'dev_id': 1,
         'move_time': "2024-10-02 14:14:28",
         'comment': "You should clean your sockets",
@@ -142,10 +160,10 @@ def test_create_event(client):
             'user_email': 'user@mail.com'
         }
     }
-    response3 = client.post('/api/events/', json=payload3)
-    assert response3.status_code == 400
+    response5 = client.post('/api/events/', json=payload5)
+    assert response5.status_code == 400
 
-    payload4 = {
+    payload6 = {
         'dev_id': 1,
         'move_time': "2024-10-02 14:14",
         'loc_name': "Room 1",
@@ -155,20 +173,20 @@ def test_create_event(client):
             'user_email': 'user@mail.com'
         }
     }
-    response4 = client.post('/api/events/', json=payload4)
-    assert response4.status_code == 400
+    response6 = client.post('/api/events/', json=payload6)
+    assert response6.status_code == 400
 
-    payload5 = {
+    payload7 = {
         'dev_id': 1,
         'move_time': "2024-10-02 14:14:28",
         'loc_name': "Room 1",
         'comment': "You should clean your sockets",
         'user': 1
     }
-    response5 = client.post('/api/events/', json=payload5)
-    assert response5.status_code == 400
+    response7 = client.post('/api/events/', json=payload7)
+    assert response7.status_code == 400
 
-    payload6 = {
+    payload8 = {
         'dev_id': 1,
         'move_time': "2024-10-02 14:14:28",
         'loc_name': "Room 1",
@@ -177,10 +195,10 @@ def test_create_event(client):
             'user_name': 'User'
         }
     }
-    response6 = client.post('/api/events/', json=payload6)
-    assert response6.status_code == 400
+    response8 = client.post('/api/events/', json=payload8)
+    assert response8.status_code == 400
 
-    payload7 = {
+    payload9 = {
         'dev_id': 9999,
         'move_time': "2024-10-02 14:14:28",
         'loc_name': "Room 1",
@@ -190,8 +208,8 @@ def test_create_event(client):
             'user_email': 'user@mail.com'
         }
     }
-    response7 = client.post('/api/events/', json=payload7)
-    assert response7.status_code == 500
+    response9 = client.post('/api/events/', json=payload9)
+    assert response9.status_code == 500
 
 
 def test_patch_event(client):
