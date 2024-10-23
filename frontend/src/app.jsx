@@ -8,12 +8,12 @@ import AdminView from "./views/admin_view"; // Assuming this will exist soon as 
 
 function App() {
   return (
-      <Router>
+      <Router basename="/">
         <Routes>
-          <Route path="/move/:id" element={<MoveView />} />
           <Route path="/" element={<RegisterView/>} />
           <Route path="/events" element={<EventView/>} />
           <Route path="/devices/:id" element={<DeviceInfoView/>} />
+          <Route path="/devices/:id/move" element={<MoveView />} />
           <Route path="/admin" element={<AdminView/>} /> 
         </Routes>
       </Router>

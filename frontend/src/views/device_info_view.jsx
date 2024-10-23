@@ -48,7 +48,7 @@ const Device_info_view = () => {
           flexDirection: 'row',
           gap: 2
         }}>
-          <Link_button href={`/move/${id}`} text= "Move"></Link_button>
+          <Link_button href={`/devices/${id}/move`} text= "Move"></Link_button>
 
           <Link_button href={`http://localhost:5000/static/qr/${id}.png`} text= "Get QR"></Link_button>
 

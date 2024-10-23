@@ -12,7 +12,7 @@ def generate_qr(device_id: int, testing=False):
     if testing:
         base_url = 'http://localhost/'
     else:
-        base_url = request.url_root.rstrip('/')
+        base_url = 'https://ens-phot-devreg.rd.tuni.fi'
 
     device_url = f"{base_url}/devices/{device_id}/move"
 
