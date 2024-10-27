@@ -42,13 +42,13 @@ paths:
             example:
               - dev_name: "Device 1"
                 dev_model: "Model 1"
-                dev_class: "Class 1"
+                class_id: 1
                 dev_manufacturer: "Company 1"
                 dev_comments: "Some comments"
                 dev_location: "Room 101"
               - dev_name: "Device 2"
                 dev_model: "Model 2"
-                dev_class: "Class 2"
+                class_id: 1
                 dev_manufacturer: "Company 2"
                 dev_comments: "Some comments"
                 dev_location: "Room 102"
@@ -182,6 +182,9 @@ paths:
                   type: string
                   format: date-time
                   example: "2024-12-11T11:11:11"
+                class_name:
+                  type: string
+                  example: "Säädin"
         '500':
           description: Database error
 
@@ -380,7 +383,7 @@ definitions:
         type: string
       dev_model:
         type: string
-      dev_class:
+      class_name:
         type: string
       dev_comments:
         type: string
@@ -389,7 +392,7 @@ definitions:
         dev_name: "Hienosäädin"
         dev_manufacturer: "TAMK"
         dev_model: "Mahtava malli"
-        dev_class: "Säädin"
+        class_name: "Säädin"
         dev_comments: "Tosi hyvä laite"
 
   NewDevice:
@@ -401,8 +404,8 @@ definitions:
         type: string
       dev_model:
         type: string
-      dev_class:
-        type: string
+      class_id:
+        type: integer
       dev_comments:
         type: string
       dev_location:
@@ -411,7 +414,7 @@ definitions:
       dev_name: "Hienosäädin"
       dev_manufacturer: "TAMK"
       dev_model: "Mahtava malli"
-      dev_class: "Säädin"
+      class_id: 1
       dev_comments: "Tosi hyvä laite"
       dev_location: "Room 101"
 

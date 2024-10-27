@@ -29,20 +29,20 @@ def create_devices() -> tuple[Response, int]:
     device_list_with_location = []
     for item in device_json:
         if not all(key in item for key in ('dev_name', 'dev_manufacturer',
-                                           'dev_model', 'dev_class',
+                                           'dev_model', 'class_id',
                                            'dev_location', 'dev_comments')):
             return (jsonify({'error': "All devices must have"
                                       " name,"
                                       " manufacturer,"
                                       " model,"
-                                      " class,"
+                                      " class id,"
                                       " location and comments"}),
                     400)
 
         new_device = Device(dev_name=item['dev_name'],
                             dev_manufacturer=item['dev_manufacturer'],
                             dev_model=item['dev_model'],
-                            dev_class=item['dev_class'],
+                            class_id=item['class_id'],
                             dev_comments=item['dev_comments'])
 
         device_list.append(new_device)
@@ -94,17 +94,22 @@ def get_events_by_device_id(dev_id: int) -> tuple[Response, int]:
 def update_device(
         dev_id: int, device_data: dict[str, Union[str, int]]) -> tuple[Response, int]:
     valid_fields = {
-        'dev_name', 'dev_manufacturer', 'dev_model', 'dev_class', 'dev_comments'}
+        'dev_name', 'dev_manufacturer', 'dev_model', 'class_id', 'dev_comments'}
 
     if not any(key in valid_fields for key in device_data):
         return jsonify({'error': 'No valid fields provided to update'}), 400
 
-    updated_device, success = Device.update_device_by_id(dev_id, device_data)
+    result, error_code = Device.update_device_by_id(dev_id, device_data)
 
-    if success:
-        return jsonify(updated_device.to_dict()), 200
-    else:
+    if error_code == 404:
         return jsonify({'error': 'Device not found'}), 404
+    elif error_code:
+        return jsonify({'error': result}), error_code
+    else:
+        updated_device_with_class_id = result.to_dict()
+        updated_device_with_class_id["class_id"] = result.class_id
+        del updated_device_with_class_id["class_name"]
+        return jsonify(updated_device_with_class_id), 200
 
 
 def remove_devices() -> tuple[Response, int]:
