@@ -2,6 +2,7 @@ import os
 import pytest
 from backend.app import create_app
 from backend.setup.database_Init import db
+from backend.models.class_model import Class
 from backend.models.device_model import Device
 from backend.utils.config import config
 from backend.utils.qr_generator import generate_qr, remove_qr
@@ -14,12 +15,19 @@ def app():
 
     with app.app_context():
         db.create_all()
+
+        # Add a test class to the database
+        test_class: Class = Class(
+            class_name="class A"
+        )
+        db.session.add(test_class)
+
         # Add a tests device to the database
         test_device: Device = Device(
             dev_name="Device",
             dev_manufacturer="Manfact A",
             dev_model="Model S",
-            dev_class="class A",
+            class_id=1,
             dev_comments="Location: Herwood xyz")
 
         db.session.add(test_device)

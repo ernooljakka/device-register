@@ -8,6 +8,14 @@ class Class(db.Model):
     class_id = db.Column(db.Integer, primary_key=True)
     class_name = db.Column(db.String(50), nullable=False, unique=True)
 
+    devices = db.relationship(
+        'Device',
+        backref='device_class',
+        lazy=True,
+        cascade='all, delete-orphan',
+        passive_deletes=True
+    )
+
     def to_dict(self) -> dict[str, str]:
         return {
             'class_id': str(self.class_id),

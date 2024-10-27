@@ -2,6 +2,7 @@ import os
 import pytest
 from backend.app import create_app
 from backend.setup.database_Init import db
+from backend.models.class_model import Class
 from backend.models.device_model import Device
 from backend.models.event_model import Event
 from backend.models.user_model import User
@@ -17,12 +18,19 @@ def app():
 
     with app.app_context():
         db.create_all()
-        # Add a tests device to the database
+
+        # Add a test class to the database
+        test_class: Class = Class(
+            class_name="class A"
+        )
+        db.session.add(test_class)
+
+        # Add a test device to the database
         test_device: Device = Device(
             dev_name="Device",
             dev_manufacturer="Manfact A",
             dev_model="Model S",
-            dev_class="class A",
+            class_id=1,
             dev_comments="Location: Herwood xyz")
 
         db.session.add(test_device)
@@ -53,7 +61,7 @@ def test_get_devices(client):
     assert data[0]['dev_name'] == "Device"
     assert data[0]['dev_manufacturer'] == "Manfact A"
     assert data[0]['dev_model'] == "Model S"
-    assert data[0]['dev_class'] == "class A"
+    assert data[0]['class_name'] == "class A"
 
 
 def test_post_devices(client, app):
@@ -63,7 +71,7 @@ def test_post_devices(client, app):
             "dev_name": "Device 1",
             "dev_manufacturer": "Company A",
             "dev_model": "M1",
-            "dev_class": "C1",
+            "class_id": 1,
             "dev_location": "Lab",
             "dev_comments": ""
         },
@@ -71,7 +79,7 @@ def test_post_devices(client, app):
             "dev_name": "Device 2",
             "dev_manufacturer": "Company A",
             "dev_model": "M2",
-            "dev_class": "C1",
+            "class_id": 1,
             "dev_location": "lab",
             "dev_comments": ""
         }
@@ -96,7 +104,7 @@ def test_post_devices(client, app):
             "dev_name": "Device 3",
             "dev_manufacturer": "Company A",
             "dev_model": "M3",
-            "dev_class": "C1",
+            "class_id": 1,
             "dev_comments": ""
     }
     response_not_list = client.post('/api/devices/', json=payload2)
@@ -107,7 +115,7 @@ def test_post_devices(client, app):
             "dev_name": "Device 4",
             "dev_manufacturer": "Company A",
             "dev_model": "M4",
-            "dev_class": "C1",
+            "class_id": 1,
             "dev_comments": ""
         },
         {
@@ -123,6 +131,19 @@ def test_post_devices(client, app):
     response_empty_list = client.post('/api/devices/', json=[])
     assert response_empty_list.status_code == 400
 
+    payload4 = [
+        {
+            "dev_name": "Device 1",
+            "dev_manufacturer": "Company A",
+            "dev_model": "M1",
+            "class_id": 9999,
+            "dev_location": "Lab",
+            "dev_comments": ""
+        }
+    ]
+    response_nonexistent_class = client.post('/api/devices/', json=payload4)
+    assert response_nonexistent_class.status_code == 500
+
     with app.app_context():
         devices = Device.query.all()
 
@@ -132,14 +153,14 @@ def test_post_devices(client, app):
         assert device_1.dev_name == "Device 1"
         assert device_1.dev_manufacturer == "Company A"
         assert device_1.dev_model == "M1"
-        assert device_1.dev_class == "C1"
+        assert device_1.class_id == 1
         assert device_1.dev_comments == ""
 
         device_2 = devices[2]
         assert device_2.dev_name == "Device 2"
         assert device_2.dev_manufacturer == "Company A"
         assert device_2.dev_model == "M2"
-        assert device_2.dev_class == "C1"
+        assert device_2.class_id == 1
         assert device_2.dev_comments == ""
 
 
@@ -153,7 +174,7 @@ def test_get_device_by_id(client):
     assert data['dev_name'] == "Device"
     assert data['dev_manufacturer'] == "Manfact A"
     assert data['dev_model'] == "Model S"
-    assert data['dev_class'] == "class A"
+    assert data['class_name'] == "class A"
     assert data['dev_comments'] == "Location: Herwood xyz"
 
     response_404 = client.get('/api/users/9999')
@@ -166,7 +187,7 @@ def test_update_device_by_id(client):
         "dev_name": "New device",
         "dev_manufacturer": "Toyota",
         "dev_model": "Corolla",
-        "dev_class": "Super",
+        "class_id": 1,
         "dev_comments": "Moved to Timbuktu"
     }
 
@@ -179,12 +200,23 @@ def test_update_device_by_id(client):
     assert updated_device['dev_name'] == "New device"
     assert updated_device['dev_manufacturer'] == "Toyota"
     assert updated_device['dev_model'] == "Corolla"
-    assert updated_device['dev_class'] == "Super"
+    assert updated_device['class_id'] == 1
     assert updated_device['dev_comments'] == "Moved to Timbuktu"
 
     # Verify that updating a non-existent device returns 404
     response_404 = client.patch('/api/devices/9999', json=new_device_data)
     assert response_404.status_code == 404
+
+    nonexistent_class_device = {
+        "dev_name": "New device",
+        "dev_manufacturer": "Toyota",
+        "dev_model": "Corolla",
+        "class_id": 9999,
+        "dev_comments": "Moved to Timbuktu"
+    }
+    response_bad_class = client.patch('/api/devices/1',
+                                      json=nonexistent_class_device)
+    assert response_bad_class.status_code == 500
 
 
 def test_update_device_invalid_fields(client):
@@ -255,14 +287,14 @@ def test_remove_devices(client, app):
             dev_name="Device 1",
             dev_manufacturer="Manfact A",
             dev_model="Model S",
-            dev_class="class A",
+            class_id=1,
             dev_comments="Location: Herwood xyz",
         )
         test_device2 = Device(
             dev_name="Device 2",
             dev_manufacturer="Manfact A",
             dev_model="Model T",
-            dev_class="class A",
+            class_id=1,
             dev_comments="Location: Herwood xyz",
         )
 
@@ -311,7 +343,7 @@ def test_get_current_locations(client, app):
             dev_name="Unique Device 1",
             dev_manufacturer="Unique Manufacturer 1",
             dev_model="Unique Model 1",
-            dev_class="Unique Class 1",
+            class_id=1,
             dev_comments="Location: Unique Location 1"
         )
         db.session.add(test_device1)
@@ -321,7 +353,7 @@ def test_get_current_locations(client, app):
             dev_name="Unique Device 2",
             dev_manufacturer="Unique Manufacturer 2",
             dev_model="Unique Model 2",
-            dev_class="Unique Class 2",
+            class_id=1,
             dev_comments="Location: Unique Location 2"
         )
         db.session.add(test_device2)
@@ -357,12 +389,14 @@ def test_get_current_locations(client, app):
         assert data[1]['dev_name'] == test_device1.dev_name
         assert data[1]['dev_model'] == test_device1.dev_model
         assert data[1]['dev_manufacturer'] == test_device1.dev_manufacturer
+        assert data[1]['class_name'] == "class A"
         assert data[1]['loc_name'] == "Location 1"
 
         assert data[2]['dev_id'] == str(test_device2.dev_id)
         assert data[2]['dev_name'] == test_device2.dev_name
         assert data[2]['dev_model'] == test_device2.dev_model
         assert data[2]['dev_manufacturer'] == test_device2.dev_manufacturer
+        assert data[1]['class_name'] == "class A"
         assert data[2]['loc_name'] == "Location 2"
 
         response_404 = client.get('/api/devices/9999/current_locations/')

@@ -1,6 +1,7 @@
 import pytest
 from backend.app import create_app
 from backend.setup.database_Init import db
+from backend.models.class_model import Class
 from backend.models.device_model import Device
 from backend.models.event_model import Event
 from backend.models.user_model import User
@@ -14,16 +15,23 @@ def app():
 
     with app.app_context():
         db.create_all()
+
+        # Add a test class to the database
+        test_class: Class = Class(
+            class_name="class A"
+        )
+        db.session.add(test_class)
+
         # Add two test devices to the database
         test_device1 = Device(dev_name="Device A",
                               dev_manufacturer="Manfact A",
                               dev_model="Model S",
-                              dev_class="class A",
+                              class_id=1,
                               dev_comments="Location: Herwood xyz")
         test_device2 = Device(dev_name="Device B",
                               dev_manufacturer="Manfact A",
                               dev_model="Model X",
-                              dev_class="class A",
+                              class_id=1,
                               dev_comments="Location: Herwood xyz")
         db.session.add(test_device1)
         db.session.add(test_device2)
