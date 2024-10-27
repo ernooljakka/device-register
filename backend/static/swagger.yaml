@@ -13,6 +13,8 @@ tags:
     description: API endpoints related to events
   - name: Users
     description: API endpoints related to users
+  - name: Authentication
+    description: API endpoints related to authentication
 
 paths:
   /devices/:
@@ -371,6 +373,79 @@ paths:
         '404':
           description: Class not found
 
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: "Admin login"
+      description: "Logs in as an admin to receive a JWT token."
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: credentials
+          description: "Admin login credentials"
+          required: true
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+                example: "admin"
+              password:
+                type: string
+                example: "admin"
+      responses:
+        200:
+          description: "Successful login"
+          schema:
+            type: object
+            properties:
+              access_token:
+                type: string
+                description: "JWT token for accessing protected endpoints"
+        401:
+          description: "Unauthorized - Invalid credentials"
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Invalid credentials"
+
+  /auth/admin:
+    get:
+      tags:
+        - Authentication
+      summary: "Admin authorization check"
+      description: "Checks if the logged-in user is authorized as an admin."
+      security:
+        - bearerAuth: [ ]
+      responses:
+        200:
+          description: "Authorized"
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Authorized"
+        403:
+          description: "Forbidden - User is not authorized"
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Unauthorized"
+
+securityDefinitions:
+    bearerAuth:
+        type: apiKey
+        name: Authorization
+        in: header
+        description: "Enter 'Bearer <JWT>' to authorize. Example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'"
+
 definitions:
   Device:
     type: object
@@ -526,3 +601,4 @@ definitions:
         type: string
     example:
       class_name: "Kamera"
+
