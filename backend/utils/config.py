@@ -38,7 +38,7 @@ class Config:
         else:
             _env_path = os.path.join(_project_root, _env_file)
             print(f"Loading configurations from path {_env_path}")
-        if not load_dotenv(_env_path):
+        if not load_dotenv(dotenv_path=_env_path, override=True):
             print("No .env file found. using default config (local testing).")
 
         self.PROJECT_ROOT = os.path.dirname(_env_path)
