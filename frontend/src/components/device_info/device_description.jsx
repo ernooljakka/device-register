@@ -65,7 +65,8 @@ Device_description.propTypes = {
   devClass: PropTypes.string,
   devComments: PropTypes.string,    
   devManufacturer: PropTypes.string,
-  devModel: PropTypes.string
+  devModel: PropTypes.string,
+  error: PropTypes.any
 };
 
 export default Device_description;

@@ -1,6 +1,5 @@
 import React from 'react';
 import Box from '@mui/material/Box';
-import { Typography } from '@mui/material';
 import Device_Info_Grid from '../components/device_info/device_info_grid';
 import NavigationBar from '../components/shared/navigation_bar';
 import Device_description from '../components/device_info/device_description';
