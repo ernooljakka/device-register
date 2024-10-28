@@ -1,6 +1,7 @@
 import pytest
 from backend.app import create_app
 from backend.setup.database_Init import db
+from backend.models.class_model import Class
 from backend.models.device_model import Device
 from backend.models.event_model import Event
 from backend.models.user_model import User
@@ -10,20 +11,27 @@ from sqlalchemy.sql import func
 @pytest.fixture
 def app():
     # Create and configure a new app instance for each test.
-    app = create_app(testing=True)
+    app = create_app(env_config_file='.env-test')
 
     with app.app_context():
         db.create_all()
+
+        # Add a test class to the database
+        test_class: Class = Class(
+            class_name="class A"
+        )
+        db.session.add(test_class)
+
         # Add two test devices to the database
         test_device1 = Device(dev_name="Device A",
                               dev_manufacturer="Manfact A",
                               dev_model="Model S",
-                              dev_class="class A",
+                              class_id=1,
                               dev_comments="Location: Herwood xyz")
         test_device2 = Device(dev_name="Device B",
                               dev_manufacturer="Manfact A",
                               dev_model="Model X",
-                              dev_class="class A",
+                              class_id=1,
                               dev_comments="Location: Herwood xyz")
         db.session.add(test_device1)
         db.session.add(test_device2)
@@ -39,7 +47,8 @@ def app():
         test_event: Event = Event(dev_id=1,
                                   user_id=1,
                                   move_time=func.now(),
-                                  loc_name='Lab')
+                                  loc_name='Lab',
+                                  comment="I have nothing to say")
         db.session.add(test_event)
         db.session.commit()
 
@@ -68,6 +77,7 @@ def test_event_to_dict(app):
         assert event_dict['user_id'] == str(event.user_id)
         assert event_dict['loc_name'] == event.loc_name
         assert event_dict['move_time'] == event.move_time.isoformat()
+        assert event_dict['comment'] == event.comment
 
 
 def test_get_all_events(client):
@@ -79,7 +89,10 @@ def test_get_all_events(client):
     assert len(data) == 1
     assert data[0]['dev_id'] == "1"
     assert data[0]['user_id'] == "1"
+    assert data[0]['user_name'] == "User"
+    assert data[0]['user_email'] == "user@mail.com"
     assert data[0]['loc_name'] == "Lab"
+    assert data[0]['comment'] == "I have nothing to say"
 
 
 def test_get_event_by_id(client):
@@ -90,7 +103,10 @@ def test_get_event_by_id(client):
     data = response.get_json()
     assert data['dev_id'] == "1"
     assert data['user_id'] == "1"
+    assert data['user_name'] == "User"
+    assert data['user_email'] == "user@mail.com"
     assert data['loc_name'] == "Lab"
+    assert data['comment'] == "I have nothing to say"
 
     response_404 = client.get('/api/events/9999')
     assert response_404.status_code == 404
@@ -101,6 +117,7 @@ def test_create_event(client):
         'dev_id': 1,
         'move_time': "2024-10-02 14:14:28",
         'loc_name': "Room 1",
+        'comment': "You should clean your sockets",
         'user': {
             'user_name': 'User',
             'user_email': 'user@mail.com'
@@ -114,6 +131,17 @@ def test_create_event(client):
             'dev_id': 1,
             'move_time': "2024-10-02 14:14:28",
             'loc_name': "Room 1",
+            'comment': "You should clean your sockets",
+            'user': {
+                'user_name': 'User',
+                'user_email': 'user@mail.com'
+            }
+        },
+        {
+            'dev_id': 2,
+            'move_time': "2024-10-02 14:14:29",
+            'loc_name': "Room 1",
+            'comment': "You should clean your room",
             'user': {
                 'user_name': 'User',
                 'user_email': 'user@mail.com'
@@ -121,62 +149,75 @@ def test_create_event(client):
         }
     ]
     response2 = client.post('/api/events/', json=payload2)
-    assert response2.status_code == 400
+    assert response2.status_code == 201
 
-    payload3 = {
-        'dev_id': 1,
-        'move_time': "2024-10-02 14:14:28",
-        'user': {
-            'user_name': 'User',
-            'user_email': 'user@mail.com'
-        }
-    }
+    payload3 = "this string is not a dict or list"
     response3 = client.post('/api/events/', json=payload3)
     assert response3.status_code == 400
 
-    payload4 = {
-        'dev_id': 1,
-        'move_time': "2024-10-02 14:14",
-        'loc_name': "Room 1",
-        'user': {
-            'user_name': 'User',
-            'user_email': 'user@mail.com'
-        }
-    }
+    payload4 = ["this string inside a list is not a dict"]
     response4 = client.post('/api/events/', json=payload4)
     assert response4.status_code == 400
 
     payload5 = {
         'dev_id': 1,
         'move_time': "2024-10-02 14:14:28",
-        'loc_name': "Room 1",
-        'user': 1
+        'comment': "You should clean your sockets",
+        'user': {
+            'user_name': 'User',
+            'user_email': 'user@mail.com'
+        }
     }
     response5 = client.post('/api/events/', json=payload5)
     assert response5.status_code == 400
 
     payload6 = {
         'dev_id': 1,
-        'move_time': "2024-10-02 14:14:28",
+        'move_time': "2024-10-02 14:14",
         'loc_name': "Room 1",
+        'comment': "You should clean your sockets",
         'user': {
-            'user_name': 'User'
+            'user_name': 'User',
+            'user_email': 'user@mail.com'
         }
     }
     response6 = client.post('/api/events/', json=payload6)
     assert response6.status_code == 400
 
     payload7 = {
+        'dev_id': 1,
+        'move_time': "2024-10-02 14:14:28",
+        'loc_name': "Room 1",
+        'comment': "You should clean your sockets",
+        'user': 1
+    }
+    response7 = client.post('/api/events/', json=payload7)
+    assert response7.status_code == 400
+
+    payload8 = {
+        'dev_id': 1,
+        'move_time': "2024-10-02 14:14:28",
+        'loc_name': "Room 1",
+        'comment': "You should clean your sockets",
+        'user': {
+            'user_name': 'User'
+        }
+    }
+    response8 = client.post('/api/events/', json=payload8)
+    assert response8.status_code == 400
+
+    payload9 = {
         'dev_id': 9999,
         'move_time': "2024-10-02 14:14:28",
         'loc_name': "Room 1",
+        'comment': "You should clean your sockets",
         'user': {
             'user_name': 'User',
             'user_email': 'user@mail.com'
         }
     }
-    response7 = client.post('/api/events/', json=payload7)
-    assert response7.status_code == 500
+    response9 = client.post('/api/events/', json=payload9)
+    assert response9.status_code == 500
 
 
 def test_patch_event(client):
@@ -194,6 +235,7 @@ def test_patch_event(client):
         'dev_id': 1,
         'move_time': "2024-10-03 14:14:29",
         'loc_name': "Room 2",
+        'comment': "You should clean your sockets",
         'user': {
             'user_name': 'No longer User',
             'user_email': 'user@othermail.com'
@@ -207,6 +249,7 @@ def test_patch_event(client):
     assert event2_json['dev_id'] == "1"
     assert event2_json['move_time'] == "2024-10-03T14:14:29"
     assert event2_json['loc_name'] == "Room 2"
+    assert event2_json['comment'] == "You should clean your sockets"
     user_id = event2_json['user_id']
     user_response = client.get(f'/api/users/{user_id}')
     user_info = user_response.get_json()
@@ -244,6 +287,7 @@ def test_patch_event(client):
         'dev_id': 1,
         'move_time': "2024-10-03 14:14:29",
         'loc_name': "Room 2",
+        'comment': "You should clean your sockets",
         'user': {
             'naam': 'No longer User',
             'email': 'user@othermail.com'
@@ -256,6 +300,7 @@ def test_patch_event(client):
         'dev_id': 1,
         'move_time': "2024-10-03 14:14:29",
         'loc_name': "Room 2",
+        'comment': "You should clean your sockets",
         'user': {
             'user_name': 'No longer User',
             'eeem': 'user@othermail.com'
@@ -268,6 +313,7 @@ def test_patch_event(client):
         'dev_id': 1,
         'move_time': "2024-10-03 14:14:29",
         'loc_name': "Room 2",
+        'comment': "You should clean your sockets",
         'user': [
             {
                 'user_name': 'No longer User',

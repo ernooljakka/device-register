@@ -1,18 +1,20 @@
 swagger: "2.0"
 info:
   title: Device register API
-  version: 1.0.0
+  version: 1.0.1
   description: API documentation for device register application.
-
-basePath: /api/
 
 tags:
   - name: Devices
     description: API endpoints related to devices
-  - name: Users
-    description: API endpoints related to users
+  - name: Classes
+    description: API endpoints related to device classes
   - name: Events
     description: API endpoints related to events
+  - name: Users
+    description: API endpoints related to users
+  - name: Authentication
+    description: API endpoints related to authentication
 
 paths:
   /devices/:
@@ -42,16 +44,16 @@ paths:
             example:
               - dev_name: "Device 1"
                 dev_model: "Model 1"
-                dev_class: "Class 1"
+                class_id: 1
                 dev_manufacturer: "Company 1"
-                dev_location: "Room 101"
                 dev_comments: "Some comments"
+                dev_location: "Room 101"
               - dev_name: "Device 2"
                 dev_model: "Model 2"
-                dev_class: "Class 2"
+                class_id: 1
                 dev_manufacturer: "Company 2"
-                dev_location: "Room 102"
                 dev_comments: "Some comments"
+                dev_location: "Room 102"
       responses:
         '201':
           description: Devices created
@@ -146,9 +148,48 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/Event'
+              $ref: '#/definitions/EventWithoutUserEmail'
         '404':
           description: Device not found
+
+  /devices/current_locations:
+    get:
+      tags:
+        - Devices
+      summary: Get current locations of all devices
+      responses:
+        '200':
+          description: List of devices with current locations
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                dev_id:
+                  type: integer
+                  example: 1
+                dev_name:
+                  type: string
+                  example: "Device 1"
+                dev_manufacturer:
+                  type: string
+                  example: "Company 1"
+                dev_model:
+                  type: string
+                  example: "Model 1"
+                loc_name:
+                  type: string
+                  example: "Room 101"
+                move_time:
+                  type: string
+                  format: date-time
+                  example: "2024-12-11T11:11:11"
+                class_name:
+                  type: string
+                  example: "Säädin"
+        '500':
+          description: Database error
+
 
   /users/:
     get:
@@ -202,7 +243,25 @@ paths:
           name: body
           required: true
           schema:
-            $ref: '#/definitions/NewEvent'
+            type: array
+            items:
+              $ref: '#/definitions/NewEvent'
+            example:
+              - dev_id: 1
+                move_time: "2024-12-11 11:11:11"
+                loc_name: "Room123"
+                comment: "Move"
+                user:
+                  user_name: "Siirtäjä"
+                  user_email: "Siirtäjä@example.com"
+              - dev_id: 2
+                move_time: "2024-12-12 12:12:12"
+                loc_name: "Room345"
+                comment: "Move2"
+                user:
+                  user_name: "Päällikkö"
+                  user_email: "Päällikkö@example.com"
+
       responses:
         '201':
           description: Events created
@@ -267,6 +326,126 @@ paths:
         '500':
           description: Database error
 
+  /classes/:
+    get:
+      tags:
+        - Classes
+      summary: Get all classes
+      responses:
+        '200':
+          description: List of classes
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Class'
+    post:
+      tags:
+        - Classes
+      summary: Create new class
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/NewClass'
+      responses:
+        '201':
+          description: Class created
+        '400':
+          description: Invalid input
+        '500':
+          description: Database error
+
+
+  /classes/{class_id}:
+    delete:
+      tags:
+        - Classes
+      summary: Delete class by ID
+      parameters:
+        - name: class_id
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Class deleted
+        '404':
+          description: Class not found
+
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: "Admin login"
+      description: "Logs in as an admin to receive a JWT token."
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: credentials
+          description: "Admin login credentials"
+          required: true
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+                example: "admin"
+              password:
+                type: string
+                example: "admin"
+      responses:
+        200:
+          description: "Successful login"
+          schema:
+            type: object
+            properties:
+              access_token:
+                type: string
+                description: "JWT token for accessing protected endpoints"
+        401:
+          description: "Unauthorized - Invalid credentials"
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Invalid credentials"
+
+  /auth/admin:
+    get:
+      tags:
+        - Authentication
+      summary: "Admin authorization check"
+      description: "Checks if the logged-in user is authorized as an admin."
+      security:
+        - bearerAuth: [ ]
+      responses:
+        200:
+          description: "Authorized"
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Authorized"
+        403:
+          description: "Forbidden - User is not authorized"
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Unauthorized"
+
+securityDefinitions:
+    bearerAuth:
+        type: apiKey
+        name: Authorization
+        in: header
+        description: "Enter 'Bearer <JWT>' to authorize. Example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'"
+
 definitions:
   Device:
     type: object
@@ -279,10 +458,17 @@ definitions:
         type: string
       dev_model:
         type: string
-      dev_class:
+      class_name:
         type: string
       dev_comments:
         type: string
+    example:
+        dev_id: 1
+        dev_name: "Hienosäädin"
+        dev_manufacturer: "TAMK"
+        dev_model: "Mahtava malli"
+        class_name: "Säädin"
+        dev_comments: "Tosi hyvä laite"
 
   NewDevice:
     type: object
@@ -293,10 +479,19 @@ definitions:
         type: string
       dev_model:
         type: string
-      dev_class:
-        type: string
+      class_id:
+        type: integer
       dev_comments:
         type: string
+      dev_location:
+        type: string
+    example:
+      dev_name: "Hienosäädin"
+      dev_manufacturer: "TAMK"
+      dev_model: "Mahtava malli"
+      class_id: 1
+      dev_comments: "Tosi hyvä laite"
+      dev_location: "Room 101"
 
   User:
     type: object
@@ -321,15 +516,29 @@ definitions:
     properties:
       event_id:
         type: integer
+        example: 1
       dev_id:
         type: integer
+        example: 2
       move_time:
         type: string
         format: date-time
+        example: "2024-12-11T11:11:11"
       loc_name:
         type: string
+        example: "Room 101"
       user_id:
         type: integer
+        example: 1
+      user_name:
+        type: string
+        example: "Testi Testinen"
+      user_email:
+        type: string
+        example: "email@email.com"
+      comment:
+        type: string
+        example: "Rikki"
 
   NewEvent:
     type: object
@@ -343,5 +552,53 @@ definitions:
         example: "2024-12-11 11:11:11"
       loc_name:
         type: string
+      comment:
+        type: string
       user:
         $ref: '#/definitions/NewUser'
+
+  EventWithoutUserEmail:
+    type: object
+    properties:
+      event_id:
+        type: integer
+        example: 1
+      dev_id:
+        type: integer
+        example: 1
+      move_time:
+        type: string
+        format: date-time
+        example: "2024-12-11T11:11:11"
+      loc_name:
+        type: string
+        example: "Room 101"
+      comment:
+        type: string
+        example: "Routine maintenance performed"
+      user_id:
+        type: integer
+        example: 1
+      user_name:
+        type: string
+        example: "Testi Testinen"
+
+  Class:
+    type: object
+    properties:
+      class_id:
+        type: integer
+      class_name:
+        type: string
+    example:
+        class_id: 1
+        class_name: "Lentokone"
+
+  NewClass:
+    type: object
+    properties:
+      class_name:
+        type: string
+    example:
+      class_name: "Kamera"
+

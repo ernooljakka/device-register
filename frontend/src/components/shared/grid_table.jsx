@@ -6,11 +6,8 @@ import PropTypes from 'prop-types';
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 
-const Grid_table = ({ rowData, columnDefs }) => {
+const Grid_table = ({ rowData, columnDefs, onRowClicked, getRowStyle }) => {
   const [quickFilterText, setQuickFilterText] = useState("");
-
-  console.log('Row Data:', rowData);
-  console.log('Column Definitions:', columnDefs);
 
   return (
     <Box
@@ -36,12 +33,17 @@ const Grid_table = ({ rowData, columnDefs }) => {
           resizable: false,
           sortable: true,
           filter: true,
+          suppressMovable: true,
           suppressHeaderFilterButton: true,
         }}
+        getRowStyle={getRowStyle}
+        onRowClicked={onRowClicked}
         animateRows={true}
         pagination={true}
-        paginationAutoPageSize={true}
+        paginationPageSize= {20}
+        paginationPageSizeSelector = {false}
         style={{ flexGrow: 1 }}
+        quickFilterText={quickFilterText}
       />
     </Box>
   );
@@ -50,6 +52,8 @@ const Grid_table = ({ rowData, columnDefs }) => {
 Grid_table.propTypes = {
   rowData: PropTypes.array.isRequired,
   columnDefs: PropTypes.array.isRequired,
+  onRowClicked: PropTypes.func,
+  getRowStyle: PropTypes.func
 };
 
 export default Grid_table;

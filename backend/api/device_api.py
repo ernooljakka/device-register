@@ -5,7 +5,8 @@ from backend.controllers.device_controller import (
     get_device_by_id,
     remove_devices,
     update_device,
-    get_events_by_device_id
+    get_events_by_device_id,
+    current_locations
 )
 
 
@@ -41,3 +42,8 @@ def delete_devices() -> tuple[Response, int]:
 @device_api.route('/<int:dev_id>/events', methods=['GET'])
 def device_events_by_id(dev_id: int) -> tuple[Response, int]:
     return get_events_by_device_id(dev_id)
+
+
+@device_api.route('/current_locations/', methods=['GET'])
+def get_all_devices_current_location() -> tuple[Response, int]:
+    return current_locations()

@@ -1,3 +1,5 @@
+from typing import Union
+
 from backend.setup.database_Init import db
 
 
@@ -43,6 +45,6 @@ class User(db.Model):
         return user.user_id if user else None
 
     @staticmethod
-    def get_user_by_id(user_id: int) -> 'User':
-        user: User | None = db.session.get(User, user_id)
+    def get_user_by_id(user_id: int) -> Union['User', None]:
+        user: Union[User, None] = db.session.get(User, user_id)
         return user if user else None

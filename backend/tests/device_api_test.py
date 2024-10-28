@@ -1,25 +1,36 @@
+import os
 import pytest
 from backend.app import create_app
 from backend.setup.database_Init import db
+from backend.models.class_model import Class
 from backend.models.device_model import Device
 from backend.models.event_model import Event
 from backend.models.user_model import User
 from sqlalchemy.sql import func
 
+from backend.utils.config import config
+
 
 @pytest.fixture
 def app():
     # Create and configure a new app instance for each test.
-    app = create_app(testing=True)
+    app = create_app('.env-test')
 
     with app.app_context():
         db.create_all()
-        # Add a tests device to the database
+
+        # Add a test class to the database
+        test_class: Class = Class(
+            class_name="class A"
+        )
+        db.session.add(test_class)
+
+        # Add a test device to the database
         test_device: Device = Device(
             dev_name="Device",
             dev_manufacturer="Manfact A",
             dev_model="Model S",
-            dev_class="class A",
+            class_id=1,
             dev_comments="Location: Herwood xyz")
 
         db.session.add(test_device)
@@ -50,7 +61,7 @@ def test_get_devices(client):
     assert data[0]['dev_name'] == "Device"
     assert data[0]['dev_manufacturer'] == "Manfact A"
     assert data[0]['dev_model'] == "Model S"
-    assert data[0]['dev_class'] == "class A"
+    assert data[0]['class_name'] == "class A"
 
 
 def test_post_devices(client, app):
@@ -60,25 +71,40 @@ def test_post_devices(client, app):
             "dev_name": "Device 1",
             "dev_manufacturer": "Company A",
             "dev_model": "M1",
-            "dev_class": "C1",
+            "class_id": 1,
+            "dev_location": "Lab",
             "dev_comments": ""
         },
         {
             "dev_name": "Device 2",
             "dev_manufacturer": "Company A",
             "dev_model": "M2",
-            "dev_class": "C1",
+            "class_id": 1,
+            "dev_location": "lab",
             "dev_comments": ""
         }
     ]
     response1 = client.post('/api/devices/', json=payload1)
     assert response1.status_code == 201
 
+    with app.app_context():
+        devices = Device.query.all()
+
+        assert len(devices) == 3
+
+        # Clean up the created QR images
+        for device in devices:
+            dev_id = device.dev_id
+            qr_image_path = os.path.join(config.PROJECT_ROOT, 'backend', 'static', 'qr',
+                                         f"{dev_id}.png")
+            if os.path.exists(qr_image_path):
+                os.remove(qr_image_path)
+
     payload2 = {
             "dev_name": "Device 3",
             "dev_manufacturer": "Company A",
             "dev_model": "M3",
-            "dev_class": "C1",
+            "class_id": 1,
             "dev_comments": ""
     }
     response_not_list = client.post('/api/devices/', json=payload2)
@@ -89,7 +115,7 @@ def test_post_devices(client, app):
             "dev_name": "Device 4",
             "dev_manufacturer": "Company A",
             "dev_model": "M4",
-            "dev_class": "C1",
+            "class_id": 1,
             "dev_comments": ""
         },
         {
@@ -102,6 +128,22 @@ def test_post_devices(client, app):
     response_missing_field = client.post('/api/devices/', json=payload3)
     assert response_missing_field.status_code == 400
 
+    response_empty_list = client.post('/api/devices/', json=[])
+    assert response_empty_list.status_code == 400
+
+    payload4 = [
+        {
+            "dev_name": "Device 1",
+            "dev_manufacturer": "Company A",
+            "dev_model": "M1",
+            "class_id": 9999,
+            "dev_location": "Lab",
+            "dev_comments": ""
+        }
+    ]
+    response_nonexistent_class = client.post('/api/devices/', json=payload4)
+    assert response_nonexistent_class.status_code == 500
+
     with app.app_context():
         devices = Device.query.all()
 
@@ -111,14 +153,14 @@ def test_post_devices(client, app):
         assert device_1.dev_name == "Device 1"
         assert device_1.dev_manufacturer == "Company A"
         assert device_1.dev_model == "M1"
-        assert device_1.dev_class == "C1"
+        assert device_1.class_id == 1
         assert device_1.dev_comments == ""
 
         device_2 = devices[2]
         assert device_2.dev_name == "Device 2"
         assert device_2.dev_manufacturer == "Company A"
         assert device_2.dev_model == "M2"
-        assert device_2.dev_class == "C1"
+        assert device_2.class_id == 1
         assert device_2.dev_comments == ""
 
 
@@ -132,7 +174,7 @@ def test_get_device_by_id(client):
     assert data['dev_name'] == "Device"
     assert data['dev_manufacturer'] == "Manfact A"
     assert data['dev_model'] == "Model S"
-    assert data['dev_class'] == "class A"
+    assert data['class_name'] == "class A"
     assert data['dev_comments'] == "Location: Herwood xyz"
 
     response_404 = client.get('/api/users/9999')
@@ -145,7 +187,7 @@ def test_update_device_by_id(client):
         "dev_name": "New device",
         "dev_manufacturer": "Toyota",
         "dev_model": "Corolla",
-        "dev_class": "Super",
+        "class_id": 1,
         "dev_comments": "Moved to Timbuktu"
     }
 
@@ -158,12 +200,23 @@ def test_update_device_by_id(client):
     assert updated_device['dev_name'] == "New device"
     assert updated_device['dev_manufacturer'] == "Toyota"
     assert updated_device['dev_model'] == "Corolla"
-    assert updated_device['dev_class'] == "Super"
+    assert updated_device['class_id'] == 1
     assert updated_device['dev_comments'] == "Moved to Timbuktu"
 
     # Verify that updating a non-existent device returns 404
     response_404 = client.patch('/api/devices/9999', json=new_device_data)
     assert response_404.status_code == 404
+
+    nonexistent_class_device = {
+        "dev_name": "New device",
+        "dev_manufacturer": "Toyota",
+        "dev_model": "Corolla",
+        "class_id": 9999,
+        "dev_comments": "Moved to Timbuktu"
+    }
+    response_bad_class = client.patch('/api/devices/1',
+                                      json=nonexistent_class_device)
+    assert response_bad_class.status_code == 500
 
 
 def test_update_device_invalid_fields(client):
@@ -189,7 +242,8 @@ def test_get_events_by_device_id(client, app):
             dev_id=1,
             user_id=1,
             move_time=func.now(),
-            loc_name='Lab')
+            loc_name='Lab',
+            comment='Hello')
         db.session.add(test_event1)
         db.session.commit()
 
@@ -197,7 +251,8 @@ def test_get_events_by_device_id(client, app):
             dev_id=1,
             user_id=1,
             move_time=func.now(),
-            loc_name='Labz')
+            loc_name='Labz',
+            comment='Hi')
         db.session.add(test_event2)
         db.session.commit()
 
@@ -209,9 +264,13 @@ def test_get_events_by_device_id(client, app):
         assert data[0]['dev_id'] == "1"
         assert data[0]['user_id'] == "1"
         assert data[0]['loc_name'] == "Lab"
+        assert data[0]['comment'] == "Hello"
+        assert data[0]['user_name'] == "User"
         assert data[1]['dev_id'] == "1"
         assert data[1]['user_id'] == "1"
         assert data[1]['loc_name'] == "Labz"
+        assert data[1]['comment'] == "Hi"
+        assert data[1]['user_name'] == "User"
 
         response_404 = client.get('/api/devices/25565/events')
         assert response_404.status_code == 404
@@ -220,46 +279,125 @@ def test_get_events_by_device_id(client, app):
 def test_remove_devices(client, app):
     # Test the DELETE /api/devices/ endpoint.
     with app.app_context():
+        test_user = User(user_name="testuser", user_email="testuser@example.com")
+        db.session.add(test_user)
+        db.session.commit()
 
-        test_device1 = Device(dev_name="Device 1",
-                              dev_manufacturer="Manfact A",
-                              dev_model="Model S",
-                              dev_class="class A",
-                              dev_comments="Location: Herwood xyz")
-        test_device2 = Device(dev_name="Device 2",
-                              dev_manufacturer="Manfact A",
-                              dev_model="Model T",
-                              dev_class="class A",
-                              dev_comments="Location: Herwood xyz")
+        test_device1 = Device(
+            dev_name="Device 1",
+            dev_manufacturer="Manfact A",
+            dev_model="Model S",
+            class_id=1,
+            dev_comments="Location: Herwood xyz",
+        )
+        test_device2 = Device(
+            dev_name="Device 2",
+            dev_manufacturer="Manfact A",
+            dev_model="Model T",
+            class_id=1,
+            dev_comments="Location: Herwood xyz",
+        )
+
         db.session.add(test_device1)
         db.session.add(test_device2)
         db.session.commit()
 
-        payload1 = [{'id': 2}, {'id': 3}]
-        response1 = client.delete('/api/devices/', json=payload1)
-        assert response1.status_code == 200
+        dev_id1 = test_device1.dev_id
+        dev_id2 = test_device2.dev_id
 
-        payload2 = {'id': 1}
-        response2 = client.delete('/api/devices/', json=payload2)
-        assert response2.status_code == 400
+        test_event1 = Event(
+            dev_id=dev_id1,
+            user_id=test_user.user_id,
+            move_time=func.now(),
+            loc_name='Lab',
+            comment='Event 1',
+        )
+        test_event2 = Event(
+            dev_id=dev_id2,
+            user_id=test_user.user_id,
+            move_time=func.now(),
+            loc_name='Lab',
+            comment='Event 2',
+        )
 
-        payload3 = [1, 2]
-        response3 = client.delete('/api/devices/', json=payload3)
-        assert response3.status_code == 400
+        db.session.add(test_event1)
+        db.session.add(test_event2)
+        db.session.commit()
 
-        payload4 = [{'id': 12}, {'a': 3}]
-        response4 = client.delete('/api/devices/', json=payload4)
-        assert response4.status_code == 400
+        payload = [{'id': dev_id1}, {'id': dev_id2}]
+        response = client.delete('/api/devices/', json=payload)
+        assert response.status_code == 200
 
-        payload5 = [{'id': 12, 'too_much': "info"}]
-        response5 = client.delete('/api/devices/', json=payload5)
-        assert response5.status_code == 400
+        assert db.session.get(Device, dev_id1) is None
+        assert db.session.get(Device, dev_id2) is None
 
-        payload6 = [{'id': 9999}]
-        response6 = client.delete('/api/devices/', json=payload6)
-        assert response6.status_code == 404
 
-        assert db.session.get(Device, 2) is None
-        assert db.session.get(Device, 3) is None
+def test_get_current_locations(client, app):
+    # Test the GET /api/devices/current_locations/ endpoint.
+    with app.app_context():
+        test_user: User = User(user_name="User", user_email="user@mail.com")
+        db.session.add(test_user)
+        db.session.commit()
 
-        assert len(Device.query.all()) == 1
+        test_device1: Device = Device(
+            dev_name="Unique Device 1",
+            dev_manufacturer="Unique Manufacturer 1",
+            dev_model="Unique Model 1",
+            class_id=1,
+            dev_comments="Location: Unique Location 1"
+        )
+        db.session.add(test_device1)
+        db.session.commit()
+
+        test_device2: Device = Device(
+            dev_name="Unique Device 2",
+            dev_manufacturer="Unique Manufacturer 2",
+            dev_model="Unique Model 2",
+            class_id=1,
+            dev_comments="Location: Unique Location 2"
+        )
+        db.session.add(test_device2)
+        db.session.commit()
+
+        event1: Event = Event(
+            dev_id=test_device1.dev_id,
+            user_id=test_user.user_id,
+            move_time=func.now(),
+            loc_name="Location 1",
+            comment="Device 1 is here"
+        )
+        db.session.add(event1)
+
+        event2: Event = Event(
+            dev_id=test_device2.dev_id,
+            user_id=test_user.user_id,
+            move_time=func.now(),
+            loc_name="Location 2",
+            comment="Device 2 is here"
+        )
+        db.session.add(event2)
+
+        db.session.commit()
+
+        response = client.get('/api/devices/current_locations/')
+        assert response.status_code == 200
+
+        data = response.get_json()
+        assert len(data) == 3
+
+        assert data[1]['dev_id'] == str(test_device1.dev_id)
+        assert data[1]['dev_name'] == test_device1.dev_name
+        assert data[1]['dev_model'] == test_device1.dev_model
+        assert data[1]['dev_manufacturer'] == test_device1.dev_manufacturer
+        assert data[1]['class_name'] == "class A"
+        assert data[1]['loc_name'] == "Location 1"
+
+        assert data[2]['dev_id'] == str(test_device2.dev_id)
+        assert data[2]['dev_name'] == test_device2.dev_name
+        assert data[2]['dev_model'] == test_device2.dev_model
+        assert data[2]['dev_manufacturer'] == test_device2.dev_manufacturer
+        assert data[1]['class_name'] == "class A"
+        assert data[2]['loc_name'] == "Location 2"
+
+        response_404 = client.get('/api/devices/9999/current_locations/')
+        assert response_404.status_code == 404

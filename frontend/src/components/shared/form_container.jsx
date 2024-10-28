@@ -34,7 +34,7 @@ const defaultChildrenSx = {
 
 Form_container.propTypes = {
   children: PropTypes.node.isRequired, //mandatory
-  onSubmit: PropTypes.func.isRequired, //mandatory
+  onSubmit: PropTypes.func,
   sx: PropTypes.object,
   childrenSx: PropTypes.object
 }

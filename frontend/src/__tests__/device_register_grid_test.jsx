@@ -34,9 +34,9 @@ describe('DeviceRegisterGrid Component', () => {
             data: [
                 { 
                     dev_id: 1, 
-                    dev_class: 'Sensor', 
+                    dev_model: 'Sensor', 
                     dev_name: 'Temperature Sensor', 
-                    dev_manufacturer: 'Acme Corp' 
+                    loc_name: 'Acme Corp' 
                 },
             ],
             loading: false,

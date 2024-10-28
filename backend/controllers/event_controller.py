@@ -1,4 +1,5 @@
 from flask import jsonify, request, Response
+
 from backend.models.event_model import Event
 from backend.controllers.user_controller import add_or_update_user
 from datetime import datetime
@@ -6,68 +7,99 @@ from datetime import datetime
 
 def get_all_events() -> tuple[Response, int]:
     all_events: list[Event] = Event.get_all_events()
-    event_list: list[dict[str, str]] = [
-        event.to_dict() for event in all_events
-    ]
-    print(event_list)
+
+    event_list: list[dict[str, str]] = []
+
+    for event in all_events:
+        event_dict = event.to_dict()
+        event_dict['user_name'] = event.user.user_name
+        event_dict['user_email'] = event.user.user_email
+
+        event_list.append(event_dict)
+
     return jsonify(event_list), 200
 
 
 def get_event_by_id(event_id: int) -> tuple[Response, int]:
     one_event: Event = Event.get_event_by_id(event_id)
-    print(one_event)
+
     if one_event is not None:
         event_dict = one_event.to_dict()
+        event_dict['user_name'] = one_event.user.user_name
+        event_dict['user_email'] = one_event.user.user_email
         return jsonify(event_dict), 200
     else:
         return jsonify({'error': f'No event exists with provided Id: {event_id}'}), 404
 
 
-def create_event() -> tuple[Response, int]:
-    event_json = request.get_json()
+def create_event(event_data=None) -> tuple[Response, int]:
+    if not event_data:
+        event_data = request.get_json()
 
-    if not isinstance(event_json, dict):
-        return jsonify({'error': "Expected an event object"}), 400
+    if not isinstance(event_data, (dict, list)):
+        return jsonify({'error': "Expected an event object or list"}), 400
 
-    if not all(key in event_json for key in ('dev_id',
-                                             'user',
-                                             'move_time',
-                                             'loc_name')):
-        return (jsonify({'error': "Event must have"
-                                  " dev_id,"
-                                  " move_time"
-                                  " loc_name, and"
-                                  " user"}),
-                400)
-
-    try:
-        move_time = datetime.strptime(event_json['move_time'],
-                                      '%Y-%m-%d %H:%M:%S')
-    except ValueError:
-        return jsonify({'error': "Expected time format: YYYY-MM-DD HH:MM:SS"}), 400
-
-    user_info = event_json['user']
-
-    if not isinstance(user_info, dict):
-        return jsonify({'error': "Expected user attribute to be object"}), 400
-
-    if not all(key in user_info for key in ('user_name', 'user_email')):
-        return jsonify({'error': "User object must contain name and email"}), 400
-
-    not_ok_status, response_str = add_or_update_user_util(user_info)
-    if not_ok_status:
-        return jsonify({'error': f'Problem adding or updating user: '
-                                 f'{response_str}'
-                        }), not_ok_status
+    # turn dict into a list, or check list contains dicts
+    if isinstance(event_data, dict):
+        event_data_list = [event_data]
     else:
-        user_id = response_str
+        event_data_list = event_data
+        for item in event_data_list:
+            if not isinstance(item, dict):
+                return jsonify({'error': "Expected event objects in the list"}), 400
 
-    new_event = Event(dev_id=event_json['dev_id'],
-                      user_id=user_id,
-                      move_time=move_time,
-                      loc_name=event_json['loc_name'])
+    event_list = []
 
-    database_response = Event.create_event(new_event)
+    last_user = None
+    not_ok_status = 500
+    response_str = "Event Controller error"
+    for event_item in event_data_list:
+        if not all(key in event_item for key in ('dev_id',
+                                                 'user',
+                                                 'move_time',
+                                                 'loc_name',
+                                                 'comment')):
+            return (jsonify({'error': "Event must have"
+                                      " dev_id,"
+                                      " move_time,"
+                                      " loc_name,"
+                                      " comment, and"
+                                      " user"}),
+                    400)
+
+        try:
+            move_time = datetime.strptime(event_item['move_time'],
+                                          '%Y-%m-%d %H:%M:%S')
+        except ValueError:
+            return jsonify({'error': "Expected time format: YYYY-MM-DD HH:MM:SS"}), 400
+
+        user_info = event_item['user']
+
+        if not isinstance(user_info, dict):
+            return jsonify({'error': "Expected user attribute to be object"}), 400
+
+        if not all(key in user_info for key in ('user_name', 'user_email')):
+            return jsonify({'error': "User object must contain name and email"}), 400
+
+        if user_info != last_user:
+            not_ok_status, response_str = add_or_update_user_util(user_info)
+        last_user = user_info
+
+        if not_ok_status:
+            return jsonify({'error': f'Problem adding or updating user: '
+                                     f'{response_str}'
+                            }), not_ok_status
+        else:
+            user_id = response_str
+
+        new_event = Event(dev_id=event_item['dev_id'],
+                          user_id=user_id,
+                          move_time=move_time,
+                          loc_name=event_item['loc_name'],
+                          comment=event_item['comment'])
+        event_list.append(new_event)
+
+    database_response = Event.create_event(event_list)
     if database_response[0]:
         return jsonify({'message': "Event created successfully"}), 201
     else:
@@ -84,7 +116,7 @@ def update_event(event_id: int) -> tuple[Response, int]:
     if not isinstance(event_json, dict):
         return jsonify({'error': "Expected an event object"}), 400
 
-    allowed_keys = {'dev_id', 'user', 'move_time', 'loc_name'}
+    allowed_keys = {'dev_id', 'user', 'move_time', 'loc_name', 'comment'}
     invalid_keys = set(event_json.keys()) - allowed_keys
     if invalid_keys:
         return jsonify({'error': f"Illegal keys :{', '.join(invalid_keys)}"}), 400
@@ -118,6 +150,9 @@ def update_event(event_id: int) -> tuple[Response, int]:
 
     if 'loc_name' in event_json:
         event.loc_name = event_json['loc_name']
+
+    if 'comment' in event_json:
+        event.comment = event_json['comment']
 
     update_success, db_error = Event.update_event()
     if update_success:

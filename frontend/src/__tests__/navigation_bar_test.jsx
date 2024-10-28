@@ -8,7 +8,6 @@ describe("LinkButton Component", () => {
   test("Render navigation bar correctly", () => {
     render(<NavigationBar />);
 
-    expect(screen.getByLabelText('Events Log')).toBeInTheDocument();
     expect(screen.getByLabelText('Home')).toBeInTheDocument();
     expect(screen.getByLabelText('Admin Panel')).toBeInTheDocument();
   });
