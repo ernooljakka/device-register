@@ -17,7 +17,7 @@ const Device_info_view = () => {
   
 
   const devName = String(device.dev_name);
-  const devClass = String(device.dev_class);
+  const devClass = String(device.class_name);
   const devComments = String(device.dev_comments);
   const devManufacturer = String(device.dev_manufacturer);
   const devModel = String(device.dev_model);
