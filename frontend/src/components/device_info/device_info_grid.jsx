@@ -9,44 +9,40 @@ const Device_info_grid = ({ id }) => {
 
   const formattedEvents = events.map(event => ({
     ...event,
-    // Format move_time to DD/MM/YYYY HH:MM:SS
-    move_time: new Date(event.move_time).toLocaleDateString('en-GB') + ' ' + new Date(event.move_time).toLocaleTimeString('en-GB')
+    // Format move_time to DD/MM/YYYY HH:MM:SS, parse forces javascript to treat time as UTC format
+    move_time: new Date(Date.parse(event.move_time + 'Z')).toLocaleString('en-GB', {
+        day: '2-digit', month: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit', 
+        hour12: false, 
+      }),
+      // `move_time_iso` in ISO format for easier sorting/filtering
+    move_time_iso: new Date(Date.parse(event.move_time + 'Z')).toISOString()
   }));
 
   // Tells AG-Grid how to filter EU-formatted datetimes by date
   var filterParams = {
     comparator: (filterLocalDateAtMidnight, cellValue) => {
-        var dateAsString = cellValue;
-        if (dateAsString == null) return -1;
-        var date = dateAsString.split(" ")
-        var dateParts = date[0].split("/");
-        var cellDate = new Date(
-        Number(dateParts[2]),
-        Number(dateParts[1]) - 1,
-        Number(dateParts[0]),
-        );
-
+        const cellDate = new Date(cellValue); // Use ISO string directly
         if (filterLocalDateAtMidnight.getTime() === cellDate.getTime()) {
             return 0;
         }
-        if (cellDate < filterLocalDateAtMidnight) {
-            return -1;
-        }
-        if (cellDate > filterLocalDateAtMidnight) {
-            return 1;
-        }
-        return 0;
+        return cellDate < filterLocalDateAtMidnight ? -1 : 1;
     },
+  
     minValidYear: 2024,
   };
 
   const columnDefs = [
-      { field: "event_id", filter: "agTextColumnFilter", headerName: "ID", flex: 1, minWidth: 100}, //  Should be enough.
-      { field: "comment", filter: "agTextColumnFilter", headerName: "Comment", flex: 2, minWidth: 200 },
-      { field: "move_time", filter: "agDateColumnFilter", headerName: "Date/Time", flex: 2.0, minWidth: 170,
+      { field: "move_time_iso", filter: "agDateColumnFilter", headerName: "Date/Time", flex: 2.0, minWidth: 145,
         filterParams:filterParams, suppressHeaderFilterButton: false, sort: 'desc'// Enough for showing datetime
+        , valueFormatter: (params) => params.data.move_time
       },
-      { field: "loc_name", filter: "agTextColumnFilter", headerName: "Location", flex: 2.5, minWidth: 130 },
+      { field: "loc_name", filter: "agTextColumnFilter", headerName: "Location", flex: 2.5, minWidth: 130, autoHeight: true,
+        cellStyle: { whiteSpace: 'normal', wordWrap: 'break-word',  lineHeight: 1.2,  paddingTop: '13px', } // text wrapping
+         },
+      { field: "comment", filter: "agTextColumnFilter", headerName: "Comment", flex: 2, minWidth: 200, autoHeight: true,
+        cellStyle: { whiteSpace: 'normal', wordWrap: 'break-word', lineHeight: 1.2,  paddingTop: '13px' } // text wrapping  
+        },
   ];
 
   if (loading) {

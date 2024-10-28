@@ -12,6 +12,7 @@ const Device_info_view = () => {
   const { id } = useParams();
 
   const { data: device, error } = useFetchData('devices/' + id);
+  const { data: locations} = useFetchData('devices/current_locations');
 
   
 
@@ -20,6 +21,18 @@ const Device_info_view = () => {
   const devComments = String(device.dev_comments);
   const devManufacturer = String(device.dev_manufacturer);
   const devModel = String(device.dev_model);
+  const devLoc = String(getLocName(locations, id));
+
+  function getLocName(loc, id) {
+    const location = loc.find(item => item.dev_id == id);
+
+    //check so we don't access undefined
+    if (location) {
+      return location.loc_name; 
+  } else {
+      return "";
+  }
+  }
 
 
   return (
@@ -35,14 +48,10 @@ const Device_info_view = () => {
       gap: 2
   }}>
         <NavigationBar/>
-        <Typography sx={{
-          fontSize: 'clamp(1.5rem, 5vw, 2.4rem)', 
-          textAlign: 'center',
-          mt: 8, 
-          mb: 3,
-        }}>
-        {error ?  "Device not found!" : devName}
-        </Typography>
+
+        <Device_description devName={devName} devLocation={devLoc} devClass={devClass}
+         devModel={devModel} devManufacturer={devManufacturer} devComments={devComments} error={error}/>
+        
         <Box sx={{
           display: 'flex',
           flexDirection: 'row',
@@ -55,8 +64,6 @@ const Device_info_view = () => {
 
 
         </Box>
-        <Device_description devClass={devClass} devModel={devModel} devManufacturer={devManufacturer} devComments={devComments}/>
-
         
 
         <Device_Info_Grid id = { id }/>
