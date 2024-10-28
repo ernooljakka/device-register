@@ -1,9 +1,9 @@
-dev_name;dev_manufacturer;dev_model;dev_class;dev_comments
-Optical Spectrum analyzer;Ando;6315B;Optical spectrum measurement;Buttons not working well
-Frequency resolved optical gating;FemtoEasy;MS-FROG;Laser characterization;Swappable spectrometers for 800-2000 nm
-Electronic spectrum analyzer;HP;E4405B;RF Instruments;
-Beam profiler;ThorLabs;M2MS-BP209VIS(/M);Laser characterization;
-Optical Spectrum analyzer;Anritsu;MS9706;Optical spectrum measurement;
-Monochromator;Digikröm;CM112;Optical spectrum measurement;
-2 GHz oscilloscope;Lecroy;WaveRunner 640Zi;Oscilloscopes;
-Supercontinuum source;NKT Photonics;SuperK Extreme;Light sources;
+dev_name;dev_manufacturer;dev_model;dev_class;dev_comments;dev_location
+Optical Spectrum analyzer;Ando;6315B;Optical spectrum measurement;Buttons not working well;Room 101
+Frequency resolved optical gating;FemtoEasy;MS-FROG;Laser characterization;Swappable spectrometers for 800-2000 nm;Room 202
+Electronic spectrum analyzer;HP;E4405B;RF Instruments;;Room 303
+Beam profiler;ThorLabs;M2MS-BP209VIS(/M);Laser characterization;;Room 404
+Optical Spectrum analyzer;Anritsu;MS9706;Optical spectrum measurement;;Room 505
+Monochromator;Digikröm;CM112;Optical spectrum measurement;;Room 606
+2 GHz oscilloscope;Lecroy;WaveRunner 640Zi;Oscilloscopes;;Room 707
+Supercontinuum source;NKT Photonics;SuperK Extreme;Light sources;;Room 808
