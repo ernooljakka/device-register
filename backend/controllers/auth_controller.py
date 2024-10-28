@@ -3,6 +3,7 @@ from flask import jsonify, request, Response
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import check_password_hash
 from backend.models.auth_model import get_admin_credentials
+from backend.utils.config import config
 
 
 def admin_login() -> tuple[Response, int]:
@@ -19,7 +20,8 @@ def admin_login() -> tuple[Response, int]:
     if (request_username == admin_username
             and check_password_hash(admin_pw_hash, request_password)):
         access_token = create_access_token(identity=request_username,
-                                           expires_delta=timedelta(hours=1))
+                                           expires_delta=timedelta(
+                                               hours=config.JWT_EXPIRY_HOURS))
         return jsonify(access_token=access_token), 200
     else:
         return jsonify({'error': 'Bad username or password'}), 401

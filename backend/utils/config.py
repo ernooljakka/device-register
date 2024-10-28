@@ -19,6 +19,7 @@ class Config:
     ADMIN_USERNAME: str = None
     ADMIN_PASSWORD: str = None
     JWT_SECRET_KEY: str = None
+    JWT_EXPIRY_HOURS: int = None
 
     # dbconfig
     SQLALCHEMY_DATABASE_URI: str = None
@@ -52,6 +53,7 @@ class Config:
         self.ADMIN_USERNAME = os.getenv('ADMIN_USERNAME', 'admin')
         self.ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD', 'admin')
         self.JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'your_jwt_secret')
+        self.JWT_EXPIRY_HOURS = int(os.getenv('JWT_EXPIRY_HOURS', "1"))
 
         self.SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI',
                                                  'sqlite:///:memory:')
