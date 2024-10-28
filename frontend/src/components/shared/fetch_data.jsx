@@ -12,7 +12,7 @@ const useFetchData = (endpoint) => {
       try {
         const response = await fetch(url);
         const result = await response.json();
-        setData(result); 
+        setData(result);
       } catch (err) {
         setError(err);
       } finally {
