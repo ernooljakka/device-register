@@ -31,8 +31,8 @@ class Config:
         return cls._instance
 
     def load(self, _env_file: str = None):
-        _project_root = os.path.dirname(os.path.dirname(
-            os.path.dirname(os.path.abspath(__file__))))
+        _project_root = os.getenv('PROJECT_ROOT', os.path.dirname(os.path.dirname(
+            os.path.dirname(os.path.abspath(__file__)))))
         if _env_file is None:
             _env_path = os.path.join(_project_root, '.env')
             print(f"Loading configurations from default path {_env_path}")
@@ -43,11 +43,11 @@ class Config:
             print("No .env file found. using default config (local testing).")
 
         self.PROJECT_ROOT = os.path.dirname(_env_path)
-        self.TESTING = os.getenv('TESTING', "False").lower() in ('true', '1', 't')
+        self.TESTING = os.getenv('TESTING', "TRUE").lower() in ('true', '1', 't')
 
-        self.FRONTEND_ADDR = os.getenv('FRONTEND_URL', 'http://localhost:3000')
+        self.FRONTEND_ADDR = os.getenv('FRONTEND_ADDR', 'http://localhost:3000')
         self.FRONTEND_BASEPATH = os.getenv('FRONTEND_BASEPATH', '/')
-        self.BACKEND_ADDR = os.getenv('BACKEND_URL', 'http://localhost:5000')
+        self.BACKEND_ADDR = os.getenv('FRONTEND_ADDR', 'http://localhost:5000')
         self.BACKEND_BASEPATH = os.getenv('BACKEND_BASEPATH', '/api/')
 
         self.ADMIN_USERNAME = os.getenv('ADMIN_USERNAME', 'admin')
