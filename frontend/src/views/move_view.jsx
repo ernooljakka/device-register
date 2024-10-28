@@ -13,6 +13,8 @@ const Move_view = () => {
   const navigate = useNavigate(); 
   const { data: device, error } = useFetchData('devices/' + id);
   const devName = String(device.dev_name);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   const {
     result: eventResult,
@@ -49,10 +51,26 @@ const Move_view = () => {
   };
 
   const onSubmit = () => {
+    const { loc_name, user } = deviceMoveData;
+    // Check for empty fields
+    if (!loc_name || !user.user_name || !user.user_email) {
+      setErrorMessage("Please fill out all required fields.");
+      setTimeout(() => setErrorMessage(null), 5000); // eslint-disable-line no-undef
+      return;
+    }
+    //Validate email
+    if (!emailRegex.test(user.user_email)) {
+      setErrorMessage("Please enter a valid email address.");
+      setTimeout(() => setErrorMessage(null), 5000); // eslint-disable-line no-undef
+      return;
+    }
+
+  
     const MoveData = {
       ...deviceMoveData,
       move_time: new Date().toISOString().slice(0, 19).replace('T', ' '),
     };
+    
     postEventData(MoveData);
   };
   
@@ -105,6 +123,9 @@ const Move_view = () => {
         }}>
         {error ?  "Device not found!" : "ID: "+id}
         </Typography>
+
+      {/* displays error when trying to submit without required field */}
+      {errorMessage && <Typography color="error">{errorMessage}</Typography>}
        <Form_container onSubmit={onSubmit} childrenSx={{gap: 20}}>
 
           <TextField
@@ -112,6 +133,7 @@ const Move_view = () => {
             name="loc_name"
             value={deviceMoveData.loc_name}
             onChange={handleChange}
+            required={true}
           />
 
           <TextField
@@ -119,6 +141,7 @@ const Move_view = () => {
             name="user_name"
             value={deviceMoveData.user.user_name}
             onChange={handleChange}
+            required={true}
           />
 
           <TextField
@@ -126,6 +149,7 @@ const Move_view = () => {
             name="user_email"
             value={deviceMoveData.user.user_email}
             onChange={handleChange}
+            required={true}
           />
 
           <TextField
