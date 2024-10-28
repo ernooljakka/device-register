@@ -33,7 +33,7 @@ const Device_info_grid = ({ id }) => {
   };
 
   const columnDefs = [
-      { field: "move_time_iso", filter: "agDateColumnFilter", headerName: "Date/Time", flex: 2.0, minWidth: 145,
+      { field: "move_time_iso", filter: "agDateColumnFilter", headerName: "Date/Time", flex: 2.0, minWidth: 160,
         filterParams:filterParams, suppressHeaderFilterButton: false, sort: 'desc'// Enough for showing datetime
         , valueFormatter: (params) => params.data.move_time
       },
