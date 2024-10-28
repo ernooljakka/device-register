@@ -18,10 +18,21 @@ const Device_register_grid = () => {
     };
 
     const columnDefs = [
-        { field: "dev_id", filter: "agTextColumnFilter", headerName: "ID", flex: 0.5, minWidth: 63 }, // Enough for 9999 devices
-        { field: "dev_model", filter: "agTextColumnFilter", headerName: "Type", flex: 1.4, minWidth: 130 }, // Not as important, 14 characters
-        { field: "dev_name", filter: "agTextColumnFilter", headerName: "Device", flex: 2,  minWidth: 250}, // Important, 34 characters 
-        { field: "loc_name", filter: "agTextColumnFilter", headerName: "Location", flex: 2, minWidth: 130}, // 14 characters
+        { field: "dev_manufacturer", filter: "agTextColumnFilter", headerName: "Manufacturer", flex: 0.5, minWidth: 120, autoHeight: true,
+            cellStyle: { whiteSpace: 'normal', wordWrap: 'break-word',  lineHeight: 1.2,  paddingTop: '13px', } // text wrapping
+            }, // Enough for 9999 devices
+        { field: "dev_model", filter: "agTextColumnFilter", headerName: "Model", flex: 1.4, minWidth: 80, autoHeight: true,
+            cellStyle: { whiteSpace: 'normal', wordWrap: 'break-word',  lineHeight: 1.2,  paddingTop: '13px', } // text wrapping
+             }, // Not as important, 14 characters
+        { field: "dev_name", filter: "agTextColumnFilter", headerName: "Device", flex: 2,  minWidth: 100, autoHeight: true,
+            cellStyle: { whiteSpace: 'normal', wordWrap: 'break-word',  lineHeight: 1.2,  paddingTop: '13px', } // text wrapping
+            }, // Important, 34 characters 
+        { field: "loc_name", filter: "agTextColumnFilter", headerName: "Location", flex: 2, minWidth: 100, autoHeight: true,
+            cellStyle: { whiteSpace: 'normal', wordWrap: 'break-word',  lineHeight: 1.2,  paddingTop: '13px', } // text wrapping        
+        }, // 14 characters
+        { field: "class_name", filter: "agTextColumnFilter", headerName: "Class", flex: 2, minWidth: 120, autoHeight: true,
+            cellStyle: { whiteSpace: 'normal', wordWrap: 'break-word',  lineHeight: 1.2,  paddingTop: '13px', } // text wrapping
+            },
     ];
 
     if (loading) {

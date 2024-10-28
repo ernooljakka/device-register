@@ -33,7 +33,7 @@ describe('DeviceRegisterView Component', () => {
         expect(ViewTitle).toHaveStyle({
             fontSize: 'clamp(1.5rem, 5vw, 2.4rem)',
             textAlign: 'center',
-            marginTop: '64px', // 8*8px
+            marginTop: '48px', // 6*8px
             marginBottom: '24px', // 3*8px
         });
     });

@@ -33,10 +33,11 @@ describe('DeviceRegisterGrid Component', () => {
         useFetchData.mockReturnValue({
             data: [
                 { 
-                    dev_id: 1, 
+                    dev_manufacturer: "Apple", 
                     dev_model: 'Sensor', 
                     dev_name: 'Temperature Sensor', 
-                    loc_name: 'Acme Corp' 
+                    loc_name: 'Acme Corp',
+                    class_name: 'Important'
                 },
             ],
             loading: false,
@@ -46,13 +47,16 @@ describe('DeviceRegisterGrid Component', () => {
         render(<DeviceGrid />);
 
         // Cells
+        expect(screen.getByText('Apple')).toBeInTheDocument();
         expect(screen.getByText('Temperature Sensor')).toBeInTheDocument();
         expect(screen.getByText('Sensor')).toBeInTheDocument();
         expect(screen.getByText('Acme Corp')).toBeInTheDocument();
+        expect(screen.getByText('Important')).toBeInTheDocument();
         // Headers
-        expect(screen.getByText('ID')).toBeInTheDocument();
-        expect(screen.getByText('Type')).toBeInTheDocument();
+        expect(screen.getByText('Manufacturer')).toBeInTheDocument();
+        expect(screen.getByText('Model')).toBeInTheDocument();
         expect(screen.getByText('Device')).toBeInTheDocument();
         expect(screen.getByText('Location')).toBeInTheDocument();
+        expect(screen.getByText('Class')).toBeInTheDocument();
     });
 });

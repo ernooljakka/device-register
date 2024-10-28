@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import { Typography } from '@mui/material';
 import DeviceGrid from '../components/device_register/device_register_grid';
 import NavigationBar from '../components/shared/navigation_bar';
+import Link_button from '../components/shared/link_button';
 
 function Device_register_view() {
 
@@ -18,14 +19,24 @@ function Device_register_view() {
         textWrap: 'nowrap'
     }}>
         <NavigationBar/>
-        <Typography sx={{
-          fontSize: 'clamp(1.5rem, 5vw, 2.4rem)', 
-          textAlign: 'center',
-          mt: 8, 
-          mb: 3,
+        <Box sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 2
         }}>
-        Device Register
-        </Typography>
+          <Typography sx={{
+            fontSize: 'clamp(1.5rem, 5vw, 2.4rem)', 
+            textAlign: 'center',
+            mt: 6, 
+            mb: 3,
+          }}>
+          Device Register
+          </Typography>
+          {/*TODO: add actual link to add page when it's ready */}
+          <Link_button href={`http://localhost:5000/add`} text= "Add" sx={{ mt: 3}}></Link_button>
+
+        </Box>
         <DeviceGrid/>
     </Box>
   );

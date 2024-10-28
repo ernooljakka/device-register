@@ -4,7 +4,7 @@ import { Button } from '@mui/material';
 
 {/* Extending MUI Button to work as a link button.*/}
 const Link_button = ({ href, text, icon, target = "_self", iconsx,
-   variant = "contained", size = "medium", color = "primary" }) => {
+   variant = "contained", size = "medium", color = "primary", sx }) => {
   return (
     <Button
       component="a"
@@ -17,6 +17,7 @@ const Link_button = ({ href, text, icon, target = "_self", iconsx,
       size={size}
       color={color}
       role="button" // Ensure tests treat it as button.
+      sx = {sx}
     >
       {text}
     </Button>
@@ -33,6 +34,7 @@ Link_button.propTypes = {
   size: PropTypes.oneOf(["small", "medium", "large"]),
   color: PropTypes.oneOf(
     ["primary", "secondary", "error", "info", "success", "warning"]),
+  sx: PropTypes.any
 };
 
 export default Link_button;
