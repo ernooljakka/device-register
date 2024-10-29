@@ -233,7 +233,19 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/Event'
+              allOf:
+                - $ref: '#/definitions/Event'
+                - type: object
+                  properties:
+                    dev_name:
+                      type: string
+                      example: "Device A"
+                    user_name:
+                      type: string
+                      example: "Nimi Niminen"
+                    user_email:
+                      type: string
+                      example: "nimi.niminen@sahkoposti.com"
     post:
       tags:
         - Events

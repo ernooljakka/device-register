@@ -44,12 +44,18 @@ def app():
         db.session.commit()
 
         # Add a test event to the database
-        test_event: Event = Event(dev_id=1,
-                                  user_id=1,
-                                  move_time=func.now(),
-                                  loc_name='Lab',
-                                  comment="I have nothing to say")
-        db.session.add(test_event)
+        test_event1: Event = Event(dev_id=1,
+                                   user_id=1,
+                                   move_time=func.now(),
+                                   loc_name='Lab',
+                                   comment="I have nothing to say")
+        test_event2: Event = Event(dev_id=2,
+                                   user_id=1,
+                                   move_time=func.now(),
+                                   loc_name='Lab',
+                                   comment="I have a lot to say")
+        db.session.add(test_event1)
+        db.session.add(test_event2)
         db.session.commit()
 
     yield app
@@ -86,13 +92,21 @@ def test_get_all_events(client):
     assert response.status_code == 200
 
     data = response.get_json()
-    assert len(data) == 1
+    assert len(data) == 2
     assert data[0]['dev_id'] == "1"
+    assert data[0]['dev_name'] == "Device A"
     assert data[0]['user_id'] == "1"
     assert data[0]['user_name'] == "User"
     assert data[0]['user_email'] == "user@mail.com"
     assert data[0]['loc_name'] == "Lab"
     assert data[0]['comment'] == "I have nothing to say"
+    assert data[1]['dev_id'] == "2"
+    assert data[1]['dev_name'] == "Device B"
+    assert data[1]['user_id'] == "1"
+    assert data[1]['user_name'] == "User"
+    assert data[1]['user_email'] == "user@mail.com"
+    assert data[1]['loc_name'] == "Lab"
+    assert data[1]['comment'] == "I have a lot to say"
 
 
 def test_get_event_by_id(client):

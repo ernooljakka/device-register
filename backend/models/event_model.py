@@ -1,6 +1,6 @@
 from backend.setup.database_Init import db
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import selectinload, joinedload
 
 
 class Event(db.Model):
@@ -27,7 +27,8 @@ class Event(db.Model):
 
     @staticmethod
     def get_all_events() -> list['Event']:
-        return Event.query.options(selectinload(Event.user)).all()
+        return Event.query.options(selectinload(Event.user),
+                                   joinedload(Event.device)).all()
 
     @staticmethod
     def get_event_by_id(event_id: int) -> 'Event':
