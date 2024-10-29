@@ -1,6 +1,6 @@
 from typing import Union, Optional
 
-from datetime import datetime
+from datetime import datetime, timezone
 from flask import jsonify, request, Response
 from backend.controllers.event_controller import create_event
 from backend.models.device_model import Device
@@ -61,7 +61,7 @@ def create_devices() -> tuple[Response, int]:
                 'user_name': 'admin',
                 'user_email': 'admin@admin'
             },
-            'move_time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'move_time': datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S'),
             'loc_name': location,
             'comment': ''
         }
