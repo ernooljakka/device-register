@@ -5,18 +5,32 @@ import '@testing-library/jest-dom';
 
 jest.mock('../components/shared/navigation_bar', () => {
     const MockedNavigationBar = () => <div>Mocked NavigationBar</div>;
-    MockedNavigationBar.displayName = 'MockedNavigationBar'; // eslint wants this.
+    MockedNavigationBar.displayName = 'MockedNavigationBar';
     return MockedNavigationBar;
 });
 
 jest.mock('../components/event_view_components/event_grid', () => {
-    const MockedDeviceGrid = () => <div>Mocked EventGrid</div>;
-    MockedDeviceGrid.displayName = 'MockedEventGrid'; // eslint wants this.
-    return MockedDeviceGrid;
+    const MockedEventGrid = () => <div>Mocked EventGrid</div>;
+    MockedEventGrid.displayName = 'MockedEventGrid';
+    return MockedEventGrid;
 });
 
+// Mock the useFetchData hook to control its return values
+jest.mock('../components/shared/fetch_data', () => ({
+    __esModule: true,
+    default: jest.fn(),
+}));
+
+import useFetchData from '../components/shared/fetch_data';
+
 describe('EventView Component', () => {
-    test('render Navbar, header, and EventGrid correctly', () => {
+    
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    test('renders Navbar, header, and EventGrid correctly when authenticated', () => {
+        useFetchData.mockReturnValue({ auth: true, loading: false, error: null });
 
         render(<EventView />);
 
@@ -25,16 +39,35 @@ describe('EventView Component', () => {
         expect(screen.getByText('Mocked EventGrid')).toBeInTheDocument();
     });
 
-    test('renders the header text with correct styles', () => {
+    test('renders the header text with correct styles when authenticated', () => {
+        useFetchData.mockReturnValue({ auth: true, loading: false, error: null });
 
         render(<EventView />);
 
-        const ViewTitle = screen.getByText('Event History');
-        expect(ViewTitle).toHaveStyle({
+        const viewTitle = screen.getByText('Event History');
+        expect(viewTitle).toHaveStyle({
             fontSize: 'clamp(1.5rem, 5vw, 2.4rem)',
             textAlign: 'center',
-            marginTop: '64px', // 8*8px
-            marginBottom: '24px', // 3*8px
+            marginTop: '64px',
+            marginBottom: '24px',
         });
+    });
+
+    test('shows login required message when not authenticated', () => {
+        useFetchData.mockReturnValue({ auth: false, loading: false, error: null });
+
+        render(<EventView />);
+
+        expect(screen.queryByText('Mocked NavigationBar')).toBeInTheDocument();
+        expect(screen.queryByText('Mocked EventGrid')).not.toBeInTheDocument();
+        expect(screen.getByText('You must be logged in to view this content.')).toBeInTheDocument();
+    });
+
+    test('shows loading indicator when loading', () => {
+        useFetchData.mockReturnValue({ auth: false, loading: true, error: null });
+
+        render(<EventView />);
+
+        expect(screen.queryByText('Loading...')).toBeInTheDocument();
     });
 });

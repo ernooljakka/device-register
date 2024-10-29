@@ -30,29 +30,38 @@ describe('DeviceRegisterGrid Component', () => {
     });
 
     test('renders the data grid with the fetched data', async () => {
+        const moveTime = new Date('04 Dec 2024 23:59:30 GMT').toISOString();
+    
         useFetchData.mockReturnValue({
             data: [
                 { 
                     dev_id: 1, 
-                    user_id: '020202', 
-                    move_time: '2024-11-03T21:12:17.840Z', 
+                    user_name: '020202', 
+                    move_time: moveTime,
+                    move_time_iso: moveTime,
                     loc_name: 'Test Laboratory' 
                 },
             ],
             loading: false,
             error: null,
         });
-
+    
         render(<EventGrid />);
-
-        // Cells
+    
+        // Verify cells and headers
         expect(screen.getByText('020202')).toBeInTheDocument();
-        expect(screen.getByText('03/11/2024')).toBeInTheDocument(); 
+    
+        // Verify datetime with UTC.
+        expect(screen.getByText('04/12/2024, 23:59')).toBeInTheDocument();
         expect(screen.getByText('Test Laboratory')).toBeInTheDocument();
-        // Headers
-        expect(screen.getByText('DEV')).toBeInTheDocument();
-        expect(screen.getByText('USER')).toBeInTheDocument();
-        expect(screen.getByText('Date')).toBeInTheDocument();
+    
+        // Verify headers
+        expect(screen.getByText('Device id')).toBeInTheDocument();
+        expect(screen.getByText('User name')).toBeInTheDocument();
+        expect(screen.getByText('Date/Time')).toBeInTheDocument();
         expect(screen.getByText('Location')).toBeInTheDocument();
     });
+    
+    
+
 });
