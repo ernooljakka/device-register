@@ -5,6 +5,7 @@ import useFetchData from '../components/shared/fetch_data';
 import '@testing-library/jest-dom';
 
 jest.mock('../components/shared/fetch_data');
+jest.spyOn(Date.prototype, 'toLocaleString').mockImplementation(() => '08/10/2024, 15:34');
 
 describe('Device_info_grid Component', () => {
     beforeEach(() => {
@@ -29,7 +30,7 @@ describe('Device_info_grid Component', () => {
         expect(screen.getByText(/Failed to load events\.\s*Please try again later\./)).toBeInTheDocument();
     });
 
-    test.skip('renders the data grid with the fetched data', async () => {
+    test('renders the data grid with the fetched data', async () => {
         useFetchData.mockReturnValue({
             data: [
                 { 
