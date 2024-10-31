@@ -15,6 +15,8 @@ tags:
     description: API endpoints related to users
   - name: Authentication
     description: API endpoints related to authentication
+  - name: Attachments
+    description: API endpoints related to attachments
 
 paths:
   /devices/:
@@ -384,6 +386,65 @@ paths:
           description: Class deleted
         '404':
           description: Class not found
+
+
+  /attachments/upload/{dev_id}:
+    post:
+      tags:
+        - Attachments
+      summary: "Upload attachments for device"
+      description: "Allows uploading one or more attachments (PDF, PNG, JPEG) for device."
+      parameters:
+        - name: "dev_id"
+          in: "path"
+          required: true
+          type: "integer"
+        - name: "files"
+          in: "formData"
+          description: "File(s) to be uploaded"
+          required: true
+          type: "file"
+          x-multiple: true
+      consumes:
+        - "multipart/form-data"
+      responses:
+        200:
+          description: "Files uploaded successfully"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Files uploaded successfully"
+              files:
+                type: "array"
+                items:
+                  type: "string"
+                  example: "example.pdf"
+        400:
+          description: "Bad request - no files or invalid file type"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "No files uploaded"
+        404:
+          description: "Device not found"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "Device not found"
+        500:
+          description: "Internal server error"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "Failed to create directory or save file"
 
   /auth/login:
     post:

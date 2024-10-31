@@ -49,6 +49,10 @@ def create_app(env_config_file: str = ".env-test") -> Flask:
     from backend.api.class_api import class_api
     app.register_blueprint(class_api, url_prefix=f'{config.BACKEND_BASEPATH}/classes')
 
+    from backend.api.attachments_api import attachments_api
+    app.register_blueprint(
+        attachments_api, url_prefix=f'{config.BACKEND_BASEPATH}/attachments')
+
     with app.app_context():
         db.create_all()
 
