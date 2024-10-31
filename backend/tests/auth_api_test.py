@@ -8,7 +8,7 @@ from backend.app import create_app
 @pytest.fixture
 def app():
     # Create and configure a new app instance for each test.
-    app = create_app(env_config_file='.env-test')
+    app = create_app(env_config_file='.env.development')
     app.config['JWT_SECRET_KEY'] = "test_secret_key"
 
     yield app

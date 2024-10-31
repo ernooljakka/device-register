@@ -19,10 +19,9 @@ def set_sqlite_pragma(dbapi_connection, connection_record) -> None:
     cursor.close()
 
 
-def create_app(env_config_file: str = ".env-test") -> Flask:
-    if env_config_file is not None:
-        config.load(env_config_file)
-    app = Flask(__name__)
+def create_app(env_config_file: str = ".env.development") -> Flask:
+    config.load(env_config_file)
+    app: Flask = Flask(__name__)
     CORS(app)
 
     app.config['TESTING'] = config.TESTING
@@ -65,5 +64,5 @@ def create_app(env_config_file: str = ".env-test") -> Flask:
 
 # Running the app
 if __name__ == '__main__':
-    app = create_app()
-    app.run(debug=True)
+    application = create_app()
+    application.run(debug=True)

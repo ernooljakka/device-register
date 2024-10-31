@@ -14,7 +14,7 @@ from backend.utils.config import config
 @pytest.fixture
 def app():
     # Create and configure a new app instance for each test.
-    app = create_app('.env-test')
+    app = create_app(".env.development")
 
     with app.app_context():
         db.create_all()
