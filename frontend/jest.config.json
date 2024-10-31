@@ -1,7 +1,11 @@
 {
-    "testEnvironment": "jsdom",
     "moduleNameMapper": {
         "\\.(gif|ttf|eot|svg|png)$": "<rootDir>/src/test/file_mock.js",
-        "\\.(css|less)$": "<rootDir>/src/test/file_mock.js"
+        "\\.(css|less)$": "<rootDir>/src/test/file_mock.js",
+        "^@/(.*)$": "<rootDir>/src/$1"
+    },
+    "testEnvironment": "jest-environment-jsdom",
+    "transform": {
+        "^.+\\.[t|j]sx?$": "babel-jest"
     }
 }

@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
+import { config } from '../../utils/config';
 
 const useFetchData = (endpoint) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true); 
   const [error, setError] = useState(null); 
 
-  const url = `http://localhost:5000/api/${endpoint}`
+  const url = `${config.BACKEND_ADDR}/${endpoint}`
 
   useEffect(() => {
     const fetchData = async () => {

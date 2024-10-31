@@ -6,6 +6,7 @@ import Device_description from '../components/device_info/device_description';
 import Link_button from '../components/shared/link_button';
 import { useParams } from 'react-router-dom';
 import useFetchData from '../components/shared/fetch_data';
+import { config } from '../utils/config';
 
 const Device_info_view = () => {
   const { id } = useParams();
@@ -58,7 +59,7 @@ const Device_info_view = () => {
         }}>
           <Link_button href={`/devices/${id}/move`} text= "Move"></Link_button>
 
-          <Link_button href={`http://localhost:5000/static/qr/${id}.png`} text= "Get QR"></Link_button>
+          <Link_button href={`${config.BACKEND_ADDR}/static/qr/${id}.png`} text= "Get QR"></Link_button>
 
 
 

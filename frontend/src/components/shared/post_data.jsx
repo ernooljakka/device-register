@@ -1,11 +1,12 @@
 import { useState } from 'react';
+import { config } from '../../utils/config';
 
 const usePostData = (endpoint) => {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const url = `http://localhost:5000/api/${endpoint}/`;
+  const url = `${config.BACKEND_ADDR}/${endpoint}/`;
 
   const postData = async (data) => {
     setLoading(true);
