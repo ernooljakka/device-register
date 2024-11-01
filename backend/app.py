@@ -7,6 +7,7 @@ from sqlalchemy.engine import Engine
 from flask_jwt_extended import JWTManager
 from dotenv import load_dotenv
 
+from backend.utils.backup import Backup
 from backend.utils.config import config
 
 load_dotenv()
@@ -28,10 +29,10 @@ def create_app(env_config_file: str = ".env.development") -> Flask:
     app.config['SQLALCHEMY_DATABASE_URI'] = config.SQLALCHEMY_DATABASE_URI
     app.config['JWT_SECRET_KEY'] = config.JWT_SECRET_KEY
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
     setup_swagger(app)
     JWTManager(app)
     db.init_app(app)
+    Backup()
 
     from backend.api.device_api import device_api
     app.register_blueprint(device_api, url_prefix=f'{config.BACKEND_BASEPATH}/devices')

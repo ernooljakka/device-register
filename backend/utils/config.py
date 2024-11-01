@@ -18,8 +18,12 @@ class Config:
     # Auth related here
     ADMIN_USERNAME: str = None
     ADMIN_PASSWORD: str = None
+
     JWT_SECRET_KEY: str = None
     JWT_EXPIRY_HOURS: int = None
+
+    BACKUP_INTERVAL_SECONDS: int = None
+    BACKUP_MAX_NUMBER_OF_FILES: int = None
 
     # dbconfig
     SQLALCHEMY_DATABASE_URI: str = None
@@ -49,6 +53,11 @@ class Config:
 
         self.JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'your_jwt_secret')
         self.JWT_EXPIRY_HOURS = int(os.getenv('JWT_EXPIRY_HOURS', "1"))
+
+        self.BACKUP_INTERVAL_SECONDS = int(os.getenv('BACKUP_INTERVAL_SECONDS',
+                                                     "43200"))
+        self.BACKUP_MAX_NUMBER_OF_FILES = int(os.getenv('BACKUP_MAX_NUMBER_OF_FILES',
+                                                        "14"))
 
         self.SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI',
                                                  'sqlite:///:memory:')

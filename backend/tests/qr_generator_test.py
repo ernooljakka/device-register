@@ -54,7 +54,6 @@ def test_generate_qr(client, app):
     dev_id = device.dev_id
     generate_qr(dev_id)
 
-    print(config.PROJECT_ROOT)
     qr_image_path = os.path.join(
         config.PROJECT_ROOT, 'backend', 'static', 'qr', f"{dev_id}.png")
 
