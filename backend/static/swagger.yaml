@@ -367,6 +367,8 @@ paths:
           description: Class created
         '400':
           description: Invalid input
+        '409':
+          description: Class already exists
         '500':
           description: Database error
 
@@ -386,6 +388,10 @@ paths:
           description: Class deleted
         '404':
           description: Class not found
+        '409':
+          description: Class cannot be deleted due to foreign key constraint. The class is still used by a device.
+        '500':
+          description: Database error
 
 
   /attachments/upload/{dev_id}:

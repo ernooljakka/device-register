@@ -16,7 +16,7 @@ class Device(db.Model):
     dev_manufacturer = db.Column(db.String(50), nullable=False)
     dev_model = db.Column(db.String(50), nullable=False)
     class_id = db.Column(db.Integer,
-                         db.ForeignKey('classes.class_id', ondelete='CASCADE'),
+                         db.ForeignKey('classes.class_id'),
                          nullable=False)
     dev_comments = db.Column(db.String(200), nullable=False)
 

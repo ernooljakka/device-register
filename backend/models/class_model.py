@@ -11,9 +11,7 @@ class Class(db.Model):
     devices = db.relationship(
         'Device',
         backref='device_class',
-        lazy=True,
-        cascade='all, delete-orphan',
-        passive_deletes=True
+        lazy=True
     )
 
     def to_dict(self) -> dict[str, str]:
@@ -52,6 +50,9 @@ class Class(db.Model):
             db.session.commit()
             return 200, (f"Deleted successfully class {class_id} "
                          f"{class_found.class_name}")
+        except IntegrityError:
+            db.session.rollback()
+            return 409, "Cannot delete a class that is associated with devices."
         except Exception as e:
             db.session.rollback()
             return 500, str(e)

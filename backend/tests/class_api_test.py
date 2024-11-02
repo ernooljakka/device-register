@@ -2,6 +2,7 @@ import pytest
 from backend.app import create_app
 from backend.setup.database_Init import db
 from backend.models.class_model import Class
+from backend.models.device_model import Device
 
 
 @pytest.fixture
@@ -14,8 +15,15 @@ def app():
 
         test_class1: Class = Class(class_name="A")
         test_class2: Class = Class(class_name="B")
+        test_device: Device = Device(
+            dev_name="iDevice",
+            dev_manufacturer="iManufacturer",
+            dev_model="iModel",
+            class_id=2,
+            dev_comments="Location: iLab")
         db.session.add(test_class1)
         db.session.add(test_class2)
+        db.session.add(test_device)
         db.session.commit()
 
     yield app
@@ -83,6 +91,9 @@ def test_delete_class(client, app):
 
     response3 = client.delete('/api/classes/9999')
     assert response3.status_code == 404
+
+    response4 = client.delete('/api/classes/2')
+    assert response4.status_code == 409
 
     with app.app_context():
         classes = Class.query.all()
