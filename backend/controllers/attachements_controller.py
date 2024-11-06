@@ -3,6 +3,7 @@ from flask import jsonify, request, Response
 from backend.models.device_model import Device
 from werkzeug.utils import secure_filename
 
+from backend.utils.config import config
 
 allowed_mime_types = {'application/pdf', 'image/png', 'image/jpeg'}
 
@@ -22,7 +23,8 @@ def upload_files(dev_id: int) -> tuple[Response, int]:
     if len(files) == 0:
         return jsonify({"error": "No files uploaded"}), 400
 
-    device_attachment_directory = os.path.join('static', 'attachments', str(dev_id))
+    device_attachment_directory = os.path.join(config.PROJECT_ROOT, 'backend', 'static',
+                                               'attachments', str(dev_id))
 
     # Create the directory if it does not exist
     try:

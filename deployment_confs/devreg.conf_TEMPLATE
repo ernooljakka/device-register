@@ -1,0 +1,38 @@
+<VirtualHost _default_:443>
+    ServerName {SERVER_NAME}
+
+    # TUNI provided certs
+    SSLEngine on
+    SSLCertificateFile /etc/pki/tls/certs/{SERVER_NAME}-cert.pem
+    SSLCertificateKeyFile /etc/pki/tls/private/{SERVER_NAME}-key.pem
+
+    DocumentRoot {PROJECT_ROOT}/frontend/dist
+    Alias /app {PROJECT_ROOT}/frontend/dist
+    # server front @ / via index, Alias / will override flask /api
+    <Directory {PROJECT_ROOT}/frontend/dist>
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+        AddType application/javascript .js
+        AddType text/css .css
+
+    </Directory>
+
+    # backend wsgi serving, won't use the env despite the configuration, probably need to comp separatel
+    WSGIDaemonProcess flaskapp python-home={PROJECT_ROOT}/venv python-path={PROJECT_ROOT}
+    # Serve flask at /api
+    WSGIScriptAlias /api {PROJECT_ROOT}/wsgi.py
+    <Directory {PROJECT_ROOT}>
+        Require all granted
+    </Directory>
+
+    # static filesystem, DO NOT STORE ANYTHING PRIVATE THERE
+    Alias /static {PROJECT_ROOT}/backend/static
+    <Directory {PROJECT_ROOT}/backend/static/>
+        Require all granted
+    </Directory>
+
+    # logging
+    ErrorLog /var/log/httpd/devreg_error.log
+    CustomLog /var/log/httpd/devreg_access.log combined
+</VirtualHost>
