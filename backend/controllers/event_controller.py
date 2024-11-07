@@ -58,11 +58,13 @@ def create_event(event_data=None) -> tuple[Response, int]:
                                                  'user',
                                                  'move_time',
                                                  'loc_name',
+                                                 'company',
                                                  'comment')):
             return (jsonify({'error': "Event must have"
                                       " dev_id,"
                                       " move_time,"
                                       " loc_name,"
+                                      " company,"
                                       " comment, and"
                                       " user"}),
                     400)
@@ -96,6 +98,7 @@ def create_event(event_data=None) -> tuple[Response, int]:
                           user_id=user_id,
                           move_time=move_time,
                           loc_name=event_item['loc_name'],
+                          company=event_item['company'],
                           comment=event_item['comment'])
         event_list.append(new_event)
 
@@ -116,7 +119,8 @@ def update_event(event_id: int) -> tuple[Response, int]:
     if not isinstance(event_json, dict):
         return jsonify({'error': "Expected an event object"}), 400
 
-    allowed_keys = {'dev_id', 'user', 'move_time', 'loc_name', 'comment'}
+    allowed_keys = {'dev_id', 'user', 'move_time',
+                    'loc_name', 'company', 'comment'}
     invalid_keys = set(event_json.keys()) - allowed_keys
     if invalid_keys:
         return jsonify({'error': f"Illegal keys :{', '.join(invalid_keys)}"}), 400
@@ -150,6 +154,9 @@ def update_event(event_id: int) -> tuple[Response, int]:
 
     if 'loc_name' in event_json:
         event.loc_name = event_json['loc_name']
+
+    if 'company' in event_json:
+        event.company = event_json['company']
 
     if 'comment' in event_json:
         event.comment = event_json['comment']

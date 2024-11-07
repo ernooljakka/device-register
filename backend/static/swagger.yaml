@@ -264,6 +264,7 @@ paths:
               - dev_id: 1
                 move_time: "2024-12-11 11:11:11"
                 loc_name: "Room123"
+                company: "Teknologiafirma"
                 comment: "Move"
                 user:
                   user_name: "Siirtäjä"
@@ -271,6 +272,7 @@ paths:
               - dev_id: 2
                 move_time: "2024-12-12 12:12:12"
                 loc_name: "Room345"
+                company: "Toinen firma"
                 comment: "Move2"
                 user:
                   user_name: "Päällikkö"
@@ -615,6 +617,9 @@ definitions:
       user_email:
         type: string
         example: "email@email.com"
+      company:
+        type: string
+        example: "Oy Firma Ab"
       comment:
         type: string
         example: "Rikki"
@@ -630,6 +635,8 @@ definitions:
         format: date-time
         example: "2024-12-11 11:11:11"
       loc_name:
+        type: string
+      company:
         type: string
       comment:
         type: string
@@ -652,6 +659,9 @@ definitions:
       loc_name:
         type: string
         example: "Room 101"
+      company:
+        type: string
+        example: "Firma Oy"
       comment:
         type: string
         example: "Routine maintenance performed"

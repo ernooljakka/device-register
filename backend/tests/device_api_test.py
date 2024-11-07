@@ -243,6 +243,7 @@ def test_get_events_by_device_id(client, app):
             user_id=1,
             move_time=func.now(),
             loc_name='Lab',
+            company='Firma 1',
             comment='Hello')
         db.session.add(test_event1)
         db.session.commit()
@@ -252,6 +253,7 @@ def test_get_events_by_device_id(client, app):
             user_id=1,
             move_time=func.now(),
             loc_name='Labz',
+            company='Firma 2',
             comment='Hi')
         db.session.add(test_event2)
         db.session.commit()
@@ -264,11 +266,13 @@ def test_get_events_by_device_id(client, app):
         assert data[0]['dev_id'] == "1"
         assert data[0]['user_id'] == "1"
         assert data[0]['loc_name'] == "Lab"
+        assert data[0]['company'] == "Firma 1"
         assert data[0]['comment'] == "Hello"
         assert data[0]['user_name'] == "User"
         assert data[1]['dev_id'] == "1"
         assert data[1]['user_id'] == "1"
         assert data[1]['loc_name'] == "Labz"
+        assert data[1]['company'] == "Firma 2"
         assert data[1]['comment'] == "Hi"
         assert data[1]['user_name'] == "User"
 
@@ -310,6 +314,7 @@ def test_remove_devices(client, app):
             user_id=test_user.user_id,
             move_time=func.now(),
             loc_name='Lab',
+            company='Firma 1',
             comment='Event 1',
         )
         test_event2 = Event(
@@ -317,6 +322,7 @@ def test_remove_devices(client, app):
             user_id=test_user.user_id,
             move_time=func.now(),
             loc_name='Lab',
+            company='Firma 2',
             comment='Event 2',
         )
 
@@ -364,6 +370,7 @@ def test_get_current_locations(client, app):
             user_id=test_user.user_id,
             move_time=func.now(),
             loc_name="Location 1",
+            company='Firma 1',
             comment="Device 1 is here"
         )
         db.session.add(event1)
@@ -373,6 +380,7 @@ def test_get_current_locations(client, app):
             user_id=test_user.user_id,
             move_time=func.now(),
             loc_name="Location 2",
+            company='Firma 2',
             comment="Device 2 is here"
         )
         db.session.add(event2)

@@ -63,6 +63,7 @@ def create_devices() -> tuple[Response, int]:
             },
             'move_time': datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S'),
             'loc_name': location,
+            'company': '',
             'comment': ''
         }
         home_event_list.append(new_event_json)

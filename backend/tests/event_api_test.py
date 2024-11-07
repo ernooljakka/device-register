@@ -48,11 +48,13 @@ def app():
                                    user_id=1,
                                    move_time=func.now(),
                                    loc_name='Lab',
+                                   company='Firma',
                                    comment="I have nothing to say")
         test_event2: Event = Event(dev_id=2,
                                    user_id=1,
                                    move_time=func.now(),
                                    loc_name='Lab',
+                                   company="Firma",
                                    comment="I have a lot to say")
         db.session.add(test_event1)
         db.session.add(test_event2)
@@ -83,6 +85,7 @@ def test_event_to_dict(app):
         assert event_dict['user_id'] == str(event.user_id)
         assert event_dict['loc_name'] == event.loc_name
         assert event_dict['move_time'] == event.move_time.isoformat()
+        assert event_dict['company'] == event.company
         assert event_dict['comment'] == event.comment
 
 
@@ -99,6 +102,7 @@ def test_get_all_events(client):
     assert data[0]['user_name'] == "User"
     assert data[0]['user_email'] == "user@mail.com"
     assert data[0]['loc_name'] == "Lab"
+    assert data[0]['company'] == "Firma"
     assert data[0]['comment'] == "I have nothing to say"
     assert data[1]['dev_id'] == "2"
     assert data[1]['dev_name'] == "Device B"
@@ -106,6 +110,7 @@ def test_get_all_events(client):
     assert data[1]['user_name'] == "User"
     assert data[1]['user_email'] == "user@mail.com"
     assert data[1]['loc_name'] == "Lab"
+    assert data[1]['company'] == "Firma"
     assert data[1]['comment'] == "I have a lot to say"
 
 
@@ -120,6 +125,7 @@ def test_get_event_by_id(client):
     assert data['user_name'] == "User"
     assert data['user_email'] == "user@mail.com"
     assert data['loc_name'] == "Lab"
+    assert data['company'] == "Firma"
     assert data['comment'] == "I have nothing to say"
 
     response_404 = client.get('/api/events/9999')
@@ -131,6 +137,7 @@ def test_create_event(client):
         'dev_id': 1,
         'move_time': "2024-10-02 14:14:28",
         'loc_name': "Room 1",
+        'company': "Firma",
         'comment': "You should clean your sockets",
         'user': {
             'user_name': 'User',
@@ -145,6 +152,7 @@ def test_create_event(client):
             'dev_id': 1,
             'move_time': "2024-10-02 14:14:28",
             'loc_name': "Room 1",
+            'company': "Firma",
             'comment': "You should clean your sockets",
             'user': {
                 'user_name': 'User',
@@ -155,6 +163,7 @@ def test_create_event(client):
             'dev_id': 2,
             'move_time': "2024-10-02 14:14:29",
             'loc_name': "Room 1",
+            'company': "Firma",
             'comment': "You should clean your room",
             'user': {
                 'user_name': 'User',
@@ -176,6 +185,7 @@ def test_create_event(client):
     payload5 = {
         'dev_id': 1,
         'move_time': "2024-10-02 14:14:28",
+        'company': "Firma",
         'comment': "You should clean your sockets",
         'user': {
             'user_name': 'User',
@@ -189,6 +199,7 @@ def test_create_event(client):
         'dev_id': 1,
         'move_time': "2024-10-02 14:14",
         'loc_name': "Room 1",
+        'company': "Firma",
         'comment': "You should clean your sockets",
         'user': {
             'user_name': 'User',
@@ -202,6 +213,7 @@ def test_create_event(client):
         'dev_id': 1,
         'move_time': "2024-10-02 14:14:28",
         'loc_name': "Room 1",
+        'company': "Firma",
         'comment': "You should clean your sockets",
         'user': 1
     }
@@ -212,6 +224,7 @@ def test_create_event(client):
         'dev_id': 1,
         'move_time': "2024-10-02 14:14:28",
         'loc_name': "Room 1",
+        'company': "Firma",
         'comment': "You should clean your sockets",
         'user': {
             'user_name': 'User'
@@ -224,6 +237,7 @@ def test_create_event(client):
         'dev_id': 9999,
         'move_time': "2024-10-02 14:14:28",
         'loc_name': "Room 1",
+        'company': "Firma",
         'comment': "You should clean your sockets",
         'user': {
             'user_name': 'User',
@@ -249,6 +263,7 @@ def test_patch_event(client):
         'dev_id': 1,
         'move_time': "2024-10-03 14:14:29",
         'loc_name': "Room 2",
+        'company': "Joku toinen firma",
         'comment': "You should clean your sockets",
         'user': {
             'user_name': 'No longer User',
@@ -263,6 +278,7 @@ def test_patch_event(client):
     assert event2_json['dev_id'] == "1"
     assert event2_json['move_time'] == "2024-10-03T14:14:29"
     assert event2_json['loc_name'] == "Room 2"
+    assert event2_json['company'] == 'Joku toinen firma'
     assert event2_json['comment'] == "You should clean your sockets"
     user_id = event2_json['user_id']
     user_response = client.get(f'/api/users/{user_id}')
@@ -301,6 +317,7 @@ def test_patch_event(client):
         'dev_id': 1,
         'move_time': "2024-10-03 14:14:29",
         'loc_name': "Room 2",
+        'company': "Testifirma",
         'comment': "You should clean your sockets",
         'user': {
             'naam': 'No longer User',
@@ -314,6 +331,7 @@ def test_patch_event(client):
         'dev_id': 1,
         'move_time': "2024-10-03 14:14:29",
         'loc_name': "Room 2",
+        'company': "Testifirma",
         'comment': "You should clean your sockets",
         'user': {
             'user_name': 'No longer User',
@@ -327,6 +345,7 @@ def test_patch_event(client):
         'dev_id': 1,
         'move_time': "2024-10-03 14:14:29",
         'loc_name': "Room 2",
+        'company': "Testifirma",
         'comment': "You should clean your sockets",
         'user': [
             {

@@ -13,6 +13,7 @@ class Event(db.Model):
                         nullable=False)
     move_time = db.Column(db.DateTime, nullable=False)
     loc_name = db.Column(db.String(200), nullable=False)
+    company = db.Column(db.String(100), nullable=False)
     comment = db.Column(db.String(500), nullable=False)
 
     def to_dict(self) -> dict[str, str]:
@@ -22,6 +23,7 @@ class Event(db.Model):
             'user_id': str(self.user_id),
             'move_time': self.move_time.isoformat() if self.move_time else None,
             'loc_name': self.loc_name,
+            'company': self.company,
             'comment': self.comment
         }
 
