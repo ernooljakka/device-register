@@ -1,12 +1,23 @@
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import validates
+
 from backend.setup.database_Init import db
 
 
 class Class(db.Model):
     __tablename__ = 'classes'
 
+    @validates('class_name')
+    def validate_length(self, key, data):
+        max_lengths = {
+            'class_name': 50
+        }
+        if len(data) > max_lengths[key]:
+            return data[:max_lengths[key]]
+        return data
+
     class_id = db.Column(db.Integer, primary_key=True)
-    class_name = db.Column(db.String(50), nullable=False, unique=True)
+    class_name = db.Column(db.String, nullable=False, unique=True)
 
     devices = db.relationship(
         'Device',

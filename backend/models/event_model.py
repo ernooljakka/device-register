@@ -1,10 +1,21 @@
 from backend.setup.database_Init import db
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import selectinload, joinedload
+from sqlalchemy.orm import selectinload, joinedload, validates
 
 
 class Event(db.Model):
     __tablename__: str = 'events'
+
+    @validates('loc_name', 'company', 'comment')
+    def validate_length(self, key, data):
+        max_lengths = {
+            'loc_name': 100,
+            'company': 100,
+            'comment': 500,
+        }
+        if len(data) > max_lengths[key]:
+            return data[:max_lengths[key]]
+        return data
 
     event_id = db.Column(db.Integer, primary_key=True)
     dev_id = db.Column(db.Integer, db.ForeignKey('devices.dev_id', ondelete='CASCADE'),
@@ -12,9 +23,9 @@ class Event(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id', ondelete='CASCADE'),
                         nullable=False)
     move_time = db.Column(db.DateTime, nullable=False)
-    loc_name = db.Column(db.String(200), nullable=False)
-    company = db.Column(db.String(100), nullable=False)
-    comment = db.Column(db.String(500), nullable=False)
+    loc_name = db.Column(db.String, nullable=False)
+    company = db.Column(db.String, nullable=False)
+    comment = db.Column(db.String, nullable=False)
 
     def to_dict(self) -> dict[str, str]:
         return {

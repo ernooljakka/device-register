@@ -1,14 +1,26 @@
 from typing import Union
 
+from sqlalchemy.orm import validates
+
 from backend.setup.database_Init import db
 
 
 class User(db.Model):
     __tablename__ = 'users'
 
+    @validates('user_name', 'user_email')
+    def validate_length(self, key, data):
+        max_lengths = {
+            'user_name': 100,
+            'user_email': 50
+        }
+        if len(data) > max_lengths[key]:
+            return data[:max_lengths[key]]
+        return data
+
     user_id = db.Column(db.Integer, primary_key=True)
-    user_name = db.Column(db.String(100), nullable=False)
-    user_email = db.Column(db.String(50), nullable=False, unique=True)
+    user_name = db.Column(db.String, nullable=False)
+    user_email = db.Column(db.String, nullable=False, unique=True)
 
     events = db.relationship('Event', backref='user', lazy=True)
 
