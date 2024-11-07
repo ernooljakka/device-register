@@ -1,8 +1,7 @@
+from datetime import datetime
 from flask import jsonify, request, Response
-
 from backend.models.event_model import Event
 from backend.controllers.user_controller import add_or_update_user
-from datetime import datetime
 
 
 def get_all_events() -> tuple[Response, int]:

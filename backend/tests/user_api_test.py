@@ -2,6 +2,7 @@ import pytest
 from backend.app import create_app
 from backend.setup.database_Init import db
 from backend.models.user_model import User
+from flask_jwt_extended import create_access_token
 
 
 @pytest.fixture
@@ -30,6 +31,13 @@ def client(app):
     return app.test_client()
 
 
+@pytest.fixture
+def auth_header(app):
+    with app.app_context():
+        access_token = create_access_token(identity="tester")
+        return {"Authorization": f"Bearer {access_token}"}
+
+
 def test_user_to_dict(app):
     with app.app_context():
         user = User.query.first()
@@ -41,9 +49,9 @@ def test_user_to_dict(app):
         assert user_dict['user_email'] == user.user_email
 
 
-def test_get_all_users(client):
+def test_get_all_users(client, auth_header):
     # Test the GET /api/users endpoint.
-    response = client.get('/api/users/')
+    response = client.get('/api/users/', headers=auth_header)
     assert response.status_code == 200
 
     data = response.get_json()
@@ -51,10 +59,13 @@ def test_get_all_users(client):
     assert data[0]['user_name'] == "User xyz"
     assert data[0]['user_email'] == "user@email.com"
 
+    response_401 = client.get('/api/users/')
+    assert response_401.status_code == 401
 
-def test_get_user_by_id(client):
+
+def test_get_user_by_id(client, auth_header):
     # Test the GET /api/users/int:user_id endpoint.
-    response = client.get('/api/users/1')
+    response = client.get('/api/users/1', headers=auth_header)
     assert response.status_code == 200
 
     data = response.get_json()
@@ -62,5 +73,8 @@ def test_get_user_by_id(client):
     assert data['user_name'] == "User xyz"
     assert data['user_email'] == "user@email.com"
 
-    response_404 = client.get('/api/users/9999')
+    response_404 = client.get('/api/users/9999', headers=auth_header)
     assert response_404.status_code == 404
+
+    response_401 = client.get('/api/users/1')
+    assert response_401.status_code == 401
