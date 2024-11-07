@@ -494,6 +494,48 @@ paths:
                 type: "string"
                 example: "Failed to create directory or save file"
 
+  /attachments/list/{dev_id}:
+    get:
+      tags:
+        - Attachments
+      summary: "List attachments for device"
+      description: "Lists all attachments for device."
+      parameters:
+        - name: "dev_id"
+          in: "path"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "List of attachments"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Files retrieved successfully"
+              files:
+                type: "array"
+                items:
+                  type: "string"
+                  example: "/static/attachments/1/example.pdf"
+        404:
+          description: "Directory not found"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "Directory not found"
+        500:
+          description: "Internal server error"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "Failed to read directory"
+
   /auth/login:
     post:
       tags:

@@ -52,3 +52,35 @@ def upload_files(dev_id: int) -> tuple[Response, int]:
 
     return (jsonify({"message": "Files uploaded successfully", "files": saved_files}),
             200)
+
+
+def get_all_files_in_directory(directory_path: str) -> list[str]:
+    try:
+        all_items = os.listdir(directory_path)
+        files = [
+            item for item in all_items
+            if os.path.isfile(os.path.join(directory_path, item))
+        ]
+        return files
+    except OSError as e:
+        print(f"Error accessing directory: {e}")
+        return []
+
+
+def list_files(dev_id: int) -> tuple[Response, int]:
+    device_attachment_directory = os.path.join(config.PROJECT_ROOT, 'backend',
+                                               'static', 'attachments', str(dev_id))
+
+    if not os.path.exists(device_attachment_directory):
+        return jsonify({"error": "Directory not found"}), 404
+
+    all_files = get_all_files_in_directory(device_attachment_directory)
+
+    # Check if there were any issues accessing the files
+    if not all_files:
+        return jsonify({"message": "No files found in the directory"}), 200
+
+    file_urls = [f"/static/attachments/{dev_id}/{file}" for file in all_files]
+
+    return (jsonify({"message": "Files retrieved successfully", "files": file_urls}),
+            200)
