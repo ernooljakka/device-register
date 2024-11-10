@@ -84,3 +84,17 @@ def list_files(dev_id: int) -> tuple[Response, int]:
 
     return (jsonify({"message": "Files retrieved successfully", "files": file_urls}),
             200)
+
+
+def remove_attachments(dev_id: int):
+    device_attachment_directory = os.path.join(config.PROJECT_ROOT, 'backend',
+                                               'static', 'attachments', str(dev_id))
+
+    if os.path.exists(device_attachment_directory):
+        for filename in os.listdir(device_attachment_directory):
+            file_path = os.path.join(device_attachment_directory, filename)
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+
+        # After all files are removed, remove the directory itself
+        os.rmdir(device_attachment_directory)
