@@ -19,12 +19,13 @@ const Move_view = () => {
   const {
     result: eventResult,
     postData: postEventData,
-  } = usePostData('events');
+  } = usePostData('events/');
 
   const [deviceMoveData, setDeviceMoveData] = useState({
     "dev_id": parseInt(id, 10),
     "move_time": "",
     "loc_name": "",
+    "company": "",
     "comment": "",
     "user": {
       "user_email": "",
@@ -142,6 +143,13 @@ const Move_view = () => {
             value={deviceMoveData.user.user_name}
             onChange={handleChange}
             required={true}
+          />
+
+          <TextField
+            label="Company"
+            name="company"
+            value={deviceMoveData.company}
+            onChange={handleChange}
           />
 
           <TextField
