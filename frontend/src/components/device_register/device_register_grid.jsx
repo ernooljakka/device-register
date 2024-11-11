@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 import useFetchData from '../shared/fetch_data';
 
 const Device_register_grid = () => {
-    const { data: devices, loading, error } = useFetchData('devices/current_locations');
+    const { data: devices, loading, error } = useFetchData('devices/current_locations/');
 
     //linking to device info page
     const onRowClicked = (event) => {

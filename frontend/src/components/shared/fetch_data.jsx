@@ -7,11 +7,18 @@ const useFetchData = (endpoint) => {
   const [error, setError] = useState(null); 
 
   const url = `${config.BACKEND_ADDR}/${endpoint}`
+  const access_token = localStorage.getItem("access_token"); // eslint-disable-line no-undef
+
+
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(url);
+        const headers = {
+          'Content-Type': 'application/json',
+          ...(access_token && { 'Authorization': `Bearer ${access_token}` }),
+        }
+        const response = await fetch(url, {headers});
         const result = await response.json();
         setData(result);
       } catch (err) {

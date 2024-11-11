@@ -6,7 +6,7 @@ import { Typography,  } from '@mui/material';
 import useFetchData from '../components/shared/fetch_data';
 
 function Event_view() {
-  const { auth, loading, error } = useFetchData('auth/admin');
+  const {data: auth, loading, error} = useFetchData('auth/admin');
   
   if (loading) {
     return (
@@ -18,7 +18,8 @@ function Event_view() {
     );
   }
 
-  if (error || !auth) { 
+
+  if (error || auth.msg != 'Authorized' ) { 
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', textAlign: 'center' }}>
         <NavigationBar/>

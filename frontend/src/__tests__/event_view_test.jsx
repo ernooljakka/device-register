@@ -30,9 +30,10 @@ describe('EventView Component', () => {
     });
 
     test('renders Navbar, header, and EventGrid correctly when authenticated', () => {
-        useFetchData.mockReturnValue({ auth: true, loading: false, error: null });
+        useFetchData.mockReturnValue({ data: {"msg": "Authorized"}, loading: false, error: null });
 
         render(<EventView />);
+        console.log(useFetchData.mock.results[0].value);
 
         expect(screen.getByText('Mocked NavigationBar')).toBeInTheDocument();
         expect(screen.getByText('Event History')).toBeInTheDocument();
@@ -40,9 +41,9 @@ describe('EventView Component', () => {
     });
 
     test('renders the header text with correct styles when authenticated', () => {
-        useFetchData.mockReturnValue({ auth: true, loading: false, error: null });
-
+        useFetchData.mockReturnValue({data: { "msg": "Authorized" }, loading: false, error: null });
         render(<EventView />);
+        
 
         const viewTitle = screen.getByText('Event History');
         expect(viewTitle).toHaveStyle({
@@ -54,10 +55,10 @@ describe('EventView Component', () => {
     });
 
     test('shows login required message when not authenticated', () => {
-        useFetchData.mockReturnValue({ auth: false, loading: false, error: null });
-
+        useFetchData.mockReturnValue({ data: { "msg": "No token" }, loading: false, error: null });
+        
         render(<EventView />);
-
+        
         expect(screen.queryByText('Mocked NavigationBar')).toBeInTheDocument();
         expect(screen.queryByText('Mocked EventGrid')).not.toBeInTheDocument();
         expect(screen.getByText('You must be logged in to view this content.')).toBeInTheDocument();

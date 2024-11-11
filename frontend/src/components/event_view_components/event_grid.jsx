@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 import useFetchData from '../shared/fetch_data';
 
 const Event_grid = () => {
-    const { data, loading, error } = useFetchData('events');
+    const { data, loading, error } = useFetchData('events/');
 
     const formattedData = data.map(event => ({
         ...event,
@@ -50,6 +50,7 @@ const Event_grid = () => {
       { field: "loc_name", filter: "agTextColumnFilter", headerName: "Location", flex: 2.0, minWidth: 130 }, // 14 characters
       { field: "dev_id", filter: "agTextColumnFilter", headerName: "Device id", flex: 1, minWidth: 130},  // 14 characters
       { field: "user_name", filter: "agTextColumnFilter", headerName: "User name", flex: 1, minWidth: 150 },  // 15 characters
+      { field: "company", filter: "agTextColumnFilter", headerName: "Company", flex: 1, minWidth: 150 },
       
       
     ];

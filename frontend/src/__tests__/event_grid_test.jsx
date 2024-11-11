@@ -39,7 +39,8 @@ describe('DeviceRegisterGrid Component', () => {
                     user_name: '020202', 
                     move_time: moveTime,
                     move_time_iso: moveTime,
-                    loc_name: 'Test Laboratory' 
+                    loc_name: 'Test Laboratory', 
+                    company: "Apple"
                 },
             ],
             loading: false,
@@ -47,6 +48,7 @@ describe('DeviceRegisterGrid Component', () => {
         });
     
         render(<EventGrid />);
+
     
         // Verify cells and headers
         expect(screen.getByText('020202')).toBeInTheDocument();
@@ -60,6 +62,7 @@ describe('DeviceRegisterGrid Component', () => {
         expect(screen.getByText('User name')).toBeInTheDocument();
         expect(screen.getByText('Date/Time')).toBeInTheDocument();
         expect(screen.getByText('Location')).toBeInTheDocument();
+        expect(screen.getByText('Company')).toBeInTheDocument();
     });
     
     

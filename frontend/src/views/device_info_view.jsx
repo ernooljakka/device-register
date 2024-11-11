@@ -12,7 +12,7 @@ const Device_info_view = () => {
   const { id } = useParams();
 
   const { data: device, error } = useFetchData('devices/' + id);
-  const { data: locations} = useFetchData('devices/current_locations');
+  const { data: locations} = useFetchData('devices/current_locations/');
 
   
 

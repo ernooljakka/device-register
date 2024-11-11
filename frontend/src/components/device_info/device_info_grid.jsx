@@ -22,20 +22,21 @@ const Device_info_grid = ({ id }) => {
   // Tells AG-Grid how to filter EU-formatted datetimes by date
   var filterParams = {
     comparator: (filterLocalDateAtMidnight, cellValue) => {
-        const cellDate = new Date(cellValue); // Use ISO string directly
+        const cellDate = new Date(cellValue);
         if (filterLocalDateAtMidnight.getTime() === cellDate.getTime()) {
-            return 0;
+          return 0;
         }
         return cellDate < filterLocalDateAtMidnight ? -1 : 1;
-    },
-  
-    minValidYear: 2024,
+      },
+      minValidYear: 2024,
+      
   };
 
   const columnDefs = [
       { field: "move_time_iso", filter: "agDateColumnFilter", headerName: "Date/Time", flex: 2.0, minWidth: 160,
         filterParams:filterParams, suppressHeaderFilterButton: false, sort: 'desc'// Enough for showing datetime
-        , valueFormatter: (params) => params.data.move_time
+        , valueFormatter: (params) => params.data.move_time, // Display the formatted date
+        valueGetter: (params) => params.data.move_time
       },
       { field: "loc_name", filter: "agTextColumnFilter", headerName: "Location", flex: 2.5, minWidth: 170, autoHeight: true,
         cellStyle: { whiteSpace: 'normal', wordWrap: 'break-word',  lineHeight: 1.2,  paddingTop: '13px', } // text wrapping
