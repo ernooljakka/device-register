@@ -536,6 +536,51 @@ paths:
                 type: "string"
                 example: "Failed to read directory"
 
+
+  /attachments/delete/{dev_id}/{file_name}:
+    delete:
+      summary: "Delete a specific attachment file for a device"
+      description: "Deletes attachment from specified device."
+      tags:
+        - "Attachments"
+      parameters:
+        - name: "dev_id"
+          in: "path"
+          required: true
+          type: "integer"
+        - name: "file_name"
+          in: "path"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "File deleted successfully"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "File deleted successfully"
+        "404":
+          description: "Directory or file not found"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "Directory not found or File not found in the directory"
+        "500":
+          description: "Failed to delete the file due to server error"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "Failed to delete the file"
+              details:
+                type: "string"
+                example: "Detailed error message"
+
   /auth/login:
     post:
       tags:

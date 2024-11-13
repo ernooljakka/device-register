@@ -134,3 +134,45 @@ def test_get_files(client, app):
             if os.path.isfile(file_path):
                 os.remove(file_path)
         os.rmdir(device_attachment_directory)
+
+
+def test_delete_file(client, app):
+    test_file_directory: str = os.path.join(
+        config.PROJECT_ROOT,
+        'backend', 'tests', 'static', 'attachments', 'test_files'
+    )
+
+    device_attachment_directory: str = os.path.join(
+        config.PROJECT_ROOT,
+        'backend', 'static', 'attachments', '1'
+    )
+
+    os.makedirs(device_attachment_directory, exist_ok=True)
+    test_file_path = os.path.join(test_file_directory, 'cat.jpg')
+    device_file_path = os.path.join(device_attachment_directory, 'cat.jpg')
+
+    # Simulate file upload by copying the test file to the device directory
+    with open(test_file_path, 'rb') as f:
+        file_data = f.read()
+    with open(device_file_path, 'wb') as f:
+        f.write(file_data)
+
+    # Ensure the file exists before attempting deletion
+    assert os.path.exists(device_file_path)
+
+    # Valid delete request
+    response_valid_delete = client.delete('/api/attachments/delete/1/cat.jpg')
+    assert response_valid_delete.status_code == 200
+    assert response_valid_delete.json['message'] == "File deleted successfully"
+
+    assert not os.path.exists(device_file_path)
+
+    # Attempt deletion on a non-existent device directory
+    response_nonexistent_device = client.delete('/api/attachments/delete/2/cat.jpg')
+    assert response_nonexistent_device.status_code == 404
+    assert response_nonexistent_device.json['error'] == "Directory not found"
+
+    # Attempt deletion with a non-existent file in an existing directory
+    response_nonexistent_file = client.delete('/api/attachments/delete/1/dog.jpg')
+    assert response_nonexistent_file.status_code == 404
+    assert response_nonexistent_file.json['error'] == "File not found in the directory"

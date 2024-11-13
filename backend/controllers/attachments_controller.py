@@ -98,3 +98,23 @@ def remove_attachments(dev_id: int):
 
         # After all files are removed, remove the directory itself
         os.rmdir(device_attachment_directory)
+
+
+def remove_file(dev_id: int, file_name: str) -> tuple[Response, int]:
+    device_attachment_directory = os.path.join(config.PROJECT_ROOT, 'backend',
+                                               'static', 'attachments', str(dev_id))
+
+    if not os.path.exists(device_attachment_directory):
+        return jsonify({"error": "Directory not found"}), 404
+
+    file_path = os.path.join(device_attachment_directory, file_name)
+
+    if not os.path.exists(file_path):
+        return jsonify({"error": "File not found in the directory"}), 404
+
+    try:
+        os.remove(file_path)
+    except OSError as e:
+        return jsonify({"error": "Failed to delete the file", "details": str(e)}), 500
+
+    return jsonify({"message": "File deleted successfully"}), 200
