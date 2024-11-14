@@ -22,6 +22,7 @@
     WSGIDaemonProcess flaskapp python-home={PROJECT_ROOT}/venv python-path={PROJECT_ROOT}
     # Serve flask at /api
     WSGIScriptAlias /api {PROJECT_ROOT}/wsgi.py
+    WSGIPassAuthorization On
     <Directory {PROJECT_ROOT}>
         Require all granted
     </Directory>

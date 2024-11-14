@@ -25,6 +25,11 @@ class Config:
     BACKUP_INTERVAL_SECONDS: int = None
     BACKUP_MAX_NUMBER_OF_FILES: int = None
 
+    # housekeeping
+    CLEANUP_INTERVAL_SECONDS: int = None
+    DAYS_TO_KEEP: int = None
+    MIN_EVENT_COUNT: int = None
+
     # dbconfig
     SQLALCHEMY_DATABASE_URI: str = None
 
@@ -58,6 +63,11 @@ class Config:
                                                      "43200"))
         self.BACKUP_MAX_NUMBER_OF_FILES = int(os.getenv('BACKUP_MAX_NUMBER_OF_FILES',
                                                         "14"))
+
+        self.CLEANUP_INTERVAL_SECONDS = int(os.getenv('CLEANUP_INTERVAL_SECONDS',
+                                                      "43200"))
+        self.DAYS_TO_KEEP = int(os.getenv('DAYS_TO_KEEP', "180"))
+        self.MIN_EVENT_COUNT = int(os.getenv('MIN_EVENT_COUNT', "5"))
 
         self.SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI',
                                                  'sqlite:///:memory:')

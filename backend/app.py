@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request, jsonify
 from backend.setup.database_Init import db
 from flask_cors import CORS
 from backend.setup.swagger_setup import setup_swagger
@@ -11,6 +11,7 @@ from backend.utils.backup import Backup
 from backend.utils.config import config
 
 load_dotenv()
+backup_instance = None
 
 
 @event.listens_for(Engine, "connect")
@@ -21,6 +22,7 @@ def set_sqlite_pragma(dbapi_connection, connection_record) -> None:
 
 
 def create_app(env_config_file: str = ".env.development") -> Flask:
+
     config.load(env_config_file)
     app: Flask = Flask(__name__)
     CORS(app)
@@ -28,11 +30,15 @@ def create_app(env_config_file: str = ".env.development") -> Flask:
     app.config['TESTING'] = config.TESTING
     app.config['SQLALCHEMY_DATABASE_URI'] = config.SQLALCHEMY_DATABASE_URI
     app.config['JWT_SECRET_KEY'] = config.JWT_SECRET_KEY
+    app.config['JWT_HEADER_NAME'] = 'Authorization'
+    app.config['JWT_HEADER_TYPE'] = 'Bearer'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     setup_swagger(app)
     JWTManager(app)
     db.init_app(app)
-    Backup()
+    global backup_instance
+    if backup_instance is None:
+        backup_instance = Backup()
 
     from backend.api.device_api import device_api
     app.register_blueprint(device_api, url_prefix=f'{config.BACKEND_BASEPATH}/devices')
@@ -59,6 +65,11 @@ def create_app(env_config_file: str = ".env.development") -> Flask:
     @app.route(f'{config.BACKEND_BASEPATH}/flask')
     def index() -> str:
         return "Hello from Flask with SQLAlchemy!"
+
+    @app.route('/headers')
+    def headers():
+        h = dict(request.headers)
+        return jsonify(h), 200
 
     return app
 
