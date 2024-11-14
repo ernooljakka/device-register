@@ -11,7 +11,7 @@ describe('Device_description Component', () => {
     devModel: '123',
   };
 
-  test('renders the device description correctly', () => {
+  test('renders text correctly', () => {
     render(<Device_description 
              devClass={deviceData.devClass} 
              devComments={deviceData.devComments} 
