@@ -38,9 +38,12 @@ const Device_info_grid = ({ id }) => {
         , valueFormatter: (params) => params.data.move_time, // Display the formatted date
         valueGetter: (params) => params.data.move_time
       },
-      { field: "loc_name", filter: "agTextColumnFilter", headerName: "Location", flex: 2.5, minWidth: 170, autoHeight: true,
-        cellStyle: { whiteSpace: 'normal', wordWrap: 'break-word',  lineHeight: 1.2,  paddingTop: '13px', } // text wrapping
-         },
+      { field: "loc_name", filter: "agTextColumnFilter", headerName: "Location", flex: 2.2, minWidth: 170, autoHeight: true,
+          cellStyle: { whiteSpace: 'normal', wordWrap: 'break-word',  lineHeight: 1.2,  paddingTop: '13px', } // text wrapping
+        },
+      { field: "user_name", filter: "agTextColumnFilter", headerName: "User name", flex: 2, minWidth: 150, autoHeight: true,
+          cellStyle: { whiteSpace: 'normal', wordWrap: 'break-word', lineHeight: 1.2,  paddingTop: '13px' } // text wrapping  
+        },
       { field: "comment", filter: "agTextColumnFilter", headerName: "Comment", flex: 2, minWidth: 200, autoHeight: true,
         cellStyle: { whiteSpace: 'normal', wordWrap: 'break-word', lineHeight: 1.2,  paddingTop: '13px' } // text wrapping  
         },

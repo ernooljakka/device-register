@@ -36,7 +36,8 @@ describe('Device_info_grid Component', () => {
                 { 
                     comment: 'toimii', 
                     move_time: "2024-10-08T12:34:00", 
-                    loc_name: 'Labra' 
+                    loc_name: 'Labra', 
+                    user_name: 'User1'
                 },
             ],
             loading: false,
@@ -49,9 +50,11 @@ describe('Device_info_grid Component', () => {
         expect(screen.getByText('toimii')).toBeInTheDocument();
         expect(screen.getByText('08/10/2024, 15:34')).toBeInTheDocument();
         expect(screen.getByText('Labra')).toBeInTheDocument();
+        expect(screen.getByText('User1')).toBeInTheDocument();
         // Headers
         expect(screen.getByText('Comment')).toBeInTheDocument();
         expect(screen.getByText('Date/Time')).toBeInTheDocument();
         expect(screen.getByText('Location')).toBeInTheDocument();
+        expect(screen.getByText('User name')).toBeInTheDocument();
     });
 });
