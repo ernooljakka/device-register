@@ -31,7 +31,8 @@ const Login_view = () => {
       });
     };
 
-  const onSubmit = () => {
+  const onSubmit = (e) => {
+    e.preventDefault()
     const { password, username } = loginData;
     console.log(loginData);
     // Check for empty fields
@@ -90,6 +91,7 @@ const Login_view = () => {
               value={loginData.username}
               onChange={handleChange}
               required={true}
+              autoFocus
             />
   
             <TextField
@@ -100,7 +102,7 @@ const Login_view = () => {
               required={true}
             />
   
-            <Function_button text='Login' onClick={onSubmit} ></Function_button>
+            <Function_button text='Login' type="submit" ></Function_button>
          </Form_container> 
   
          

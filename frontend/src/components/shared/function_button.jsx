@@ -5,7 +5,6 @@ const Function_button = ({
   text=' ',
   variant='contained',
   onClick,
-  type,
   size = 'medium',
   color,
   startIcon, //if icons are needed
@@ -17,7 +16,7 @@ const Function_button = ({
     <Button
       variant={variant}
       onClick={onClick}
-      type={type}
+      type="submit"
       size = {size}
       color={color}
       startIcon={startIcon}
@@ -31,7 +30,7 @@ const Function_button = ({
 Function_button.propTypes = {
   text: PropTypes.string.isRequired, //mandatory
   onClick: PropTypes.func,
-  type: PropTypes.oneOf(["input"]),
+  type: PropTypes.oneOf(['button', 'submit', 'reset']),
   variant: PropTypes.oneOf(["text", "outlined", "contained"]),
   size: PropTypes.oneOf(["small", "medium", "large"]),
   color: PropTypes.oneOf(

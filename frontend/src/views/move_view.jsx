@@ -57,7 +57,8 @@ const Move_view = () => {
     }
   };
 
-  const onSubmit = () => {
+  const onSubmit = (e) => {
+    e.preventDefault()
     const { loc_name, company, user } = deviceMoveData;
     // Check for empty fields
     if (!loc_name || !user.user_name || !user.user_email || !company) {
@@ -155,7 +156,12 @@ const Move_view = () => {
               value={deviceMoveData.loc_name}
               onChange={handleChange}
               required={true}
-              inputProps={{ maxLength: 100 }}
+              slotProps={{
+                htmlInput: {
+                  maxLength: 100,  // Set max length for the input field
+                },
+              }}
+              autoFocus
             />
 
             <TextField
@@ -164,7 +170,11 @@ const Move_view = () => {
               value={deviceMoveData.user.user_name}
               onChange={handleChange}
               required={true}
-              inputProps={{ maxLength: 100 }}
+              slotProps={{
+                htmlInput: {
+                  maxLength: 100,  // Set max length for the input field
+                },
+              }}
             />
 
             <TextField
@@ -173,7 +183,11 @@ const Move_view = () => {
               value={deviceMoveData.company}
               onChange={handleChange}
               required={true}
-              inputProps={{ maxLength: 100 }}
+              slotProps={{
+                htmlInput: {
+                  maxLength: 100,  // Set max length for the input field
+                },
+              }}
             />
 
             <TextField
@@ -182,7 +196,11 @@ const Move_view = () => {
               value={deviceMoveData.user.user_email}
               onChange={handleChange}
               required={true}
-              inputProps={{ maxLength: 100 }}
+              slotProps={{
+                htmlInput: {
+                  maxLength: 100,  // Set max length for the input field
+                },
+              }}
             />
 
             <TextField
@@ -190,10 +208,14 @@ const Move_view = () => {
               name="comment"
               value={deviceMoveData.comment}
               onChange={handleChange}
-              inputProps={{ maxLength: 300 }}
+              slotProps={{
+                htmlInput: {
+                  maxLength: 300,  // Set max length for the input field
+                },
+              }}
             />
 
-            <Function_button text='Move' onClick={onSubmit} ></Function_button>
+            <Function_button text='Move' type="submit" ></Function_button>
         </Form_container> 
 
         
