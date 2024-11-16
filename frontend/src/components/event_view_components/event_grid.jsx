@@ -43,13 +43,13 @@ const Event_grid = () => {
     };
 
     const columnDefs = [
-      { field: "move_time_iso", filter: "agDateColumnFilter", headerName: "Date/Time", flex: 2.0, minWidth: 150, // Enough for showing datetime
+      { field: "move_time_iso", filter: "agDateColumnFilter", headerName: "Date/Time", flex: 1.0, minWidth: 150, // Enough for showing datetime
             filterParams:filterParams, suppressHeaderFilterButton: false, sort: 'desc'
             , valueFormatter: (params) => params.data.move_time
       },
-      { field: "loc_name", filter: "agTextColumnFilter", headerName: "Location", flex: 2.0, minWidth: 130 }, // 14 characters
-      { field: "dev_id", filter: "agTextColumnFilter", headerName: "Device id", flex: 1, minWidth: 130},  // 14 characters
+      { field: "loc_name", filter: "agTextColumnFilter", headerName: "Location", flex: 1.2, minWidth: 130 }, // 14 characters
       { field: "user_name", filter: "agTextColumnFilter", headerName: "User name", flex: 1, minWidth: 150 },  // 15 characters
+      { field: "user_email", filter: "agTextColumnFilter", headerName: "Email", flex: 1, minWidth: 200 },
       { field: "company", filter: "agTextColumnFilter", headerName: "Company", flex: 1, minWidth: 150 },
       
       

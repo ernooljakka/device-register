@@ -7,17 +7,22 @@ import PropTypes from 'prop-types'
 const Device_info_grid = ({ id }) => {
   const { data: events, loading, error } = useFetchData('devices/' + id + '/events');
 
-  const formattedEvents = events.map(event => ({
-    ...event,
-    // Format move_time to DD/MM/YYYY HH:MM:SS, parse forces javascript to treat time as UTC format
-    move_time: new Date(Date.parse(event.move_time + 'Z')).toLocaleString('en-GB', {
-        day: '2-digit', month: '2-digit', year: 'numeric',
-        hour: '2-digit', minute: '2-digit', 
-        hour12: false, 
+  const formattedEvents = Array.isArray(events)
+  ? events.map(event => ({
+      ...event,
+      // Format move_time to DD/MM/YYYY HH:MM:SS, parse forces javascript to treat time as UTC format
+      move_time: new Date(Date.parse(event.move_time + 'Z')).toLocaleString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
       }),
       // `move_time_iso` in ISO format for easier sorting/filtering
-    move_time_iso: new Date(Date.parse(event.move_time + 'Z')).toISOString()
-  }));
+      move_time_iso: new Date(Date.parse(event.move_time + 'Z')).toISOString(),
+    }))
+  : [];
 
   // Tells AG-Grid how to filter EU-formatted datetimes by date
   var filterParams = {
