@@ -6,6 +6,7 @@ import EventView from './views/event_view';
 import MoveView from './views/move_view';
 import AdminView from "./views/admin_view"; // Assuming this will exist soon as well.
 import LoginView from "./views/login_view";
+import AddView from "./views/add_view";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/devices/:id/move" element={<MoveView />} />
           <Route path="/admin" element={<AdminView/>} />
           <Route path="/login" element={<LoginView/>} />
+          <Route path="/add" element={<AddView/>} />
         </Routes>
       </Router>
   );

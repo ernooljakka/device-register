@@ -35,7 +35,6 @@ function Device_register_view() {
           }}>
           Device Register
           </Typography>
-          {/*TODO: add actual link to add page when it's ready */}
           <Link_button href={`${config.FRONTEND_ADDR}/add`} text= "Add" sx={{ mt: 3}}></Link_button>
 
         </Box>
