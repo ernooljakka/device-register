@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 
 from backend.utils.backup import Backup
 from backend.utils.config import config
+from backend.utils.housekeeper import Housekeeper
 
 load_dotenv()
 backup_instance = None
@@ -36,6 +37,7 @@ def create_app(env_config_file: str = ".env.development") -> Flask:
     setup_swagger(app)
     JWTManager(app)
     db.init_app(app)
+    Housekeeper()
     global backup_instance
     if backup_instance is None:
         backup_instance = Backup()
