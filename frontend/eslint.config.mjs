@@ -37,7 +37,8 @@ export default [
         fetch: 'readonly', // Define fetch as a global to prevent ESLint errors
         global: 'readonly', // Define global as a readonly global
         console: 'readonly',
-        window: 'readonly'
+        window: 'readonly',
+        Event: 'readonly'
       },
       parserOptions: {
         ecmaFeatures: {

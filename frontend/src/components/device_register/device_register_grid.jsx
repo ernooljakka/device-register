@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import GridTable from '../shared/grid_table.jsx';
 import Typography from '@mui/material/Typography';
 import useFetchData from '../shared/fetch_data';
+import Function_button from '../shared/function_button.jsx';
 
 const Device_register_grid = () => {
     const { data: devices, loading, error } = useFetchData('devices/current_locations/');
@@ -35,6 +36,39 @@ const Device_register_grid = () => {
             },
     ];
 
+    //export csv functionality
+    const gridRef = useRef();
+
+    const exportClick = () => {
+        if (gridRef.current) {
+
+          gridRef.current.exportCsv();
+        } else {
+          console.error('Grid reference is not available');
+        }
+      };
+
+    useEffect(() => {
+        const handleExportClick = () => {
+            if (gridRef.current) {
+              gridRef.current.exportCsv();
+            } else {
+              console.error('Grid reference is not available');
+            }
+          };
+      
+        const handleEvent = () => {
+            handleExportClick();
+        };
+          
+        window.addEventListener('Export', handleEvent);
+      
+        return () => {
+          window.removeEventListener('Export', handleEvent);
+        };
+    }, []);
+    
+
     if (loading) {
         return (
             <Typography sx={{ mt: 7, fontSize: 'clamp(1.5rem, 10vw, 2.4rem)' }}>
@@ -51,14 +85,18 @@ const Device_register_grid = () => {
             </Typography>
         );
     }
-
+    // style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }
     return (
+        <div>
+        <Function_button size='small' onClick={exportClick} text='Export CSV'/>    
         <GridTable 
             rowData={devices.length > 0 ? devices : []} 
             columnDefs={columnDefs}
             onRowClicked={onRowClicked}
             getRowStyle={getRowStyle}
+            ref={gridRef}
         />
+        </div>
     );
 };
 

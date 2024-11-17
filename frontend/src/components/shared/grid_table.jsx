@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { forwardRef, useRef, useImperativeHandle, useState } from 'react';
 import Box from '@mui/material/Box';
 import { AgGridReact } from 'ag-grid-react';
 import SearchBar from './search_bar';
@@ -6,8 +6,24 @@ import PropTypes from 'prop-types';
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 
-const Grid_table = ({ rowData, columnDefs, onRowClicked, getRowStyle }) => {
+const Grid_table = forwardRef(({ rowData, columnDefs, onRowClicked, getRowStyle }, ref) => {
   const [quickFilterText, setQuickFilterText] = useState("");
+
+  const gridRef = useRef(null);
+
+  useImperativeHandle(ref, () => ({
+    exportCsv: () => {
+      if (gridRef.current && gridRef.current.api) {
+        const exportParams = {
+          columnSeparator: ';', 
+      };
+        gridRef.current.api.exportDataAsCsv(exportParams);
+
+      } else {
+        console.error('Grid API is not available');
+      }
+    },
+  }));
 
   return (
     <Box
@@ -27,6 +43,7 @@ const Grid_table = ({ rowData, columnDefs, onRowClicked, getRowStyle }) => {
       />
       
       <AgGridReact
+        ref={gridRef}
         rowData={rowData}
         columnDefs={columnDefs}
         defaultColDef={{
@@ -47,7 +64,9 @@ const Grid_table = ({ rowData, columnDefs, onRowClicked, getRowStyle }) => {
       />
     </Box>
   );
-};
+});
+
+Grid_table.displayName = "Grid_table";
 
 Grid_table.propTypes = {
   rowData: PropTypes.array.isRequired,

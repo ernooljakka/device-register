@@ -5,6 +5,7 @@ import NavigationBar from '../components/shared/navigation_bar';
 import Link_button from '../components/shared/link_button';
 import Function_button from '../components/shared/function_button';
 import useFetchData from '../components/shared/fetch_data';
+import DeviceGrid from '../components/device_register/device_register_grid';
 
 function Admin_view() {
 
@@ -18,6 +19,11 @@ function Admin_view() {
         </Typography>
       </Box>
     );
+  }
+
+  //Handle exporting/downloading the csv file
+  const exportClick = () => {
+    window.dispatchEvent(new Event('Export'));
   }
 
 
@@ -46,8 +52,11 @@ function Admin_view() {
         </Typography>
         <Link_button href={`/`} text= "Devices"></Link_button>
         <Link_button href={`/events`} text= "Events"></Link_button>
-        <Function_button  text= "Export CSV"></Function_button>
+        <Function_button onClick={exportClick} text= "Export CSV"></Function_button>
       </Box>
+      <div style={{display: 'none'}}>
+        <DeviceGrid/>
+      </div>
     </div>
   )
 }

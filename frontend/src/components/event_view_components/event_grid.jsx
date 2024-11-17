@@ -1,7 +1,8 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import GridTable from '../shared/grid_table.jsx';
 import Typography from '@mui/material/Typography';
 import useFetchData from '../shared/fetch_data';
+import Function_button from '../shared/function_button.jsx';
 
 const Event_grid = () => {
     const { data, loading, error } = useFetchData('events/');
@@ -55,6 +56,18 @@ const Event_grid = () => {
       
     ];
 
+    //export csv functionality
+    const gridRef = useRef();
+
+    const exportClick = () => {
+        if (gridRef.current) {
+
+          gridRef.current.exportCsv();
+        } else {
+          console.error('Grid reference is not available');
+        }
+      };
+
     if (loading) {
         return (
             <Typography sx={{ mt: 7, fontSize: 'clamp(1.5rem, 10vw, 2.4rem)' }}>
@@ -73,12 +86,16 @@ const Event_grid = () => {
     }
 
     return (
+        <div>
+        <Function_button onClick={exportClick} size='small' text='Export csv'/>
         <GridTable 
             rowData={formattedData.length > 0 ? formattedData : []} 
             columnDefs={columnDefs}
             onRowClicked={onRowClicked}
             getRowStyle={getRowStyle}
+            ref={gridRef}
         />
+        </div>
     );
 };
 
