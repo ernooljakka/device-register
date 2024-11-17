@@ -2,6 +2,7 @@ from datetime import datetime
 from flask import jsonify, request, Response
 from backend.models.event_model import Event
 from backend.controllers.user_controller import add_or_update_user
+from backend.utils.check_admin import it_is_admin
 
 
 def get_all_events() -> tuple[Response, int]:
@@ -46,6 +47,10 @@ def create_event(event_data=None) -> tuple[Response, int]:
         for item in event_data_list:
             if not isinstance(item, dict):
                 return jsonify({'error': "Expected event objects in the list"}), 400
+
+    if len(event_data_list) > 1 and not it_is_admin():
+        return jsonify({'error': "Only admin allowed to add multiple"
+                                 "events in one request"}), 401
 
     event_list = []
 

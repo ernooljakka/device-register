@@ -1,8 +1,8 @@
 import os
 from flask import jsonify, request, Response
-from backend.models.device_model import Device
 from werkzeug.utils import secure_filename
-
+from backend.models.device_model import Device
+from backend.utils.check_admin import it_is_admin
 from backend.utils.config import config
 
 allowed_mime_types = {'application/pdf', 'image/png', 'image/jpeg'}
@@ -22,6 +22,10 @@ def upload_files(dev_id: int) -> tuple[Response, int]:
     files = request.files.getlist('files')
     if len(files) == 0:
         return jsonify({"error": "No files uploaded"}), 400
+
+    if len(files) > 1 and not it_is_admin():
+        return jsonify({'error': "Only admin allowed to add multiple"
+                                 "attachments in one request"}), 401
 
     device_attachment_directory = os.path.join(config.PROJECT_ROOT, 'backend', 'static',
                                                'attachments', str(dev_id))

@@ -24,6 +24,12 @@ paths:
       tags:
         - Devices
       summary: Get all devices
+      parameters:
+        - in: header
+          name: Authorization
+          description: Bearer format
+          required: false
+          type: string
       responses:
         '200':
           description: A list of devices
@@ -36,6 +42,11 @@ paths:
         - Devices
       summary: Add new devices
       parameters:
+        - in: header
+          name: Authorization
+          description: Bearer format
+          required: false
+          type: string
         - in: body
           name: body
           required: true
@@ -106,6 +117,11 @@ paths:
           in: path
           required: true
           type: integer
+        - in: header
+          name: Authorization
+          description: Bearer format
+          required: false
+          type: string
       responses:
         '200':
           description: A single device
@@ -152,6 +168,11 @@ paths:
           in: path
           required: true
           type: integer
+        - in: header
+          name: Authorization
+          description: Bearer format
+          required: false
+          type: string
       responses:
         '200':
           description: A list of events
@@ -167,6 +188,12 @@ paths:
       tags:
         - Devices
       summary: Get current locations of all devices
+      parameters:
+        - in: header
+          name: Authorization
+          description: Bearer format
+          required: false
+          type: string
       responses:
         '200':
           description: List of devices with current locations
@@ -273,6 +300,11 @@ paths:
         - Events
       summary: Add new events
       parameters:
+        - in: header
+          name: Authorization
+          description: Bearer format
+          required: false
+          type: string
         - in: body
           name: body
           required: true
@@ -379,6 +411,12 @@ paths:
       tags:
         - Classes
       summary: Get all classes
+      parameters:
+        - in: header
+          name: Authorization
+          description: Bearer format
+          required: false
+          type: string
       responses:
         '200':
           description: List of classes
@@ -447,6 +485,11 @@ paths:
           in: "path"
           required: true
           type: "integer"
+        - in: header
+          name: Authorization
+          description: Bearer format
+          required: false
+          type: string
         - name: "files"
           in: "formData"
           description: "File(s) to be uploaded"
@@ -505,6 +548,11 @@ paths:
           in: "path"
           required: true
           type: "integer"
+        - in: header
+          name: Authorization
+          description: Bearer format
+          required: false
+          type: string
       responses:
         200:
           description: "List of attachments"
@@ -552,6 +600,11 @@ paths:
           in: "path"
           required: true
           type: "string"
+        - in: header
+          name: Authorization
+          description: Bearer format
+          required: false
+          type: string
       responses:
         "200":
           description: "File deleted successfully"
@@ -590,6 +643,11 @@ paths:
       consumes:
         - application/json
       parameters:
+        - in: header
+          name: Authorization
+          description: Bearer format
+          required: false
+          type: string
         - in: body
           name: credentials
           description: "Admin login credentials"

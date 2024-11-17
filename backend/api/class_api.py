@@ -11,6 +11,7 @@ class_api: Blueprint = Blueprint('class_api', __name__)
 
 
 @class_api.route('/', methods=['GET'])
+@jwt_required(optional=True)
 def list_classes() -> tuple[Response, int]:
     return get_all_classes()
 

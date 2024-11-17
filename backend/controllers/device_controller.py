@@ -2,10 +2,11 @@ from typing import Union, Optional
 
 from datetime import datetime, timezone
 from flask import jsonify, request, Response
+from backend.controllers.attachments_controller import remove_attachments
 from backend.controllers.event_controller import create_event
 from backend.models.device_model import Device
 from backend.utils.qr_generator import generate_qr, remove_qr
-from backend.controllers.attachments_controller import remove_attachments
+from backend.utils.check_admin import it_is_admin
 
 
 def get_devices() -> tuple[Response, int]:
@@ -25,6 +26,10 @@ def create_devices() -> tuple[Response, int]:
 
     if not device_json:
         return jsonify({'error': "Received an empty list of devices"}), 400
+
+    if len(device_json) > 1 and not it_is_admin():
+        return jsonify({'error': "Only admin allowed to add multiple"
+                                 "devices in one request"}), 401
 
     device_list = []
     device_list_with_location = []

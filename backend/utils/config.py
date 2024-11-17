@@ -25,6 +25,10 @@ class Config:
     BACKUP_INTERVAL_SECONDS: int = None
     BACKUP_MAX_NUMBER_OF_FILES: int = None
 
+    # Rate Limiter related here
+    RATE_LIMIT_DEFAULT: str = None
+    RATE_LIMIT_POSTING: str = None
+
     # housekeeping
     CLEANUP_INTERVAL_SECONDS: int = None
     DAYS_TO_KEEP: int = None
@@ -63,6 +67,11 @@ class Config:
                                                      "43200"))
         self.BACKUP_MAX_NUMBER_OF_FILES = int(os.getenv('BACKUP_MAX_NUMBER_OF_FILES',
                                                         "14"))
+
+        self.RATE_LIMIT_DEFAULT = os.getenv('RATE_LIMITER_DEFAULT',
+                                            "30 per minute")
+        self.RATE_LIMIT_POSTING = os.getenv('RATE_LIMITER_POSTING',
+                                            "4 per minute")
 
         self.CLEANUP_INTERVAL_SECONDS = int(os.getenv('CLEANUP_INTERVAL_SECONDS',
                                                       "43200"))

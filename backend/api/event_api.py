@@ -1,5 +1,6 @@
 from flask import Blueprint, Response
 from flask_jwt_extended import jwt_required
+from backend.app import limiter
 from backend.controllers.event_controller import (
     get_all_events,
     get_event_by_id,
@@ -7,6 +8,7 @@ from backend.controllers.event_controller import (
     update_event,
     remove_event
 )
+from backend.utils.config import config
 
 event_api = Blueprint('event_api', __name__)
 
@@ -24,6 +26,8 @@ def event_by_id(event_id: int) -> tuple[Response, int]:
 
 
 @event_api.route('/', methods=['POST'])
+@jwt_required(optional=True)
+@limiter.limit(config.RATE_LIMIT_POSTING)
 def add_event() -> tuple[Response, int]:
     return create_event()
 

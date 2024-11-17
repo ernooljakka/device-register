@@ -61,7 +61,7 @@ def test_login(client, mocker):
 
 
 def test_is_admin(app, client, mocker):
-    mocker.patch('backend.controllers.auth_controller.get_admin_credentials',
+    mocker.patch('backend.utils.check_admin.get_admin_credentials',
                  return_value=('test_admin', 'hashed_password'))
 
     with app.app_context():
