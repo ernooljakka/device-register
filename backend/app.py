@@ -10,13 +10,10 @@ from sqlalchemy import event
 from sqlalchemy.engine import Engine
 from dotenv import load_dotenv
 
-from backend.utils.backup import Backup
 from backend.utils.check_admin import it_is_admin
 from backend.utils.config import config
-from backend.utils.housekeeper import Housekeeper
 
 load_dotenv()
-backup_instance = None
 
 
 @event.listens_for(Engine, "connect")
@@ -26,8 +23,6 @@ def set_sqlite_pragma(dbapi_connection, connection_record) -> None:
     cursor.close()
 
 
-# This function can be used to disable rate limits for admins by setting
-# the domain to be rate limited as None if the request carries admin rights
 def rate_limit_key():
     try:
         verify_jwt_in_request(optional=True)
@@ -61,10 +56,6 @@ def create_app(env_config_file: str = ".env.development") -> Flask:
     setup_swagger(app)
     JWTManager(app)
     db.init_app(app)
-    Housekeeper()
-    global backup_instance
-    if backup_instance is None:
-        backup_instance = Backup()
 
     limiter.init_app(app)
 
@@ -102,7 +93,6 @@ def create_app(env_config_file: str = ".env.development") -> Flask:
     return app
 
 
-# Running the app
 if __name__ == '__main__':
     application = create_app()
     application.run(debug=True)

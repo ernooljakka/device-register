@@ -1,4 +1,5 @@
 from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.schedulers.base import STATE_STOPPED
 import os
 import shutil
 from datetime import datetime
@@ -22,25 +23,23 @@ class Backup:
     def __init__(self, interval_seconds: int = None, max_backups: int = None):
         if self._initialized:
             return
-        if not interval_seconds:
-            interval_seconds = config.BACKUP_INTERVAL_SECONDS
-        if not max_backups:
-            max_backups = config.BACKUP_MAX_NUMBER_OF_FILES
-        self.interval_seconds = interval_seconds
-        self.max_backups = max_backups
+
+        self.interval_seconds = interval_seconds or config.BACKUP_INTERVAL_SECONDS
+        self.max_backups = max_backups or config.BACKUP_MAX_NUMBER_OF_FILES
         self.db_path = os.path.join(config.PROJECT_ROOT, "instance", "database.db")
         self.backup_dir = os.path.join(config.PROJECT_ROOT, "instance", "backup")
+
         os.makedirs(self.backup_dir, exist_ok=True)
         self.scheduler = BackgroundScheduler()
-        self.scheduler.add_job(self.backup_db, 'interval', seconds=interval_seconds)
-        self.scheduler.start()
+        self._initialized = True
+        print("Backup system initialized.")
 
     def backup_db(self):
         if not os.path.exists(self.db_path):
-            print(f"backup error: no db found at {self.db_path}")
+            print(f"Error: No database found at {self.db_path}. Backup aborted.")
             return
 
-        timestamp = datetime.now().strftime("%Y-%m-%d_%H")
+        timestamp = datetime.now().strftime("%Y-%m-%d")
         backup_db_path = os.path.join(self.backup_dir, f"database_{timestamp}.bak")
         shutil.copy2(self.db_path, backup_db_path)
         self.cleanup_old_backups()
@@ -52,3 +51,13 @@ class Backup:
         )
         for backup in backups[:-self.max_backups]:
             os.remove(os.path.join(self.backup_dir, backup))
+
+    def start_scheduler(self):
+        if not self.scheduler.running:
+            self.scheduler.start()
+            print("Backup scheduler started.")
+
+    def stop_scheduler(self):
+        if self.scheduler.state != STATE_STOPPED:
+            self.scheduler.shutdown(wait=False)
+            print("Backup scheduler stopped.")

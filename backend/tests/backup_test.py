@@ -1,42 +1,71 @@
 import os
-import time
-from pathlib import Path
-
+from datetime import datetime
+from unittest.mock import patch
 import pytest
+from apscheduler.schedulers.background import BackgroundScheduler
 
-from backend.app import create_app
 from backend.utils.backup import Backup
-from backend.utils.config import config
 
 
 @pytest.fixture
-def backup_dir(tmp_path):
-    create_app(env_config_file=".env.test")
-    Backup(interval_seconds=1, max_backups=2)
-    backup_dir = Path(os.path.join(config.PROJECT_ROOT, "instance", "backup"))
-    backup_dir.mkdir(parents=True, exist_ok=True)
-    yield backup_dir
-
-    for backup_file in backup_dir.glob("database_*.bak"):
-        backup_file.unlink()
-    os.rmdir(backup_dir)
+def backup_instance(mocker):
+    mocker.patch('backend.utils.backup.config.PROJECT_ROOT', '/mock_project_root')
+    backup = Backup(interval_seconds=3600, max_backups=5)
+    backup.start_scheduler()
+    yield backup
+    backup.stop_scheduler()
 
 
-def test_backup_and_cleanup(backup_dir):
-    backup_dir = Path(backup_dir)
+def test_backup_initialization(mocker):
+    mocker.patch('backend.utils.backup.config.PROJECT_ROOT', '/mock_project_root')
+    mock_makedirs = mocker.patch('os.makedirs')
 
-    max_wait_time = 10
-    check_interval = 1
-    total_wait_time = 0
+    backup = Backup(interval_seconds=3600, max_backups=5)
 
-    while total_wait_time < max_wait_time:
-        backups = sorted(backup_dir.glob("database_*.bak"))
-        time.sleep(check_interval)
-        total_wait_time += check_interval
-        if len(backups) == 1:
-            break
+    assert backup.interval_seconds == 3600
+    assert backup.max_backups == 5
+    assert isinstance(backup.scheduler, BackgroundScheduler), \
+        "Scheduler is not properly initialized"
+    mock_makedirs.assert_called_once_with('/mock_project_root/instance/backup',
+                                          exist_ok=True)
 
-    assert len(backups) == 1
+    backup.start_scheduler()
+    assert backup.scheduler.running, "Scheduler did not start as expected"
 
-    for backup_file in backups:
-        assert backup_file.exists()
+
+def test_backup_db_creates_backup(mocker, backup_instance):
+    mock_db_path = '/mock_project_root/instance/database.db'
+    mock_backup_dir = '/mock_project_root/instance/backup'
+
+    mocker.patch('os.path.exists', return_value=True)
+    mock_copy2 = mocker.patch('shutil.copy2')
+    mock_listdir = mocker.patch('os.listdir', return_value=[])
+
+    backup_instance.backup_db()
+
+    timestamp = datetime.now().strftime("%Y-%m-%d")
+    expected_backup = os.path.join(mock_backup_dir, f"database_{timestamp}.bak")
+    mock_copy2.assert_called_once_with(mock_db_path, expected_backup)
+    mock_listdir.assert_called_once_with(mock_backup_dir)
+
+
+def test_backup_db_handles_missing_db(mocker, backup_instance):
+    mocker.patch('os.path.exists', return_value=False)
+
+    with patch('builtins.print') as mock_print:
+        backup_instance.backup_db()
+        mock_print.assert_called_with(f"Error: No database found at "
+                                      f"{backup_instance.db_path}. Backup aborted.")
+
+
+def test_cleanup_old_backups(mocker, backup_instance):
+    mock_backup_dir = '/mock_project_root/instance/backup'
+    mocker.patch('os.listdir', return_value=['database_old.bak', 'database_new.bak'])
+    mocker.patch('os.path.getmtime', side_effect=[1, 2])
+    mock_remove = mocker.patch('os.remove')
+
+    backup_instance.max_backups = 1
+
+    backup_instance.cleanup_old_backups()
+    mock_remove.assert_called_once_with(os.path.join(mock_backup_dir,
+                                                     'database_old.bak'))

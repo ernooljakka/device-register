@@ -2,6 +2,7 @@ from typing import Union
 
 from sqlalchemy.orm import validates
 
+from backend.models.event_model import Event
 from backend.setup.database_Init import db
 
 
@@ -60,3 +61,20 @@ class User(db.Model):
     def get_user_by_id(user_id: int) -> Union['User', None]:
         user: Union[User, None] = db.session.get(User, user_id)
         return user if user else None
+
+    @staticmethod
+    def cleanup_users_without_events() -> None:
+        users_without_events = (
+            db.session.query(User)
+            .outerjoin(Event, User.user_id == Event.user_id)
+            .filter(Event.user_id.is_(None))
+            .all()
+        )
+        try:
+            for user in users_without_events:
+                db.session.delete(user)
+            db.session.commit()
+            print("Users without events cleanup completed successfully.")
+        except Exception as e:
+            db.session.rollback()
+            print(f"Failed to clean up users without events: {e}")

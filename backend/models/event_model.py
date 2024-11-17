@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from backend.setup.database_Init import db
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import selectinload, joinedload, validates
@@ -82,3 +84,35 @@ class Event(db.Model):
             return True
         else:
             return False
+
+    @staticmethod
+    def cleanup_events(cutoff_date: datetime, min_event_count: int) -> None:
+        try:
+            devices_with_old_events = (
+                db.session.query(Event.dev_id)
+                .filter(Event.move_time < cutoff_date)
+                .group_by(Event.dev_id)
+                .having(db.func.count(Event.event_id) > min_event_count)
+                .all()
+            )
+
+            for dev_id, in devices_with_old_events:
+                total_event_count = db.session.query(Event).filter_by(
+                    dev_id=dev_id).count()
+
+                if total_event_count <= min_event_count:
+                    continue
+
+                events_to_delete = (
+                    db.session.query(Event)
+                    .filter(Event.dev_id == dev_id, Event.move_time < cutoff_date)
+                    .order_by(Event.move_time.asc())
+                    .limit(total_event_count - min_event_count)
+                )
+                for event in events_to_delete:
+                    db.session.delete(event)
+
+            db.session.commit()
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            print(f"Failed to clean up events: {e}")
