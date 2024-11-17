@@ -59,6 +59,11 @@ const Grid_table = forwardRef(({ rowData, columnDefs, onRowClicked, getRowStyle 
         pagination={true}
         paginationPageSize= {20}
         paginationPageSizeSelector = {false}
+        localeText={{
+          page: "",
+          to: "..",
+          of: "/"
+        }}
         style={{ flexGrow: 1 }}
         quickFilterText={quickFilterText}
       />

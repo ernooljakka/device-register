@@ -1,11 +1,14 @@
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import GridTable from '../shared/grid_table.jsx';
 import Typography from '@mui/material/Typography';
 import useFetchData from '../shared/fetch_data';
 import Function_button from '../shared/function_button.jsx';
+import Box from '@mui/material/Box';
 
 const Event_grid = () => {
     const { data, loading, error } = useFetchData('events/');
+    const [cellHeight, setCellHeight] = useState(false);
+    const [whiteSpace, setWhiteSpace] = useState('');
 
     const formattedData = data.map(event => ({
         ...event,
@@ -43,15 +46,37 @@ const Event_grid = () => {
         return { cursor: 'pointer' };
     };
 
+    //Row sizing
+    const handleRowSizing = () => {
+
+        if(!cellHeight) {        
+            setWhiteSpace('normal')
+        }
+        else {
+            setWhiteSpace('')
+        }
+        
+        setCellHeight(!cellHeight);
+    }
+
     const columnDefs = [
-      { field: "move_time_iso", filter: "agDateColumnFilter", headerName: "Date/Time", flex: 1.0, minWidth: 150, // Enough for showing datetime
+      { field: "move_time_iso", filter: "agDateColumnFilter", headerName: "Date/Time", flex: 1.0, minWidth: 150,  autoHeight: cellHeight,
+        cellStyle: {whiteSpace: whiteSpace, wordWrap: 'break-word',  lineHeight: 1.2,  paddingTop: '13px', },
             filterParams:filterParams, suppressHeaderFilterButton: false, sort: 'desc'
             , valueFormatter: (params) => params.data.move_time
       },
-      { field: "loc_name", filter: "agTextColumnFilter", headerName: "Location", flex: 1.2, minWidth: 130 }, // 14 characters
-      { field: "user_name", filter: "agTextColumnFilter", headerName: "User name", flex: 1, minWidth: 150 },  // 15 characters
-      { field: "user_email", filter: "agTextColumnFilter", headerName: "Email", flex: 1, minWidth: 200 },
-      { field: "company", filter: "agTextColumnFilter", headerName: "Company", flex: 1, minWidth: 150 },
+      { field: "loc_name", filter: "agTextColumnFilter", headerName: "Location", flex: 1.2, minWidth: 130,  autoHeight: cellHeight, 
+        cellStyle: {whiteSpace: whiteSpace, wordWrap: 'break-word',  lineHeight: 1.2,  paddingTop: '13px', }
+      },
+      { field: "user_name", filter: "agTextColumnFilter", headerName: "User name", flex: 1, minWidth: 150,  autoHeight: cellHeight, 
+        cellStyle: {whiteSpace: whiteSpace, wordWrap: 'break-word',  lineHeight: 1.2,  paddingTop: '13px', }
+      },
+      { field: "user_email", filter: "agTextColumnFilter", headerName: "Email", flex: 1, minWidth: 200,  autoHeight: cellHeight, 
+        cellStyle: {whiteSpace: whiteSpace, wordWrap: 'break-word',  lineHeight: 1.2,  paddingTop: '13px', }
+      },
+      { field: "company", filter: "agTextColumnFilter", headerName: "Company", flex: 1, minWidth: 150,  autoHeight: cellHeight, 
+        cellStyle: {whiteSpace: whiteSpace, wordWrap: 'break-word',  lineHeight: 1.2,  paddingTop: '13px', }
+      },
       
       
     ];
@@ -87,7 +112,19 @@ const Event_grid = () => {
 
     return (
         <div>
-        <Function_button onClick={exportClick} size='small' text='Export csv'/>
+        <Box sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          flexDirection: 'row',
+          gap: 1
+        }}>
+        <Function_button size='small' onClick={exportClick} text='Export CSV'/>
+        <Function_button
+        size='small'
+        text= {!cellHeight ? 'Expand rows' : 'Collapse rows'}
+        onClick={handleRowSizing}
+        /> 
+        </Box>
         <GridTable 
             rowData={formattedData.length > 0 ? formattedData : []} 
             columnDefs={columnDefs}

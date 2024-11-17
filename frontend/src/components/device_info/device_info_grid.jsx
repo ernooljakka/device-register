@@ -1,12 +1,15 @@
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import GridTable from '../shared/grid_table.jsx';
 import Typography from '@mui/material/Typography';
 import useFetchData from '../shared/fetch_data';
 import PropTypes from 'prop-types'
 import Function_button from '../shared/function_button.jsx';
+import Box from '@mui/material/Box';
 
 const Device_info_grid = ({ id }) => {
   const { data: events, loading, error } = useFetchData('devices/' + id + '/events');
+  const [cellHeight, setCellHeight] = useState(false);
+  const [whiteSpace, setWhiteSpace] = useState('');
 
   const formattedEvents = Array.isArray(events)
   ? events.map(event => ({
@@ -38,20 +41,31 @@ const Device_info_grid = ({ id }) => {
       
   };
 
+      const handleRowSizing = () => {
+        if(!cellHeight) {        
+            setWhiteSpace('normal')
+        }
+        else {
+            setWhiteSpace('')
+        }
+        setCellHeight(!cellHeight);
+    }
+
   const columnDefs = [
-      { field: "move_time_iso", filter: "agDateColumnFilter", headerName: "Date/Time", flex: 2.0, minWidth: 160,
+      { field: "move_time_iso", filter: "agDateColumnFilter", headerName: "Date/Time", flex: 2.0, minWidth: 160, autoHeight: cellHeight,
+        cellStyle: {whiteSpace: whiteSpace, wordWrap: 'break-word',  lineHeight: 1.2,  paddingTop: '13px', },
         filterParams:filterParams, suppressHeaderFilterButton: false, sort: 'desc'// Enough for showing datetime
         , valueFormatter: (params) => params.data.move_time, // Display the formatted date
         valueGetter: (params) => params.data.move_time
       },
-      { field: "loc_name", filter: "agTextColumnFilter", headerName: "Location", flex: 2.2, minWidth: 170, autoHeight: true,
-          cellStyle: { whiteSpace: 'normal', wordWrap: 'break-word',  lineHeight: 1.2,  paddingTop: '13px', } // text wrapping
+      { field: "loc_name", filter: "agTextColumnFilter", headerName: "Location", flex: 2.2, minWidth: 170, autoHeight: cellHeight,
+        cellStyle: {whiteSpace: whiteSpace, wordWrap: 'break-word',  lineHeight: 1.2,  paddingTop: '13px', } // text wrapping
         },
-      { field: "user_name", filter: "agTextColumnFilter", headerName: "User name", flex: 2, minWidth: 150, autoHeight: true,
-          cellStyle: { whiteSpace: 'normal', wordWrap: 'break-word', lineHeight: 1.2,  paddingTop: '13px' } // text wrapping  
+      { field: "user_name", filter: "agTextColumnFilter", headerName: "User name", flex: 2, minWidth: 150, autoHeight: cellHeight,
+        cellStyle: {whiteSpace: whiteSpace, wordWrap: 'break-word',  lineHeight: 1.2,  paddingTop: '13px', } // text wrapping  
         },
-      { field: "comment", filter: "agTextColumnFilter", headerName: "Comment", flex: 2, minWidth: 200, autoHeight: true,
-        cellStyle: { whiteSpace: 'normal', wordWrap: 'break-word', lineHeight: 1.2,  paddingTop: '13px' } // text wrapping  
+      { field: "comment", filter: "agTextColumnFilter", headerName: "Comment", flex: 2, minWidth: 200, autoHeight: cellHeight,
+        cellStyle: {whiteSpace: whiteSpace, wordWrap: 'break-word',  lineHeight: 1.2,  paddingTop: '13px', } // text wrapping  
         },
   ];
 
@@ -87,7 +101,20 @@ const Device_info_grid = ({ id }) => {
 
   return (
     <div>
+      <Box sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        flexDirection: 'row',
+        gap: 1
+        }}>
       <Function_button size='small' onClick={exportClick} text='Export CSV'/>
+      <Function_button
+      size='small'
+      text= {!cellHeight ? 'Expand rows' : 'Collapse rows'}
+      onClick={handleRowSizing}
+      /> 
+
+      </Box>
       <GridTable 
           rowData={formattedEvents.length > 0 ? formattedEvents : []} 
           columnDefs={columnDefs}
