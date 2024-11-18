@@ -40,3 +40,16 @@ def remove_class_by_id(class_id: int) -> tuple[Response, int]:
         return jsonify({'message': message}), status_code
     else:
         return jsonify({'error': message}), status_code
+
+
+def get_class_dict(class_names: set[str]) -> dict[str, int]:
+    try:
+        existing_classes = Class.get_classes_by_name(class_names)
+        missing_classes = class_names - set(existing_classes.keys())
+        if missing_classes:
+            new_classes = Class.create_classes(missing_classes)
+            existing_classes.update(new_classes)
+    except RuntimeError as e:
+        raise e
+
+    return existing_classes

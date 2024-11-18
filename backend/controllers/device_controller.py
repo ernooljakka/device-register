@@ -1,8 +1,10 @@
+import csv
 from typing import Union, Optional
 
 from datetime import datetime, timezone
 from flask import jsonify, request, Response
 from backend.controllers.attachments_controller import remove_attachments
+from backend.controllers.class_controller import get_class_dict
 from backend.controllers.event_controller import create_event
 from backend.models.device_model import Device
 from backend.utils.qr_generator import generate_qr, remove_qr
@@ -18,22 +20,23 @@ def get_devices() -> tuple[Response, int]:
     return jsonify(device_list), 200
 
 
-def create_devices() -> tuple[Response, int]:
-    device_json = request.get_json()
+def create_devices(device_data=None) -> tuple[Response, int]:
+    if not device_data:
+        device_data = request.get_json()
 
-    if not isinstance(device_json, list):
+    if not isinstance(device_data, list):
         return jsonify({'error': "Expected a list of devices"}), 400
 
-    if not device_json:
+    if not device_data:
         return jsonify({'error': "Received an empty list of devices"}), 400
 
-    if len(device_json) > 1 and not it_is_admin():
+    if len(device_data) > 1 and not it_is_admin():
         return jsonify({'error': "Only admin allowed to add multiple"
                                  "devices in one request"}), 401
 
     device_list = []
     device_list_with_location = []
-    for item in device_json:
+    for item in device_data:
         if not all(key in item for key in ('dev_name', 'dev_manufacturer',
                                            'dev_model', 'class_id',
                                            'dev_location', 'dev_comments')):
@@ -154,3 +157,71 @@ def remove_devices() -> tuple[Response, int]:
 def current_locations() -> tuple[Response, int]:
     locations = Device.get_current_locations()
     return jsonify(locations), 200
+
+
+def handle_device_csv() -> tuple[Response, int]:
+    required_csv_headers = {'dev_name', 'dev_manufacturer', 'dev_model',
+                            'dev_class', 'dev_comments', 'dev_location'}
+
+    if 'files' not in request.files:
+        return jsonify({'error': "File part missing from the request"}), 400
+
+    csv_file = request.files['files']
+
+    if csv_file.filename == '':
+        return jsonify({'error': "File missing from the request"}), 400
+
+    # This might be redundant due to Flask returning 415 UNSUPPORTED MEDIA TYPE
+    if csv_file.mimetype != 'text/csv':
+        return jsonify({'error': "File MIME type must be 'text/csv'"}), 400
+
+    if not csv_file.filename.lower().endswith('.csv'):
+        return jsonify({'error': "File type must be .csv"}), 400
+
+    try:
+        csv_data = csv_file.read().decode('utf-8')
+    except UnicodeDecodeError:
+        return jsonify({'error': 'File must be UTF-8 encoded.'}), 400
+
+    try:
+        csv_reader = csv.DictReader(csv_data.splitlines(), delimiter=';')
+        actual_headers = set(csv_reader.fieldnames)
+        if actual_headers != required_csv_headers:
+            missing_headers = required_csv_headers - actual_headers
+            extra_headers = actual_headers - required_csv_headers
+            return jsonify({'error': f"CSV File missing headers: "
+                                     f"{missing_headers}. Extra headers: "
+                                     f"{extra_headers}"}), 400
+
+        class_name_set = set()
+        device_list = []
+        for row in csv_reader:
+            dev_class = row.get('dev_class')
+            device = {
+                'dev_name': row.get('dev_name'),
+                'dev_manufacturer': row.get('dev_manufacturer'),
+                'dev_model': row.get('dev_model'),
+                'dev_class': dev_class,
+                'dev_comments': row.get('dev_comments'),
+                'dev_location': row.get('dev_location'),
+            }
+            class_name_set.add(dev_class)
+            device_list.append(device)
+
+        try:
+            class_dict = get_class_dict(class_name_set)
+        except RuntimeError as e:
+            return jsonify({'error': str(e)}), 500
+
+        for device in device_list:
+            device['class_id'] = class_dict[(device.pop('dev_class'))]
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+    device_amount = len(device_list)
+    device_result = create_devices(device_list)
+    if device_result[1] == 201:
+        return jsonify({'message': f"{device_amount} device(s)"
+                                   f"imported successfully"}), 201
+    else:
+        return device_result

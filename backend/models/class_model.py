@@ -67,3 +67,31 @@ class Class(db.Model):
         except Exception as e:
             db.session.rollback()
             return 500, str(e)
+
+    @staticmethod
+    def get_classes_by_name(class_names: set[str]) -> dict[str, int]:
+        class_mapping = {}
+        try:
+            existing_classes = Class.query.filter(Class.class_name.
+                                                  in_(class_names)).all()
+            for existing_class in existing_classes:
+                class_mapping[existing_class.class_name] = existing_class.class_id
+        except Exception as e:
+            raise RuntimeError(f"Error retrieving classes: {str(e)}")
+        return class_mapping
+
+    @staticmethod
+    def create_classes(class_names: set[str]) -> dict[str, int]:
+        class_mapping = {}
+        new_classes = [Class(class_name=name) for name in class_names]
+
+        try:
+            db.session.add_all(new_classes)
+            db.session.commit()
+            for new_class in new_classes:
+                class_mapping[new_class.class_name] = new_class.class_id
+        except Exception as e:
+            db.session.rollback()
+            raise RuntimeError(f"Error creating classes: {str(e)}")
+
+        return class_mapping

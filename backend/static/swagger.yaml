@@ -245,6 +245,33 @@ paths:
         '500':
           description: Database error
 
+  /devices/import:
+    post:
+      tags:
+        - Devices
+      summary: "Create devices by uploading a CSV"
+      description: |
+        Allows creating devices by uploading a CSV file that contains device info separated by semicolon.
+        CSV header (first line) should be:
+        dev_name;dev_manufacturer;dev_model;dev_class;dev_comments;dev_location
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: "files"
+          in: "formData"
+          description: "CSV to be uploaded"
+          required: true
+          type: "file"
+      consumes:
+        - "multipart/form-data"
+      responses:
+        201:
+          description: Devices created
+        400:
+          description: Bad request - no csv file or wrong format
+        500:
+          description: Internal server error
+
 
   /users/:
     get:

@@ -59,8 +59,8 @@ class Device(db.Model):
     @staticmethod
     def create_devices(device_list: list['Device']) -> tuple['bool', 'str']:
         try:
-            with db.session.begin():
-                db.session.add_all(device_list)
+            db.session.add_all(device_list)
+            db.session.commit()
 
         except SQLAlchemyError as error:
             db.session.rollback()
