@@ -145,7 +145,25 @@ paths:
         name: body
         required: true
         schema:
-            $ref: '#/definitions/NewDevice'
+          type: array
+          items:
+            type: object
+            properties:
+              class_id:
+                type: integer
+                example: 1
+              dev_comments:
+                type: string
+                example: "Some comments"
+              dev_name:
+                type: string
+                example: "Device 1"
+              dev_manufacturer:
+                type: string
+                example: "Company 1"
+              dev_model:
+                type: string
+                example: "Model 1"
       responses:
           '200':
             description: Device updated
