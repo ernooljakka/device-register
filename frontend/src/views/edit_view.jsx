@@ -14,7 +14,6 @@ const Edit_view = () => {
   const { id } = useParams();
   const {data: auth, error} = useFetchData('auth/admin');
   const { data: deviceClasses} = useFetchData('classes/');
-  const { data: locations} = useFetchData('devices/current_locations/');
   const { data: device, loading} = useFetchData('devices/'+id);
   const [errorMessage, setErrorMessage] = useState(null);
   const { patchData } = usePatch();
@@ -31,20 +30,9 @@ const Edit_view = () => {
     dev_manufacturer: '',
     dev_model: '',
     dev_name: '',
-    dev_location: ''
   });
 
-  function getLocName(loc, id) {
-    const location = loc.find(item => item.dev_id == id);
 
-    //check so we don't access undefined
-    
-    if (location) {
-      return location.loc_name; 
-  } else {
-      return "";
-  }
-  }
 
   
   
@@ -53,10 +41,9 @@ const Edit_view = () => {
         const matchedClass = deviceClasses.find(
           (deviceClass) => deviceClass.class_name === device.class_name
         );
-        const matchedLocation = getLocName(locations, id);
+
       setDeviceData({
         class_id: matchedClass ? matchedClass.class_id : '',
-        dev_location: matchedLocation || '',
         dev_comments: device.dev_comments || '', 
         dev_manufacturer: device.dev_manufacturer || '',
         dev_model: device.dev_model || '',
@@ -76,9 +63,10 @@ const Edit_view = () => {
 
   const onSubmit = async(e) => {
     e.preventDefault()
-    const { dev_name, dev_manufacturer, dev_model, dev_location, class_id } = deviceData;
+
+    const { dev_name, dev_manufacturer, dev_model, class_id } = deviceData;
     // Check for empty fields
-    if (!dev_name || !dev_manufacturer || !dev_model ||  !dev_location || !class_id) {
+    if (!dev_name || !dev_manufacturer || !dev_model  || !class_id) {
       setErrorMessage("Please fill out all required fields.");
       setTimeout(() => setErrorMessage(null), 5000); // eslint-disable-line no-undef
       return;
@@ -86,7 +74,6 @@ const Edit_view = () => {
     
         try {
             await patchData('devices/'+id, deviceData);
-            console.log(deviceData);
             navigate('/admin/manager');
         } catch (error) {
             console.error(`Failed to patch`, error);
@@ -205,18 +192,6 @@ const Edit_view = () => {
                     </Select>
             </FormControl>
 
-            <TextField
-              label="Device location"
-              name="dev_location"
-              value={deviceData.dev_location}
-              onChange={handleChange}
-              required={true}
-              slotProps={{
-                htmlInput: {
-                  maxLength: 100,  // Set max length for the input field
-                },
-              }}
-            />
 
             <TextField
               label="Comment"

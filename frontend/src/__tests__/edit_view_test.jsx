@@ -39,7 +39,6 @@ describe('EditView Component', () => {
         expect(screen.getByRole('textbox', { name: /Device name/i })).toBeInTheDocument();
         expect(screen.getByRole('textbox', { name: /Device model/i })).toBeInTheDocument();
         expect(screen.getByRole('textbox', { name: /Device manufacturer/i })).toBeInTheDocument();
-        expect(screen.getByRole('textbox', { name: /Location/i })).toBeInTheDocument();
         expect(screen.getByRole('textbox', { name: /Comment/i })).toBeInTheDocument();
         expect(screen.getByRole('combobox', { name: /Device Class/i })).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Edit' })).toBeInTheDocument();
