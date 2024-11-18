@@ -44,7 +44,7 @@ describe('DeviceRegisterGrid Component', () => {
             error: null,
         });
 
-        render(<DeviceGrid />);
+        render(<DeviceGrid />); 
 
         // Cells
         expect(screen.getByText('Apple')).toBeInTheDocument();
@@ -58,5 +58,11 @@ describe('DeviceRegisterGrid Component', () => {
         expect(screen.getByText('Device')).toBeInTheDocument();
         expect(screen.getByText('Location')).toBeInTheDocument();
         expect(screen.getByText('Class')).toBeInTheDocument();
+        //Buttons
+        const exportButton = screen.getByText('Export CSV');
+        const expandButton = screen.getByText('Expand rows');
+        expect(exportButton).toBeInTheDocument();
+        expect(expandButton).toBeInTheDocument();
+
     });
 });

@@ -66,5 +66,9 @@ describe('Device_manager_grid Component', () => {
         expect(screen.getByText('Manufacturer')).toBeInTheDocument();
         expect(screen.getByText('Model')).toBeInTheDocument();
         expect(screen.getByText('Class')).toBeInTheDocument();
+        //Button
+        const expandButton = screen.getByText('Expand rows');
+        expect(expandButton).toBeInTheDocument();
+
     });
 });

@@ -64,6 +64,11 @@ describe('DeviceRegisterGrid Component', () => {
         expect(screen.getByText('Date/Time')).toBeInTheDocument();
         expect(screen.getByText('Location')).toBeInTheDocument();
         expect(screen.getByText('Company')).toBeInTheDocument();
+        //Buttons
+        const exportButton = screen.getByText('Export CSV');
+        const expandButton = screen.getByText('Expand rows');
+        expect(exportButton).toBeInTheDocument();
+        expect(expandButton).toBeInTheDocument();
     });
     
     

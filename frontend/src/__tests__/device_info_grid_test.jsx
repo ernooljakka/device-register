@@ -56,5 +56,10 @@ describe('Device_info_grid Component', () => {
         expect(screen.getByText('Date/Time')).toBeInTheDocument();
         expect(screen.getByText('Location')).toBeInTheDocument();
         expect(screen.getByText('User name')).toBeInTheDocument();
+        //buttons
+        const exportButton = screen.getByText('Export CSV');
+        const expandButton = screen.getByText('Expand rows');
+        expect(exportButton).toBeInTheDocument();
+        expect(expandButton).toBeInTheDocument();
     });
 });

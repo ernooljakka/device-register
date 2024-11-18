@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import GridTable from '../shared/grid_table.jsx';
 import Typography from '@mui/material/Typography';
 import Function_button from '../shared/function_button.jsx';
@@ -8,10 +8,21 @@ import { useNavigate } from 'react-router-dom';
 
 const Device_manager_grid = () => {
     const { data: devices, loading, error } = useFetchData('devices/');
+    const [cellHeight, setCellHeight] = useState(false);
+    const [whiteSpace, setWhiteSpace] = useState('');
     const { deleteData} = useDelete();
     const navigate = useNavigate(); 
 
-
+    //Row sizing
+    const handleRowSizing = () => {
+        if(!cellHeight) {        
+            setWhiteSpace('normal')
+        }
+        else {
+            setWhiteSpace('')
+        }
+        setCellHeight(!cellHeight);
+    }   
 
     const handleModify = (rowId) => {
         navigate('/devices/' + rowId + '/edit');
@@ -23,19 +34,18 @@ const Device_manager_grid = () => {
         const id = [{ id: rowId }];
         
         try {
-            await deleteData('devices/', id);
+            await deleteData('devices/', id); 
             navigate('/admin');
         } catch (error) {
             console.error(`Failed to delete device with ID: ${rowId}`, error);
         }
         
     };
-    
 
     const columnDefs = [
         
-        { field: "dev_name", filter: "agTextColumnFilter", headerName: "Device", flex: 2,  minWidth: 120, autoHeight: true,
-            cellStyle: { whiteSpace: 'normal', wordWrap: 'break-word',  lineHeight: 1.2,  paddingTop: '13px', } // text wrapping
+        { field: "dev_name", filter: "agTextColumnFilter", headerName: "Device", flex: 2,  minWidth: 120, autoHeight: cellHeight, sort: 'asc',
+            cellStyle: { whiteSpace: whiteSpace, wordWrap: 'break-word',  lineHeight: 1.2,  paddingTop: '13px', } // text wrapping
             }, // Important, 34 characters
         {
             headerName: "Actions",
@@ -52,16 +62,21 @@ const Device_manager_grid = () => {
             },
             cellStyle: { display: 'flex', justifyContent: 'space-between', paddingTop: '13px' },
         },
-        { field: "dev_manufacturer", filter: "agTextColumnFilter", headerName: "Manufacturer", flex: 0.5, minWidth: 120, autoHeight: true,
-             cellStyle: { whiteSpace: 'normal', wordWrap: 'break-word',  lineHeight: 1.2,  paddingTop: '13px', } // text wrapping
+        { field: "dev_manufacturer", filter: "agTextColumnFilter", headerName: "Manufacturer", flex: 0.5, minWidth: 120, autoHeight: cellHeight,
+             cellStyle: { whiteSpace: whiteSpace, wordWrap: 'break-word',  lineHeight: 1.2,  paddingTop: '13px', } // text wrapping
             }, // Enough for 9999 devices
-        { field: "dev_model", filter: "agTextColumnFilter", headerName: "Model", flex: 1.4, minWidth: 100, autoHeight: true,
-            cellStyle: { whiteSpace: 'normal', wordWrap: 'break-word',  lineHeight: 1.2,  paddingTop: '13px', } // text wrapping
+        { field: "dev_model", filter: "agTextColumnFilter", headerName: "Model", flex: 1.4, minWidth: 100, autoHeight: cellHeight,
+            cellStyle: { whiteSpace: whiteSpace, wordWrap: 'break-word',  lineHeight: 1.2,  paddingTop: '13px', } // text wrapping
         }, // Not as important, 14 characters
-        { field: "class_name", filter: "agTextColumnFilter", headerName: "Class", flex: 2, minWidth: 120, autoHeight: true,
-            cellStyle: { whiteSpace: 'normal', wordWrap: 'break-word',  lineHeight: 1.2,  paddingTop: '13px', } // text wrapping
+        { field: "class_name", filter: "agTextColumnFilter", headerName: "Class", flex: 2, minWidth: 120, autoHeight: cellHeight,
+            cellStyle: { whiteSpace: whiteSpace, wordWrap: 'break-word',  lineHeight: 1.2,  paddingTop: '13px', } // text wrapping
             },
     ];
+
+    const getRowStyle = () => {
+        return { cursor: 'pointer' };
+    };
+
 
     if (loading) {
         return (
@@ -81,11 +96,20 @@ const Device_manager_grid = () => {
     }
 
     return (
+        <div>
+        <Function_button
+        size='small'
+        text= {!cellHeight ? 'Expand rows' : 'Collapse rows'}
+        onClick={handleRowSizing}
+        />     
         <GridTable 
             rowData={devices} 
             columnDefs={columnDefs}
+            getRowStyle={getRowStyle}
             /*getRowStyle={getRowStyle}*/
         />
+        </div>
+
     );
 };
 
