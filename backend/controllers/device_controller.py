@@ -1,4 +1,5 @@
 import csv
+import io
 from typing import Union, Optional
 
 from datetime import datetime, timezone
@@ -225,3 +226,35 @@ def handle_device_csv() -> tuple[Response, int]:
                                    f"imported successfully"}), 201
     else:
         return device_result
+
+
+def export_device_csv() -> tuple[Response, int]:
+    try:
+        devices_with_locations = Device.get_devices_in_export_format()
+        csv_headers = [
+            'dev_name',
+            'dev_manufacturer',
+            'dev_model',
+            'dev_class',
+            'dev_comments',
+            'dev_location'
+        ]
+        output = io.StringIO()
+        writer = csv.DictWriter(output, fieldnames=csv_headers, delimiter=';')
+        writer.writeheader()
+        writer.writerows(devices_with_locations)
+        csv_content = output.getvalue()
+        output.close()
+        csv_bytes = csv_content.encode('utf-8')
+
+        return Response(
+            csv_bytes,
+            mimetype='text/csv; charset=utf-8',
+            headers={
+                'Content-Disposition': 'attachment; filename=devices.csv'
+            }
+        ), 200
+
+    except Exception as e:
+        return Response(f"Error exporting devices: {str(e)}",
+                        mimetype='text/plain'), 500

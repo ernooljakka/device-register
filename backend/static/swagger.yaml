@@ -272,6 +272,20 @@ paths:
         500:
           description: Internal server error
 
+  /devices/export:
+    get:
+      tags:
+        - Devices
+      summary: "Export devices in csv format compatible with import"
+      description: |
+        Exports database devices in csv format:
+        dev_name;dev_manufacturer;dev_model;dev_class;dev_comments;dev_location
+      security:
+        - bearerAuth: [ ]
+      responses:
+        500:
+          description: Internal server error
+
 
   /users/:
     get:

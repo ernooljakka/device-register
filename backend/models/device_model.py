@@ -176,3 +176,50 @@ class Device(db.Model):
         ]
 
         return devices_with_locations
+
+    @staticmethod
+    def get_devices_in_export_format() -> list[dict[str, Union[str, None]]]:
+        latest_event_subquery = (
+            db.session.query(
+                Event.dev_id,
+                db.func.max(Event.move_time).label('latest_time')
+            )
+            .group_by(Event.dev_id)
+            .subquery()
+        )
+
+        latest_event = db.aliased(Event)
+
+        results = (
+            db.session.query(
+                Device,
+                Class.class_name,
+                latest_event.loc_name,
+                latest_event.move_time
+            )
+            .join(Class, Device.class_id == Class.class_id)
+            .outerjoin(
+                latest_event_subquery,
+                Device.dev_id == latest_event_subquery.c.dev_id
+            )
+            .outerjoin(
+                latest_event,
+                (Device.dev_id == latest_event.dev_id) &
+                (latest_event.move_time == latest_event_subquery.c.latest_time)
+            )
+            .all()
+        )
+
+        devices_with_export_data = [
+            {
+                "dev_name": device.dev_name,
+                "dev_model": device.dev_model,
+                "dev_manufacturer": device.dev_manufacturer,
+                "dev_comments": device.dev_comments,
+                "dev_class": class_name,
+                "dev_location": loc_name,
+            }
+            for device, class_name, loc_name, move_time in results
+        ]
+
+        return devices_with_export_data

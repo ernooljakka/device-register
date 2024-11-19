@@ -1,7 +1,7 @@
 import { FlatCompat } from "@eslint/eslintrc";
 import js from "@eslint/js";
-import react from "eslint-plugin-react"
-import jest from "eslint-plugin-jest"
+import react from "eslint-plugin-react";
+import jest from "eslint-plugin-jest";
 
 const compat = new FlatCompat({
   recommendedConfig: js.configs.recommended,
@@ -34,11 +34,15 @@ export default [
         module: 'readonly',
         require: 'readonly',
         process: 'readonly',
-        fetch: 'readonly', // Define fetch as a global to prevent ESLint errors
-        global: 'readonly', // Define global as a readonly global
+        fetch: 'readonly',
+        global: 'readonly',
         console: 'readonly',
         window: 'readonly',
-        Event: 'readonly'
+        Event: 'readonly',
+        localStorage: 'readonly', // Added to handle localStorage
+        document: 'readonly', // Added to handle document
+        alert: 'readonly', // Added to handle alert
+        FormData: 'readonly', // Added to handle FormData
       },
       parserOptions: {
         ecmaFeatures: {
@@ -46,7 +50,7 @@ export default [
         },
       },
     },
-    "rules": {
+    rules: {
       "react/jsx-uses-react": "error",
       "react/jsx-uses-vars": "error",
     },

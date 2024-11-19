@@ -1,10 +1,10 @@
 from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.interval import IntervalTrigger
 from apscheduler.schedulers.base import STATE_STOPPED
 import os
 import shutil
 from datetime import datetime
 from threading import Lock
-
 from backend.utils.config import config
 
 
@@ -42,6 +42,7 @@ class Backup:
         timestamp = datetime.now().strftime("%Y-%m-%d")
         backup_db_path = os.path.join(self.backup_dir, f"database_{timestamp}.bak")
         shutil.copy2(self.db_path, backup_db_path)
+        print(f"Backup created at {backup_db_path}")
         self.cleanup_old_backups()
 
     def cleanup_old_backups(self):
@@ -51,11 +52,19 @@ class Backup:
         )
         for backup in backups[:-self.max_backups]:
             os.remove(os.path.join(self.backup_dir, backup))
+            print(f"Deleted old backup: {backup}")
 
     def start_scheduler(self):
         if not self.scheduler.running:
+            self.scheduler.add_job(
+                self.backup_db,
+                trigger=IntervalTrigger(seconds=self.interval_seconds),
+                id="db_backup_job",
+                replace_existing=True
+            )
             self.scheduler.start()
-            print("Backup scheduler started.")
+            print(f"Backup scheduler started with interval "
+                  f"{self.interval_seconds} seconds.")
 
     def stop_scheduler(self):
         if self.scheduler.state != STATE_STOPPED:
