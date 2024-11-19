@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import GridTable from '../shared/grid_table.jsx';
 import Typography from '@mui/material/Typography';
 import useFetchData from '../shared/fetch_data';
@@ -56,26 +56,6 @@ const Device_register_grid = () => {
           console.error('Grid reference is not available');
         }
       };
-
-    useEffect(() => {
-        const handleExportClick = () => {
-            if (gridRef.current) {
-              gridRef.current.exportCsv();
-            } else {
-              console.error('Grid reference is not available');
-            }
-          };
-      
-        const handleEvent = () => {
-            handleExportClick();
-        };
-          
-        window.addEventListener('Export', handleEvent);
-      
-        return () => {
-          window.removeEventListener('Export', handleEvent);
-        };
-    }, []);
 
     const getRowStyle = () => {
         return { cursor: 'pointer' };
