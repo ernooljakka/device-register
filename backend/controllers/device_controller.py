@@ -180,7 +180,7 @@ def handle_device_csv() -> tuple[Response, int]:
         return jsonify({'error': "File type must be .csv"}), 400
 
     try:
-        csv_data = csv_file.read().decode('utf-8')
+        csv_data = csv_file.read().decode('utf-8-sig')
     except UnicodeDecodeError:
         return jsonify({'error': 'File must be UTF-8 encoded.'}), 400
 
