@@ -1,10 +1,15 @@
 import React, { forwardRef, useRef, useImperativeHandle, useState } from 'react';
 import Box from '@mui/material/Box';
-import { AgGridReact } from 'ag-grid-react';
 import SearchBar from './search_bar';
 import PropTypes from 'prop-types';
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-quartz.css";
+import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
+import { ModuleRegistry } from '@ag-grid-community/core';
+import { AgGridReact } from '@ag-grid-community/react';
+import { CsvExportModule } from '@ag-grid-community/csv-export';
+import '@ag-grid-community/styles/ag-grid.css';
+import '@ag-grid-community/styles/ag-theme-quartz.css';
+
+ModuleRegistry.registerModules([ClientSideRowModelModule, CsvExportModule]);
 
 const Grid_table = forwardRef(({ rowData, columnDefs, onRowClicked, getRowStyle }, ref) => {
   const [quickFilterText, setQuickFilterText] = useState("");
