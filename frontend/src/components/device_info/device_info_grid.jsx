@@ -41,15 +41,10 @@ const Device_info_grid = ({ id }) => {
       
   };
 
-      const handleRowSizing = () => {
-        if(!cellHeight) {        
-            setWhiteSpace('normal')
-        }
-        else {
-            setWhiteSpace('')
-        }
-        setCellHeight(!cellHeight);
-    }
+  const handleRowSizing = () => {
+    setCellHeight(prev => !prev);
+    setWhiteSpace(prev => (prev === '' ? 'normal' : ''));
+  };
 
   const columnDefs = [
       { field: "move_time_iso", filter: "agDateColumnFilter", headerName: "Date/Time", flex: 2.0, minWidth: 160, autoHeight: cellHeight,

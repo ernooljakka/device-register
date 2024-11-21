@@ -40,7 +40,8 @@ describe('DeviceRegisterGrid Component', () => {
                     move_time: moveTime,
                     move_time_iso: moveTime,
                     loc_name: 'Test Laboratory', 
-                    company: "Apple"
+                    company: "Apple",
+                    dev_name: "test device"
                 },
             ],
             loading: false,
@@ -57,6 +58,7 @@ describe('DeviceRegisterGrid Component', () => {
         expect(screen.getByText('04/12/2024, 23:59')).toBeInTheDocument();
         expect(screen.getByText('Test Laboratory')).toBeInTheDocument();
         expect(screen.getByText('test@example.com')).toBeInTheDocument();
+        expect(screen.getByText('test device')).toBeInTheDocument();
     
         // Verify headers
         expect(screen.getByText('Email')).toBeInTheDocument();
@@ -64,6 +66,7 @@ describe('DeviceRegisterGrid Component', () => {
         expect(screen.getByText('Date/Time')).toBeInTheDocument();
         expect(screen.getByText('Location')).toBeInTheDocument();
         expect(screen.getByText('Company')).toBeInTheDocument();
+        expect(screen.getByText('Device')).toBeInTheDocument();
         //Buttons
         const exportButton = screen.getByText('Export CSV');
         const expandButton = screen.getByText('Expand rows');

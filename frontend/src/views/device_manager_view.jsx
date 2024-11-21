@@ -5,7 +5,6 @@ import NavigationBar from '../components/shared/navigation_bar';
 import Link_button from '../components/shared/link_button';
 import Device_manager_grid from '../components/device_manager/device_manager_grid';
 import useFetchData from '../components/shared/fetch_data';
-import Function_button from '../components/shared/function_button';
 
 function Device_manager_view() {
 
@@ -52,7 +51,6 @@ function Device_manager_view() {
           gap: 2
         }}>
         <Link_button href={`/add`} text= "Add a device"></Link_button>
-        <Function_button  text= "Import a device"></Function_button>
         </Box>
         <Device_manager_grid />
         

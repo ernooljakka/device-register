@@ -18,14 +18,9 @@ const Device_register_grid = () => {
 
     //Row sizing
     const handleRowSizing = () => {
-        if(!cellHeight) {        
-            setWhiteSpace('normal')
-        }
-        else {
-            setWhiteSpace('')
-        }
-        setCellHeight(!cellHeight);
-    }
+        setCellHeight(prev => !prev);
+        setWhiteSpace(prev => (prev === '' ? 'normal' : ''));
+      };
 
     const columnDefs = [
         { field: "dev_manufacturer", filter: "agTextColumnFilter", headerName: "Manufacturer", flex: 1.2, minWidth: 140, sort: "asc", autoHeight: cellHeight,

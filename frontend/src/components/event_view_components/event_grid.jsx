@@ -48,16 +48,9 @@ const Event_grid = () => {
 
     //Row sizing
     const handleRowSizing = () => {
-
-        if(!cellHeight) {        
-            setWhiteSpace('normal')
-        }
-        else {
-            setWhiteSpace('')
-        }
-        
-        setCellHeight(!cellHeight);
-    }
+      setCellHeight(prev => !prev);
+      setWhiteSpace(prev => (prev === '' ? 'normal' : ''));
+    };
 
     const columnDefs = [
       { field: "move_time_iso", filter: "agDateColumnFilter", headerName: "Date/Time", flex: 1.0, minWidth: 150,  autoHeight: cellHeight,
@@ -66,6 +59,9 @@ const Event_grid = () => {
             , valueFormatter: (params) => params.data.move_time
       },
       { field: "loc_name", filter: "agTextColumnFilter", headerName: "Location", flex: 1.2, minWidth: 130,  autoHeight: cellHeight, 
+        cellStyle: {whiteSpace: whiteSpace, wordWrap: 'break-word',  lineHeight: 1.2,  paddingTop: '13px', }
+      },
+      { field: "dev_name", filter: "agTextColumnFilter", headerName: "Device", flex: 1, minWidth: 130,  autoHeight: cellHeight, 
         cellStyle: {whiteSpace: whiteSpace, wordWrap: 'break-word',  lineHeight: 1.2,  paddingTop: '13px', }
       },
       { field: "user_name", filter: "agTextColumnFilter", headerName: "User name", flex: 1, minWidth: 150,  autoHeight: cellHeight, 
