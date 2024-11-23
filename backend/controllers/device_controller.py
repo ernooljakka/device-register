@@ -39,12 +39,13 @@ def create_devices(device_data=None) -> tuple[Response, int]:
     device_list_with_location = []
     for item in device_data:
         if not all(key in item for key in ('dev_name', 'dev_manufacturer',
-                                           'dev_model', 'class_id',
+                                           'dev_model', 'dev_home', 'class_id',
                                            'dev_location', 'dev_comments')):
             return (jsonify({'error': "All devices must have"
                                       " name,"
                                       " manufacturer,"
                                       " model,"
+                                      " home,"
                                       " class id,"
                                       " location and comments"}),
                     400)
@@ -52,6 +53,7 @@ def create_devices(device_data=None) -> tuple[Response, int]:
         new_device = Device(dev_name=item['dev_name'],
                             dev_manufacturer=item['dev_manufacturer'],
                             dev_model=item['dev_model'],
+                            dev_home=item['dev_home'],
                             class_id=item['class_id'],
                             dev_comments=item['dev_comments'])
 
@@ -105,7 +107,8 @@ def get_events_by_device_id(dev_id: int) -> tuple[Response, int]:
 def update_device(
         dev_id: int, device_data: dict[str, Union[str, int]]) -> tuple[Response, int]:
     valid_fields = {
-        'dev_name', 'dev_manufacturer', 'dev_model', 'class_id', 'dev_comments'}
+        'dev_name', 'dev_manufacturer', 'dev_model',
+        'dev_home', 'class_id', 'dev_comments'}
 
     if not any(key in valid_fields for key in device_data):
         return jsonify({'error': 'No valid fields provided to update'}), 400
@@ -162,7 +165,7 @@ def current_locations() -> tuple[Response, int]:
 
 def handle_device_csv() -> tuple[Response, int]:
     required_csv_headers = {'dev_name', 'dev_manufacturer', 'dev_model',
-                            'dev_class', 'dev_comments', 'dev_location'}
+                            'dev_home', 'dev_class', 'dev_comments', 'dev_location'}
 
     if 'files' not in request.files:
         return jsonify({'error': "File part missing from the request"}), 400
@@ -202,6 +205,7 @@ def handle_device_csv() -> tuple[Response, int]:
                 'dev_name': row.get('dev_name'),
                 'dev_manufacturer': row.get('dev_manufacturer'),
                 'dev_model': row.get('dev_model'),
+                'dev_home': row.get('dev_home'),
                 'dev_class': dev_class,
                 'dev_comments': row.get('dev_comments'),
                 'dev_location': row.get('dev_location'),
@@ -235,6 +239,7 @@ def export_device_csv() -> tuple[Response, int]:
             'dev_name',
             'dev_manufacturer',
             'dev_model',
+            'dev_home',
             'dev_class',
             'dev_comments',
             'dev_location'

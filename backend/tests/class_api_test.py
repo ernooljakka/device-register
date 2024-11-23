@@ -20,6 +20,7 @@ def app():
             dev_name="iDevice",
             dev_manufacturer="iManufacturer",
             dev_model="iModel",
+            dev_home="iHome",
             class_id=2,
             dev_comments="Location: iLab")
         db.session.add(test_class1)

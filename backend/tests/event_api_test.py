@@ -27,11 +27,13 @@ def app():
         test_device1 = Device(dev_name="Device A",
                               dev_manufacturer="Manfact A",
                               dev_model="Model S",
+                              dev_home="Home",
                               class_id=1,
                               dev_comments="Location: Herwood xyz")
         test_device2 = Device(dev_name="Device B",
                               dev_manufacturer="Manfact A",
                               dev_model="Model X",
+                              dev_home="Home",
                               class_id=1,
                               dev_comments="Location: Herwood xyz")
         db.session.add(test_device1)

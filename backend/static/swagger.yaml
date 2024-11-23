@@ -60,12 +60,14 @@ paths:
                 class_id: 1
                 dev_manufacturer: "Company 1"
                 dev_comments: "Some comments"
+                dev_home: "Some home"
                 dev_location: "Room 101"
               - dev_name: "Device 2"
                 dev_model: "Model 2"
                 class_id: 1
                 dev_manufacturer: "Company 2"
                 dev_comments: "Some comments"
+                dev_home: "Some home"
                 dev_location: "Room 102"
       responses:
         '201':
@@ -155,6 +157,9 @@ paths:
               dev_comments:
                 type: string
                 example: "Some comments"
+              dev_home:
+                type: string
+                example: "Some specific place"
               dev_name:
                 type: string
                 example: "Device 1"
@@ -253,7 +258,7 @@ paths:
       description: |
         Allows creating devices by uploading a CSV file that contains device info separated by semicolon.
         CSV header (first line) should be:
-        dev_name;dev_manufacturer;dev_model;dev_class;dev_comments;dev_location
+        dev_name;dev_manufacturer;dev_model;dev_home;dev_class;dev_comments;dev_location
       security:
         - bearerAuth: [ ]
       parameters:
@@ -279,7 +284,7 @@ paths:
       summary: "Export devices in csv format compatible with import"
       description: |
         Exports database devices in csv format:
-        dev_name;dev_manufacturer;dev_model;dev_class;dev_comments;dev_location
+        dev_name;dev_manufacturer;dev_model;dev_home;dev_class;dev_comments;dev_location
       security:
         - bearerAuth: [ ]
       responses:
@@ -783,6 +788,8 @@ definitions:
         type: string
       dev_model:
         type: string
+      dev_home:
+        type: string
       class_name:
         type: string
       dev_comments:
@@ -792,6 +799,7 @@ definitions:
         dev_name: "Hienosäädin"
         dev_manufacturer: "TAMK"
         dev_model: "Mahtava malli"
+        dev_home: "Laitteen koti"
         class_name: "Säädin"
         dev_comments: "Tosi hyvä laite"
 
@@ -804,6 +812,8 @@ definitions:
         type: string
       dev_model:
         type: string
+      dev_home:
+        type: string
       class_id:
         type: integer
       dev_comments:
@@ -814,6 +824,7 @@ definitions:
       dev_name: "Hienosäädin"
       dev_manufacturer: "TAMK"
       dev_model: "Mahtava malli"
+      dev_home: "Laitteen koti"
       class_id: 1
       dev_comments: "Tosi hyvä laite"
       dev_location: "Room 101"

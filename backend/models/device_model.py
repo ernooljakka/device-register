@@ -17,6 +17,7 @@ class Device(db.Model):
             'dev_name': 100,
             'dev_manufacturer': 50,
             'dev_model': 50,
+            'dev_home': 100,
             'dev_comments': 200
         }
         if len(data) > max_lengths[key]:
@@ -27,6 +28,7 @@ class Device(db.Model):
     dev_name = db.Column(db.String, nullable=False)
     dev_manufacturer = db.Column(db.String, nullable=False)
     dev_model = db.Column(db.String, nullable=False)
+    dev_home = db.Column(db.String, nullable=False)
     class_id = db.Column(db.Integer,
                          db.ForeignKey('classes.class_id'),
                          nullable=False)
@@ -46,6 +48,7 @@ class Device(db.Model):
             'dev_name': self.dev_name,
             'dev_manufacturer': self.dev_manufacturer,
             'dev_model': self.dev_model,
+            'dev_home': self.dev_home,
             'class_name': self.device_class.class_name,
             'dev_comments': self.dev_comments
         }
@@ -168,6 +171,7 @@ class Device(db.Model):
                 "dev_name": device.dev_name,
                 "dev_model": device.dev_model,
                 "dev_manufacturer": device.dev_manufacturer,
+                "dev_home": device.dev_home,
                 "class_name": class_name,
                 "loc_name": loc_name,
                 "move_time": move_time.isoformat() if move_time else None
@@ -215,8 +219,9 @@ class Device(db.Model):
                 "dev_name": device.dev_name,
                 "dev_model": device.dev_model,
                 "dev_manufacturer": device.dev_manufacturer,
-                "dev_comments": device.dev_comments,
+                "dev_home": device.dev_home,
                 "dev_class": class_name,
+                "dev_comments": device.dev_comments,
                 "dev_location": loc_name,
             }
             for device, class_name, loc_name, move_time in results

@@ -28,6 +28,7 @@ def app():
             dev_name="Device",
             dev_manufacturer="Manfact A",
             dev_model="Model S",
+            dev_home="Home",
             class_id=1,
             dev_comments="Location: Herwood xyz")
 
