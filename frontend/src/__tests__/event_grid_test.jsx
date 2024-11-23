@@ -6,7 +6,7 @@ import '@testing-library/jest-dom';
 
 jest.mock('../components/shared/fetch_data');
 
-describe('DeviceRegisterGrid Component', () => {
+describe('EventGrid Component', () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });

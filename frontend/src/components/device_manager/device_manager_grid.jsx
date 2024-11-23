@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import GridTable from '../shared/grid_table.jsx';
 import Typography from '@mui/material/Typography';
 import Function_button from '../shared/function_button.jsx';
@@ -10,81 +10,141 @@ import { useNavigate } from 'react-router-dom';
 const Device_manager_grid = () => {
     const { data: devices, loading, error } = useFetchData('devices/');
     const [updatedDevices, setDevices] = useState([]);
-    const [cellHeight, setCellHeight] = useState(false);
-    const [whiteSpace, setWhiteSpace] = useState('');
     const { deleteData } = useDelete();
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
+    const popupRef = useRef(null);
+    const [expandAll, setExpandAll] = useState(false);
 
     useEffect(() => {
         if (devices) {
-            setDevices(devices);
+            const devicesWithState = devices.map((device) => ({
+                ...device,
+                isExpanded: false,
+            }));
+            setDevices(devicesWithState);
         }
-    }, [devices]); 
+    }, [devices]);
 
-    // Row sizing
-    const handleRowSizing = () => {
-        setCellHeight(prev => !prev);
-        setWhiteSpace(prev => (prev === '' ? 'normal' : ''));
+    const handleRowToggle = (rowId) => {
+        // Prevent row toggle if popup is active
+        if (popupRef.current && popupRef.current.isOpen()) {
+            return;
+        }
+
+        setDevices((prevDevices) =>
+            prevDevices.map((device) =>
+                device.dev_id === rowId
+                    ? { ...device, isExpanded: !device.isExpanded }
+                    : device
+            )
+        );
+    };
+
+    const handleExpandCollapseAll = () => {
+        setExpandAll((prevState) => {
+            const newExpandState = !prevState;
+            setDevices((prevDevices) =>
+                prevDevices.map((device) => ({
+                    ...device,
+                    isExpanded: newExpandState,
+                }))
+            );
+            return newExpandState;
+        });
     };
 
     const handleModify = (rowId) => {
-        navigate('/devices/' + rowId + '/edit');
+        navigate(`/devices/${rowId}/edit`);
     };
 
     const handleDelete = async (rowId) => {
-        const id = [{ id: rowId }];
-        setDevices((prevDevices) => prevDevices.filter(updatedDevice => updatedDevice.dev_id !== rowId));
+        const idToDelete = [{ id: rowId }];
+        setDevices((prevDevices) =>
+            prevDevices.filter((device) => device.dev_id !== rowId)
+        );
 
         try {
-            await deleteData('devices/', id);
+            await deleteData('devices/', idToDelete);
         } catch (error) {
             console.error(`Failed to delete device with ID: ${rowId}`, error);
-            setDevices((prevDevices) => [...prevDevices, devices.find(device => device.dev_id === rowId)]);
         }
     };
 
     const columnDefs = [
-        { field: "dev_name", filter: "agTextColumnFilter", headerName: "Device", flex: 2, minWidth: 120, autoHeight: cellHeight, sort: 'asc',
-            cellStyle: { whiteSpace: whiteSpace, wordWrap: 'break-word', lineHeight: 1.2, paddingTop: '13px' }
-        },
         {
-            headerName: "Actions",
-            field: "actions",
+            field: 'dev_name',
+            headerName: 'Device',
+            flex: 3,
             minWidth: 200,
             cellRenderer: (params) => {
                 const devId = params.data.dev_id;
                 return (
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <Function_button text='Modify' onClick={() => handleModify(devId)} />
-                        <ConfirmationPopup
-                            renderTrigger={({ onClick }) => (
-                                <Function_button
-                                    text="Delete"
-                                    color="error"
-                                    onClick={onClick}
-                                />
-                            )}
-                            onConfirm={() => handleDelete(devId)}
-                            dialogTitle="Delete Item"
-                            dialogText="Are you sure?"
-                        />
+                    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+                        <div style={{ fontWeight: 'bold', flexGrow: 1 }}>
+                            {params.value}
+                        </div>
+                        {params.data.isExpanded && (
+                            <div
+                            style={{
+                                gap: '7px',
+                                marginBottom: '7px',
+                                display: 'flex',
+                            }}>
+                            <Function_button text="Modify" 
+                                onClick={() => handleModify(devId)} />
+                                <ConfirmationPopup
+                                    renderTrigger={() => (
+                                    <Function_button
+                                        text="Delete"
+                                        color="error"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            popupRef.current.openPopup(); 
+                                        }}
+                                    />
+                                    )}
+                                onConfirm={() => handleDelete(devId)}
+                                dialogTitle="Delete Device"
+                                dialogText="Are you sure you want to delete this device?"
+                                ref={popupRef} // Attach the ref to the popup
+                            />
+                            </div>
+                        )}
                     </div>
                 );
             },
-            cellStyle: { display: 'flex', justifyContent: 'space-between', paddingTop: '13px' },
+            cellStyle: {
+                whiteSpace: 'normal',
+                wordWrap: 'break-word',
+                lineHeight: 1.2,
+                paddingTop: '13px',
+            },
         },
-        { field: "dev_manufacturer", filter: "agTextColumnFilter", headerName: "Manufacturer", flex: 0.5, minWidth: 120, autoHeight: cellHeight,
-            cellStyle: { whiteSpace: whiteSpace, wordWrap: 'break-word', lineHeight: 1.2, paddingTop: '13px' }
+        {
+            field: 'dev_manufacturer',
+            headerName: 'Manufacturer',
+            flex: 1,
+            minWidth: 150,
         },
-        { field: "dev_model", filter: "agTextColumnFilter", headerName: "Model", flex: 1.4, minWidth: 100, autoHeight: cellHeight,
-            cellStyle: { whiteSpace: whiteSpace, wordWrap: 'break-word', lineHeight: 1.2, paddingTop: '13px' }
+        {
+            field: 'dev_model',
+            headerName: 'Model',
+            flex: 1.5,
+            minWidth: 150,
         },
-        { field: "class_name", filter: "agTextColumnFilter", headerName: "Class", flex: 2, minWidth: 120, autoHeight: cellHeight,
-            cellStyle: { whiteSpace: whiteSpace, wordWrap: 'break-word', lineHeight: 1.2, paddingTop: '13px' }
+        {
+            field: 'class_name',
+            headerName: 'Class',
+            flex: 2,
+            minWidth: 200,
         },
     ];
 
-    const getRowStyle = () => ({ cursor: 'pointer' });
+    const getRowHeight = (params) => (params.data.isExpanded ? 100 : 60);
+
+    const getRowStyle = () => ({
+        cursor: 'pointer',
+    });
 
     if (loading) {
         return (
@@ -106,14 +166,16 @@ const Device_manager_grid = () => {
     return (
         <div>
             <Function_button
-                size='small'
-                text={!cellHeight ? 'Expand rows' : 'Collapse rows'}
-                onClick={handleRowSizing}
+                size="small"
+                text={expandAll ? 'Collapse rows' : 'Expand rows'}
+                onClick={handleExpandCollapseAll}
             />
-            <GridTable 
-                rowData={updatedDevices} 
+            <GridTable
+                rowData={updatedDevices}
                 columnDefs={columnDefs}
                 getRowStyle={getRowStyle}
+                getRowHeight={getRowHeight}
+                onRowClicked={(event) => handleRowToggle(event.data.dev_id, event)}
             />
         </div>
     );

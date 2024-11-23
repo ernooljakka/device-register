@@ -11,78 +11,80 @@ import '@ag-grid-community/styles/ag-theme-quartz.css';
 
 ModuleRegistry.registerModules([ClientSideRowModelModule, CsvExportModule]);
 
-const Grid_table = forwardRef(({ rowData, columnDefs, onRowClicked, getRowStyle }, ref) => {
-  const [quickFilterText, setQuickFilterText] = useState("");
+const Grid_table = forwardRef(
+  ({ rowData, columnDefs, onRowClicked, getRowStyle, getRowHeight = () => 'auto' }, ref) => {
+    const [quickFilterText, setQuickFilterText] = useState("");
 
-  const gridRef = useRef(null);
+    const gridRef = useRef(null);
 
-  useImperativeHandle(ref, () => ({
-    exportCsv: () => {
-      if (gridRef.current && gridRef.current.api) {
-        const exportParams = {
-          columnSeparator: ';', 
-      };
-        gridRef.current.api.exportDataAsCsv(exportParams);
+    useImperativeHandle(ref, () => ({
+      exportCsv: () => {
+        if (gridRef.current && gridRef.current.api) {
+          const exportParams = {
+            columnSeparator: ';',
+          };
+          gridRef.current.api.exportDataAsCsv(exportParams);
+        } else {
+          console.error('Grid API is not available');
+        }
+      },
+    }));
 
-      } else {
-        console.error('Grid API is not available');
-      }
-    },
-  }));
-
-  return (
-    <Box
-      sx={{
-        flexDirection: 'column',
-        alignItems: 'center',
-        mt: 1,
-        mb: 6,
-        maxWidth: 1000,
-      }}
-      className="ag-theme-quartz"
-      style={{ width: '95vw', height: '75vh' }}
-    >
-      <SearchBar
-        quickFilterText={quickFilterText}
-        setQuickFilterText={setQuickFilterText}
-      />
-      
-      <AgGridReact
-        ref={gridRef}
-        rowData={rowData}
-        columnDefs={columnDefs}
-        defaultColDef={{
-          resizable: false,
-          sortable: true,
-          filter: true,
-          suppressMovable: true,
-          suppressHeaderFilterButton: true,
+    return (
+      <Box
+        sx={{
+          flexDirection: 'column',
+          alignItems: 'center',
+          mt: 1,
+          mb: 6,
+          maxWidth: 1000,
         }}
-        getRowStyle={getRowStyle}
-        onRowClicked={onRowClicked}
-        animateRows={true}
-        pagination={true}
-        paginationPageSize= {20}
-        paginationPageSizeSelector = {false}
-        localeText={{
-          page: "",
-          to: "..",
-          of: "/"
-        }}
-        style={{ flexGrow: 1 }}
-        quickFilterText={quickFilterText}
-      />
-    </Box>
-  );
-});
+        className="ag-theme-quartz"
+        style={{ width: '95vw', height: '75vh' }}
+      >
+        <SearchBar
+          quickFilterText={quickFilterText}
+          setQuickFilterText={setQuickFilterText}
+        />
 
-Grid_table.displayName = "Grid_table";
+        <AgGridReact
+          ref={gridRef}
+          rowData={rowData}
+          columnDefs={columnDefs}
+          defaultColDef={{
+            resizable: false,
+            sortable: true,
+            filter: true,
+            suppressMovable: true,
+            suppressHeaderFilterButton: true,
+          }}
+          getRowStyle={getRowStyle}
+          getRowHeight={getRowHeight} 
+          onRowClicked={onRowClicked}
+          animateRows={true}
+          pagination={true}
+          paginationPageSize={20}
+          paginationPageSizeSelector={false}
+          localeText={{
+            page: "",
+            to: "..",
+            of: "/"
+          }}
+          style={{ flexGrow: 1 }}
+          quickFilterText={quickFilterText}
+        />
+      </Box>
+    );
+  }
+);
 
 Grid_table.propTypes = {
   rowData: PropTypes.array.isRequired,
   columnDefs: PropTypes.array.isRequired,
   onRowClicked: PropTypes.func,
-  getRowStyle: PropTypes.func
+  getRowStyle: PropTypes.func,
+  getRowHeight: PropTypes.func, 
 };
 
+Grid_table.displayName = 'Grid_table';
 export default Grid_table;
