@@ -44,7 +44,7 @@ limiter = Limiter(
 def create_app(env_config_file: str = ".env.development") -> Flask:
 
     config.load(env_config_file)
-    app: Flask = Flask(__name__)
+    app: Flask = Flask(__name__, static_url_path=f'{config.BACKEND_BASEPATH}static')
     CORS(app)
 
     app.config['TESTING'] = config.TESTING
