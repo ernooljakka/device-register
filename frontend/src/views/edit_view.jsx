@@ -8,11 +8,13 @@ import Link_button from '../components/shared/link_button';
 import {useParams, useNavigate} from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import useFetchData from '../components/shared/fetch_data';
+import SignoutButton from '../components/shared/sign_out_button';
 import usePatch from '../components/shared/patch_data';
+
 const Edit_view = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const {data: auth, error} = useFetchData('auth/admin');
+  const {data: auth, loading: authLoading, error: error} = useFetchData('auth/admin');
   const { data: deviceClasses} = useFetchData('classes/');
   const { data: device, loading} = useFetchData('devices/'+id);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -117,6 +119,7 @@ const Edit_view = () => {
         gap: 2
     }}>
           <NavigationBar/>
+          {!authLoading && auth && !error && <SignoutButton auth={auth} />}
           <Typography sx={{
             fontSize: 'clamp(1.5rem, 5vw, 2.4rem)', 
             textAlign: 'center',

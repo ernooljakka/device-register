@@ -5,13 +5,11 @@ import Function_button from '../shared/function_button.jsx';
 import ConfirmationPopup from './confirmation_popup.jsx';
 import useFetchData from '../shared/fetch_data';
 import useDelete from '../shared/delete_data.jsx';
-import { useNavigate } from 'react-router-dom';
 
 const Device_manager_grid = () => {
     const { data: devices, loading, error } = useFetchData('devices/');
     const [updatedDevices, setDevices] = useState([]);
     const { deleteData } = useDelete();
-    const navigate = useNavigate();
     const popupRef = useRef(null);
     const [expandAll, setExpandAll] = useState(false);
 
@@ -54,7 +52,7 @@ const Device_manager_grid = () => {
     };
 
     const handleModify = (rowId) => {
-        navigate(`/devices/${rowId}/edit`);
+        window.location.href = `/devices/${rowId}/edit`;
     };
 
     const handleDelete = async (rowId) => {

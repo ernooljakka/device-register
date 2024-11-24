@@ -8,8 +8,11 @@ import {useNavigate} from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import useFetchData from '../components/shared/fetch_data';
 import usePostData from '../components/shared/post_data';
+import SignoutButton from '../components/shared/sign_out_button';
+
 const Add_view = () => {
   const navigate = useNavigate(); 
+  const { data: auth, loading: authloading, error: authError} = useFetchData('auth/admin');
   const { data: deviceClasses, loading} = useFetchData('classes/');
   const [errorMessage, setErrorMessage] = useState(null);
   
@@ -90,6 +93,7 @@ const Add_view = () => {
         gap: 2
     }}>
           <NavigationBar/>
+          {!authloading && auth && !authError && <SignoutButton auth={auth} />}
           <Typography sx={{
             fontSize: 'clamp(1.5rem, 5vw, 2.4rem)', 
             textAlign: 'center',

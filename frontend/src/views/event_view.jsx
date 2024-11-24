@@ -4,6 +4,7 @@ import NavigationBar from '../components/shared/navigation_bar';
 import EventGrid from '../components/event_view_components/event_grid';
 import { Typography,  } from '@mui/material';
 import useFetchData from '../components/shared/fetch_data';
+import SignoutButton from '../components/shared/sign_out_button';
 
 function Event_view() {
   const {data: auth, loading, error} = useFetchData('auth/admin');
@@ -42,6 +43,7 @@ function Event_view() {
         textWrap: 'nowrap'
     }}>
         <NavigationBar/>
+        {!loading && auth && !error && <SignoutButton auth={auth} />}
         <Typography sx={{
           fontSize: 'clamp(1.5rem, 5vw, 2.4rem)', 
           textAlign: 'center',

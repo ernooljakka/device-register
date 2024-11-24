@@ -6,6 +6,7 @@ import Link_button from '../components/shared/link_button';
 import Function_button from '../components/shared/function_button';
 import { config } from '../utils/config';
 import useFetchData from "../components/shared/fetch_data";
+import SignoutButton from '../components/shared/sign_out_button';
 
 function Admin_view() {
   const { data: auth, loading: authLoading, error: authError } = useFetchData('auth/admin');
@@ -82,6 +83,7 @@ function Admin_view() {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
       <NavigationBar />
+      {!authLoading && auth && !authError && <SignoutButton auth={auth} />}
       <Typography sx={{ fontSize: 'clamp(1.2rem, 3vw, 1.8rem)', mt: 8 }}>Management pages</Typography>
       <Link_button href={`/admin/manager`} text="Devices" />
       <Link_button href={`/events`} text="Events" />
