@@ -71,7 +71,7 @@ function Admin_view() {
     return (
       <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center',
         alignItems: 'center', height: '100vh', textAlign: 'center' }}>
-        <NavigationBar />
+        <NavigationBar auth={auth} />
         <Typography sx={{ fontSize: 'clamp(1.2rem, 3vw, 1.8rem)', mb: 2 }}>
           You must be logged in to view this content.
         </Typography>
@@ -82,7 +82,7 @@ function Admin_view() {
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-      <NavigationBar />
+      <NavigationBar auth={auth} />
       {!authLoading && auth && !authError && <SignoutButton auth={auth} />}
       <Typography sx={{ fontSize: 'clamp(1.2rem, 3vw, 1.8rem)', mt: 8 }}>Management pages</Typography>
       <Link_button href={`/admin/manager`} text="Devices" />

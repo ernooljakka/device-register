@@ -46,7 +46,7 @@ const Device_info_view = () => {
       textWrap: 'nowrap',
       gap: 2
   }}>
-        <NavigationBar/>
+        <NavigationBar auth={auth} />
         {!authloading && auth && !authError && <SignoutButton auth={auth} />}
         <Device_description devName={devName} devLocation={devLoc} devClass={devClass}
          devModel={devModel} devManufacturer={devManufacturer} devComments={devComments} error={error}/>

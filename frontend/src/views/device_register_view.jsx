@@ -24,7 +24,7 @@ function Device_register_view() {
         overflow: 'hidden',
         textWrap: 'nowrap'
     }}>
-        <NavigationBar/>
+        <NavigationBar auth={auth} />
         {!authloading && auth && !authError && <SignoutButton auth={auth} />}
         <Box sx={{
           display: 'flex',

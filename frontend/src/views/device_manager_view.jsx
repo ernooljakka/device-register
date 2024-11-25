@@ -25,7 +25,7 @@ function Device_manager_view() {
   if (error || !auth || auth.msg != 'Authorized') { 
     return (
       <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh', textAlign: 'center' }}>
-        <NavigationBar/>
+        <NavigationBar auth={auth} />
         <Typography sx={{ fontSize: 'clamp(1.2rem, 3vw, 1.8rem)', mb: 2 }}>
           You must be logged in to view this content.
         </Typography>
@@ -41,7 +41,7 @@ function Device_manager_view() {
         alignItems: 'center',
         gap: 4 
       }}>
-        <NavigationBar/>
+        <NavigationBar auth={auth} />
         {!loading && auth && !error && <SignoutButton auth={auth} />}
         <Typography sx={{ fontSize: 'clamp(2.4rem, 3vw, 1.8rem)', mt: 8 }}>
           Device manager

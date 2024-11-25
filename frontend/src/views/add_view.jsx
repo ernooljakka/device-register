@@ -92,7 +92,7 @@ const Add_view = () => {
         textWrap: 'nowrap',
         gap: 2
     }}>
-          <NavigationBar/>
+          <NavigationBar auth={auth} />
           {!authloading && auth && !authError && <SignoutButton auth={auth} />}
           <Typography sx={{
             fontSize: 'clamp(1.5rem, 5vw, 2.4rem)', 
