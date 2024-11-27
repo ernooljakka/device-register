@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types'
 import { Card, CardContent, Typography } from '@mui/material';
 
-const Device_description = ({ devName, devLocation, devClass, devComments, devManufacturer, devModel, error }) => {
+const Device_description = ({ devName, devLocation, devClass, devComments, devManufacturer, devModel, devHome, error }) => {
 
   return (
     <Card variant="outlined" sx={{ maxWidth: 800,
@@ -54,6 +54,14 @@ const Device_description = ({ devName, devLocation, devClass, devComments, devMa
       <Typography variant="body1">
         {devComments}
       </Typography>
+
+      <Typography variant="h6" component="div">
+        Home location:
+      </Typography>
+      <Typography variant="body1">
+        {devHome}
+      </Typography>
+
     </CardContent>
   </Card>
   );
@@ -66,6 +74,7 @@ Device_description.propTypes = {
   devComments: PropTypes.string,    
   devManufacturer: PropTypes.string,
   devModel: PropTypes.string,
+  devHome: PropTypes.string,
   error: PropTypes.any
 };
 

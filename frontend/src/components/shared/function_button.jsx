@@ -4,7 +4,9 @@ import PropTypes from 'prop-types';
 const Function_button = ({
   text=' ',
   variant='contained',
+  disabled= false,
   onClick,
+  type,
   size = 'medium',
   color,
   startIcon, //if icons are needed
@@ -15,8 +17,9 @@ const Function_button = ({
   return (
     <Button
       variant={variant}
+      disabled={disabled}
       onClick={onClick}
-      type="submit"
+      type={type}
       size = {size}
       color={color}
       startIcon={startIcon}
@@ -30,8 +33,9 @@ const Function_button = ({
 Function_button.propTypes = {
   text: PropTypes.string.isRequired, //mandatory
   onClick: PropTypes.func,
-  type: PropTypes.oneOf(['button', 'submit', 'reset']),
+  type: PropTypes.oneOf(["submit", "reset", "button"]),
   variant: PropTypes.oneOf(["text", "outlined", "contained"]),
+  disabled: PropTypes.bool,
   size: PropTypes.oneOf(["small", "medium", "large"]),
   color: PropTypes.oneOf(
     ["primary", "secondary", "error", "info", "success", "warning"]),

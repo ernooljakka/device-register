@@ -7,7 +7,9 @@ import Link_button from '../components/shared/link_button';
 import { useParams } from 'react-router-dom';
 import useFetchData from '../components/shared/fetch_data';
 import { config } from '../utils/config';
+import Attachment_box from '../components/device_info/attachment_box';
 import SignoutButton from '../components/shared/sign_out_button';
+
 
 const Device_info_view = () => {
   const { id } = useParams();
@@ -20,6 +22,7 @@ const Device_info_view = () => {
   const devComments = String(device.dev_comments);
   const devManufacturer = String(device.dev_manufacturer);
   const devModel = String(device.dev_model);
+  const devHome = String(device.dev_home);
   const devLoc = String(getLocName(locations, id));
 
   function getLocName(loc, id) {
@@ -49,7 +52,7 @@ const Device_info_view = () => {
         <NavigationBar auth={auth} />
         {!authloading && auth && !authError && <SignoutButton auth={auth} />}
         <Device_description devName={devName} devLocation={devLoc} devClass={devClass}
-         devModel={devModel} devManufacturer={devManufacturer} devComments={devComments} error={error}/>
+         devModel={devModel} devManufacturer={devManufacturer} devComments={devComments} devHome={devHome} error={error}/>
         
         <Box sx={{
           display: 'flex',
@@ -60,9 +63,12 @@ const Device_info_view = () => {
 
           <Link_button href={`${config.BACKEND_ADDR}/static/qr/${id}.png`} text= "Get QR"></Link_button>
 
+          
+
 
 
         </Box>
+        <Attachment_box id= { id } modify = {false}></Attachment_box>
         
 
         <Device_Info_Grid id = { id }/>

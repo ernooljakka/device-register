@@ -8,6 +8,7 @@ import Link_button from '../components/shared/link_button';
 import {useParams, useNavigate} from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import useFetchData from '../components/shared/fetch_data';
+import Attachment_box from '../components/device_info/attachment_box';
 import SignoutButton from '../components/shared/sign_out_button';
 import usePatch from '../components/shared/patch_data';
 
@@ -210,6 +211,8 @@ const Edit_view = () => {
 
             <Function_button text='Edit' type="submit" ></Function_button>
         </Form_container> 
+
+        <Attachment_box id= { id } modify = {true}></Attachment_box>
 
         
       </Box>

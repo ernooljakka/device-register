@@ -38,6 +38,9 @@ const Device_register_grid = () => {
         { field: "class_name", filter: "agTextColumnFilter", headerName: "Class", flex: 2, minWidth: 120, autoHeight: cellHeight,
             cellStyle: {whiteSpace: whiteSpace, wordWrap: 'break-word',  lineHeight: 1.2,  paddingTop: '13px', }
             },
+        { field: "dev_home", filter: "agTextColumnFilter", headerName: "Home", flex: 2, minWidth: 170, autoHeight: cellHeight,
+            cellStyle: {whiteSpace: whiteSpace, wordWrap: 'break-word',  lineHeight: 1.2,  paddingTop: '13px', }        
+        }, // 14 characters
     ];
 
     //export csv functionality

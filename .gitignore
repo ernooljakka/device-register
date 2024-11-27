@@ -125,6 +125,7 @@ celerybeat.pid
 .env
 .env.production
 .venv
+backend/static/attachments
 env/
 venv/
 ENV/
