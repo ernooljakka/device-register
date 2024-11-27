@@ -653,6 +653,8 @@ paths:
     delete:
       summary: "Delete a specific attachment file for a device"
       description: "Deletes attachment from specified device."
+      security:
+        - bearerAuth: [ ]
       tags:
         - "Attachments"
       parameters:
@@ -664,11 +666,6 @@ paths:
           in: "path"
           required: true
           type: "string"
-        - in: header
-          name: Authorization
-          description: Bearer format
-          required: false
-          type: string
       responses:
         "200":
           description: "File deleted successfully"
@@ -678,6 +675,14 @@ paths:
               message:
                 type: "string"
                 example: "File deleted successfully"
+        "401":
+          description: "Unauthorized access, admin privileges required"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+                example: "Unauthorized access"
         "404":
           description: "Directory or file not found"
           schema:

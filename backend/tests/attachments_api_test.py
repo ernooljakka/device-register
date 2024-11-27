@@ -5,6 +5,7 @@ from backend.models.class_model import Class
 from backend.setup.database_Init import db
 from backend.models.device_model import Device
 from backend.utils.config import config
+from flask_jwt_extended import create_access_token
 
 
 @pytest.fixture
@@ -35,7 +36,7 @@ def app():
 
     yield app
 
-    # Clean up / reset the database after each tests
+    # Clean up / reset the database after each test
     with app.app_context():
         db.session.remove()
         db.drop_all()
@@ -45,6 +46,20 @@ def app():
 def client(app):
     # A tests client for the app.
     return app.test_client()
+
+
+@pytest.fixture
+def auth_header(app):
+    with app.app_context():
+        access_token = create_access_token(identity="admin")
+        return {"Authorization": f"Bearer {access_token}"}
+
+
+@pytest.fixture
+def non_admin_header(app):
+    with app.app_context():
+        access_token = create_access_token(identity="tester")  # Non-admin user
+        return {"Authorization": f"Bearer {access_token}"}
 
 
 def test_upload_files(client, app):
@@ -71,17 +86,30 @@ def test_upload_files(client, app):
                                           data={'files': (file, 'cat.jpg')})
     assert response_valid_file.status_code == 200
 
-    # Uploading an unsupported file type (CSV)
-    with open(os.path.join(test_file_directory, 'not_supported.csv'), 'rb') as file:
-        response_invalid_file_type = client.post(
-            'api/attachments/upload/1',
-            data={'files': (file, 'not_supported.csv')}
-        )
-    assert response_invalid_file_type.status_code == 400
-
     # Sending a request with no files
     response_no_files = client.post('api/attachments/upload/1', data={})
     assert response_no_files.status_code == 400
+
+    # Uploading an unsupported file type (bin)
+    with open(os.path.join(test_file_directory, 'not_supported.bin'), 'rb') as file:
+        response_invalid_file_type = client.post(
+            'api/attachments/upload/1',
+            data={'files': (file, 'not_supported.bin')}
+        )
+    assert response_invalid_file_type.status_code == 400
+
+    # Uploading a file that exceeds the size limit
+    over_30_pdf_path = os.path.join(test_file_directory, 'over_30.pdf')
+
+    # Ensure the file is over 30MB
+    with open(over_30_pdf_path, 'rb') as file:
+        response_large_pdf = client.post(
+            '/api/attachments/upload/1',
+            data={'files': (file, 'over_30.pdf')}
+        )
+    assert response_large_pdf.status_code == 400
+    assert (response_large_pdf.json['error'] ==
+            "File 'over_30.pdf' exceeds the maximum allowed size")
 
     # Clean up the uploaded files
     if os.path.exists(device_attachment_directory):
@@ -137,7 +165,7 @@ def test_get_files(client, app):
         os.rmdir(device_attachment_directory)
 
 
-def test_delete_file(client, app):
+def test_delete_file(client, app, auth_header, non_admin_header):
     test_file_directory: str = os.path.join(
         config.PROJECT_ROOT,
         'backend', 'tests', 'static', 'attachments', 'test_files'
@@ -162,18 +190,27 @@ def test_delete_file(client, app):
     assert os.path.exists(device_file_path)
 
     # Valid delete request
-    response_valid_delete = client.delete('/api/attachments/delete/1/cat.jpg')
+    response_valid_delete = client.delete('/api/attachments/delete/1/cat.jpg',
+                                          headers=auth_header)
     assert response_valid_delete.status_code == 200
     assert response_valid_delete.json['message'] == "File deleted successfully"
 
     assert not os.path.exists(device_file_path)
 
     # Attempt deletion on a non-existent device directory
-    response_nonexistent_device = client.delete('/api/attachments/delete/2/cat.jpg')
+    response_nonexistent_device = client.delete('/api/attachments/delete/2/cat.jpg',
+                                                headers=auth_header)
     assert response_nonexistent_device.status_code == 404
     assert response_nonexistent_device.json['error'] == "Directory not found"
 
     # Attempt deletion with a non-existent file in an existing directory
-    response_nonexistent_file = client.delete('/api/attachments/delete/1/dog.jpg')
+    response_nonexistent_file = client.delete('/api/attachments/delete/1/dog.jpg',
+                                              headers=auth_header)
     assert response_nonexistent_file.status_code == 404
     assert response_nonexistent_file.json['error'] == "File not found in the directory"
+
+    # Unauthorized delete request with non-admin token
+    response_unauthorized_delete = client.delete('/api/attachments/delete/1/cat.jpg',
+                                                 headers=non_admin_header)
+    assert response_unauthorized_delete.status_code == 401
+    assert response_unauthorized_delete.json['error'] == "Unauthorized access"

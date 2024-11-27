@@ -34,6 +34,10 @@ class Config:
     DAYS_TO_KEEP: int = None
     MIN_EVENT_COUNT: int = None
 
+    # File related here
+    ATTACHMENT_MAX_SIZE_MB: int = None
+    MAX_ATTACHMENT_COUNT: int = None
+
     # dbconfig
     SQLALCHEMY_DATABASE_URI: str = None
 
@@ -71,12 +75,15 @@ class Config:
         self.RATE_LIMIT_DEFAULT = os.getenv('RATE_LIMITER_DEFAULT',
                                             "30 per minute")
         self.RATE_LIMIT_POSTING = os.getenv('RATE_LIMITER_POSTING',
-                                            "4 per minute")
+                                            "5 per minute")
 
         self.CLEANUP_INTERVAL_SECONDS = int(os.getenv('CLEANUP_INTERVAL_SECONDS',
                                                       "43200"))
         self.DAYS_TO_KEEP = int(os.getenv('DAYS_TO_KEEP', "180"))
         self.MIN_EVENT_COUNT = int(os.getenv('MIN_EVENT_COUNT', "5"))
+
+        self.ATTACHMENT_MAX_SIZE_MB = int(os.getenv('ATTACHMENT_MAX_SIZE_MB', "30"))
+        self.MAX_ATTACHMENT_COUNT = int(os.getenv('MAX_ATTACHMENT_COUNT', "4"))
 
         self.SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI',
                                                  'sqlite:///:memory:')
