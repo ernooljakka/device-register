@@ -1,6 +1,7 @@
 import qrcode
 import os
 
+from backend.models.device_model import Device
 from backend.utils.config import config
 
 QR_FOLDER = os.path.join(config.PROJECT_ROOT, 'backend', 'static', 'qr')
@@ -23,3 +24,11 @@ def remove_qr(device_id: int):
 
 def qr_path(device_id: int):
     return os.path.join(QR_FOLDER, f"{device_id}.png")
+
+
+def recreate_qr_codes():
+    all_devices: list[Device] = Device.get_all()
+    device_id_list = [dev.dev_id for dev in all_devices]
+
+    for device_id in device_id_list:
+        generate_qr(device_id)

@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 
 from backend.utils.check_admin import it_is_admin
 from backend.utils.config import config
+from backend.utils.qr_generator import recreate_qr_codes
 
 load_dotenv()
 
@@ -80,6 +81,7 @@ def create_app(env_config_file: str = ".env.development") -> Flask:
 
     with app.app_context():
         db.create_all()
+        recreate_qr_codes()
 
     @app.route(f'{config.BACKEND_BASEPATH}/flask')
     def index() -> str:
