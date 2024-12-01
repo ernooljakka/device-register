@@ -87,6 +87,7 @@ function Admin_view() {
       <Typography sx={{ fontSize: 'clamp(1.2rem, 3vw, 1.8rem)', mt: 8 }}>Management pages</Typography>
       <Link_button href={`/admin/manager`} text="Devices" />
       <Link_button href={`/events`} text="Events" />
+      <Link_button href={`/admin/classes`} text="Classes" />
       <Function_button onClick={exportClick} text={isExporting ? 'Exporting...' : 'Export CSV'} disabled={isExporting} />
       <input type="file" id="csv-import" accept=".csv" style={{ display: 'none' }} onChange={importClick} />
       <Function_button onClick={() => document.getElementById('csv-import').click()} text={isImporting ? 'Importing...' : 'Import CSV'} disabled={isImporting} />

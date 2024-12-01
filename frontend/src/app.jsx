@@ -9,6 +9,7 @@ import LoginView from "./views/login_view";
 import AddView from "./views/add_view";
 import Device_manager_view from "./views/device_manager_view";
 import EditView from "./views/edit_view";
+import Class_view from "./views/class_view";
 import { useEffect, useState } from "react";
 import { isJwtValid } from "./utils/jwt_utils";
 
@@ -38,6 +39,7 @@ function App() {
         <Route path="/add" element={<AddView />} />
         <Route path="/devices/:id/edit" element={<EditView />} />
         <Route path="/admin/manager" element={<Device_manager_view />} />
+        <Route path="/admin/classes" element={<Class_view />} />
       </Routes>
     </Router>
   );
