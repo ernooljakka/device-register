@@ -23,7 +23,7 @@ function Event_view() {
   if (error || auth.msg != 'Authorized' ) { 
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', textAlign: 'center' }}>
-        <NavigationBar auth={auth} />
+        <NavigationBar/>
         <Typography sx={{ fontSize: 'clamp(1.2rem, 3vw, 1.8rem)' }}>
           You must be logged in to view this content.
         </Typography>
@@ -42,8 +42,8 @@ function Event_view() {
         overflow: 'hidden',
         textWrap: 'nowrap'
     }}>
-        <NavigationBar auth={auth} />
-        {!loading && auth && !error && <SignoutButton auth={auth} />}
+        <NavigationBar/>
+        <SignoutButton />
         <Typography sx={{
           fontSize: 'clamp(1.5rem, 5vw, 2.4rem)', 
           textAlign: 'center',

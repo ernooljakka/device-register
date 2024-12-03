@@ -5,13 +5,10 @@ import DeviceGrid from '../components/device_register/device_register_grid';
 import NavigationBar from '../components/shared/navigation_bar';
 import Link_button from '../components/shared/link_button';
 import SignoutButton from '../components/shared/sign_out_button';
-import useFetchData from '../components/shared/fetch_data';
 import { config } from '../utils/config';
 
 
 function Device_register_view() {
-
-  const { data: auth, loading: authloading, error: authError} = useFetchData('auth/admin');
 
   return (
     <Box sx={{
@@ -24,8 +21,8 @@ function Device_register_view() {
         overflow: 'hidden',
         textWrap: 'nowrap'
     }}>
-        <NavigationBar auth={auth} />
-        {!authloading && auth && !authError && <SignoutButton auth={auth} />}
+        <NavigationBar/>
+        <SignoutButton />
         <Box sx={{
           display: 'flex',
           flexDirection: 'row',

@@ -13,7 +13,6 @@ import SignoutButton from '../components/shared/sign_out_button';
 const Move_view = () => {
   const { id } = useParams();
   const navigate = useNavigate(); 
-  const { data: auth, loading: authloading, error: authError} = useFetchData('auth/admin');
   const { data: device, loading, error } = useFetchData('devices/' + id);
   const [errorMessage, setErrorMessage] = useState(null);
   const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -122,8 +121,8 @@ const Move_view = () => {
         textWrap: 'nowrap',
         gap: 2
     }}>
-          <NavigationBar auth={auth} />
-          {!authloading && auth && !authError && <SignoutButton auth={auth} />}
+          <NavigationBar/>
+          <SignoutButton />
           <Typography sx={{
             fontSize: 'clamp(1.5rem, 5vw, 2.4rem)', 
             textAlign: 'center',

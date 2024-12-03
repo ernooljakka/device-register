@@ -13,7 +13,6 @@ import SignoutButton from '../components/shared/sign_out_button';
 
 const Device_info_view = () => {
   const { id } = useParams();
-  const { data: auth, loading: authloading, error: authError} = useFetchData('auth/admin');
   const { data: device, error } = useFetchData('devices/' + id);
   const { data: locations} = useFetchData('devices/current_locations/');
 
@@ -49,8 +48,8 @@ const Device_info_view = () => {
       textWrap: 'nowrap',
       gap: 2
   }}>
-        <NavigationBar auth={auth} />
-        {!authloading && auth && !authError && <SignoutButton auth={auth} />}
+        <NavigationBar/>
+        <SignoutButton />
         <Device_description devName={devName} devLocation={devLoc} devClass={devClass}
          devModel={devModel} devManufacturer={devManufacturer} devComments={devComments} devHome={devHome} error={error}/>
         

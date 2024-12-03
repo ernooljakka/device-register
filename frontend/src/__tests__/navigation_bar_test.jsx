@@ -4,23 +4,32 @@ import '@testing-library/jest-dom/';
 import NavigationBar from '../components/shared/navigation_bar';
 
 describe("NavigationBar Component", () => {
-
-  test("Renders navigation bar with locked admin access when not authorized", () => {
-    const mockAuth = { msg: "Unauthorized" };
-
-    render(<NavigationBar auth={mockAuth} />);
-
-    expect(screen.getByLabelText('Home')).toBeInTheDocument();
-    expect(screen.getByLabelText('Admin Login')).toBeInTheDocument();
+  beforeEach(() => {
+    // Mock localStorage methods
+    Storage.prototype.getItem = jest.fn();  // eslint-disable-line no-undef
   });
 
-  test("Renders navigation bar with open admin access when authorized", () => {
-    const mockAuth = { msg: "Authorized" };
-
-    render(<NavigationBar auth={mockAuth} />);
-
-    expect(screen.getByLabelText('Home')).toBeInTheDocument();
-    expect(screen.getByLabelText('Admin Panel')).toBeInTheDocument();
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
+  test("Renders navigation bar with locked admin access when not authenticated", () => {
+    localStorage.getItem.mockReturnValue(null); 
+
+    render(<NavigationBar />);
+
+    expect(screen.getByLabelText('Home')).toBeInTheDocument();
+    expect(screen.getByLabelText('Admin Login')).toBeInTheDocument(); 
+    expect(screen.queryByLabelText('Admin Panel')).not.toBeInTheDocument();
+  });
+
+  test("Renders navigation bar with open admin access when authenticated", () => {
+    localStorage.getItem.mockReturnValue("fake_token"); 
+
+    render(<NavigationBar />);
+
+    expect(screen.getByLabelText('Home')).toBeInTheDocument();
+    expect(screen.getByLabelText('Admin Panel')).toBeInTheDocument(); 
+    expect(screen.queryByLabelText('Admin Login')).not.toBeInTheDocument();
+  });
 });

@@ -13,7 +13,6 @@ import { config } from '../utils/config';
 
 const Add_view = () => {
   const navigate = useNavigate(); 
-  const { data: auth, loading: authloading, error: authError} = useFetchData('auth/admin');
   const { data: deviceClasses, loading} = useFetchData('classes/');
   const [errorMessage, setErrorMessage] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -147,8 +146,8 @@ const Add_view = () => {
         textWrap: 'nowrap',
         gap: 2
     }}>
-          <NavigationBar auth={auth} />
-          {!authloading && auth && !authError && <SignoutButton auth={auth} />}
+          <NavigationBar/>
+          <SignoutButton />
           <Typography sx={{
             fontSize: 'clamp(1.5rem, 5vw, 2.4rem)', 
             textAlign: 'center',

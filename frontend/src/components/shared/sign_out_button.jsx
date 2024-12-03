@@ -1,8 +1,12 @@
-import React from "react";
-import PropTypes from "prop-types";
+import {React, useState} from "react";
 import Function_button from "./function_button";
 
-const SignoutButton = ({ auth }) => {
+const SignoutButton = () => {
+
+  const [isAuthenticated] = useState(() => {
+    const token = localStorage.getItem("access_token");
+    return token !== null;
+  });
 
   const handleSignout = () => {
     localStorage.removeItem("access_token");
@@ -16,7 +20,7 @@ const SignoutButton = ({ auth }) => {
     }
   };
 
-  if (!auth || auth.msg !== "Authorized") return null;
+  if (!isAuthenticated) return null;
 
   return (
     <div
@@ -35,12 +39,6 @@ const SignoutButton = ({ auth }) => {
       />
     </div>
   );
-};
-
-SignoutButton.propTypes = {
-  auth: PropTypes.shape({
-    msg: PropTypes.string.isRequired,
-  }).isRequired,
 };
 
 export default SignoutButton;

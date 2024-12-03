@@ -13,7 +13,7 @@ import useDelete from '../components/shared/delete_data';
 
 const Class_view = () => {
   const { deleteData: deleteData} = useDelete();
-  const {data: auth, loading: authLoading, error: error} = useFetchData('auth/admin');
+  const {data: auth, error: error} = useFetchData('auth/admin');
   const { data: deviceClasses, loading} = useFetchData('classes/');
   const [errorMessage, setErrorMessage] = useState(null);
 
@@ -96,7 +96,7 @@ const Class_view = () => {
   if (error || !auth || auth.msg != 'Authorized') { 
     return (
       <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh', textAlign: 'center' }}>
-        <NavigationBar auth={auth} />
+        <NavigationBar/>
         <Typography sx={{ fontSize: 'clamp(1.2rem, 3vw, 1.8rem)', mb: 2 }}>
           You must be logged in to view this content.
         </Typography>
@@ -118,8 +118,8 @@ const Class_view = () => {
         textWrap: 'nowrap',
         gap: 2
     }}>
-          <NavigationBar auth={auth} />
-          {!authLoading && auth && !error && <SignoutButton auth={auth} />}
+          <NavigationBar/>
+          <SignoutButton />
           <Typography sx={{
             fontSize: 'clamp(1.5rem, 5vw, 2.4rem)', 
             textAlign: 'center',

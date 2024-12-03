@@ -1,12 +1,16 @@
-import React from 'react';
-import PropTypes from "prop-types";
+import {React, useState} from 'react';
 import Grid2 from '@mui/material/Grid2';
 import LinkButton from './link_button';
 import { Home, Lock, LockOpen } from '@mui/icons-material';
 
-const Navigation_bar = ({ auth }) => {
+const Navigation_bar = () => {
   // Determine the appropriate icon based on authentication status
-  const adminIcon = auth && auth.msg === "Authorized" ? <LockOpen aria-label="Admin Panel"/> : <Lock aria-label="Admin Login"/>;
+  const [isAuthenticated] = useState(() => {
+    const token = localStorage.getItem("access_token");
+    return token !== null;
+  });
+
+  const adminIcon = isAuthenticated ? <LockOpen aria-label="Admin Panel"/> : <Lock aria-label="Admin Login"/>;
 
   return (
     <Grid2
@@ -49,12 +53,6 @@ const Navigation_bar = ({ auth }) => {
       />
     </Grid2>
   );
-};
-
-Navigation_bar.propTypes = {
-  auth: PropTypes.shape({
-    msg: PropTypes.string.isRequired,
-  }).isRequired,
 };
 
 export default Navigation_bar;
