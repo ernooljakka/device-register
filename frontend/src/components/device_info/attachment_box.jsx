@@ -6,6 +6,7 @@ import { config } from '../../utils/config';
 import useFetchData from '../shared/fetch_data';
 import useDelete from '../shared/delete_data';
 import ConfirmationPopup from '../device_manager/confirmation_popup';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 
 const Attachment_box = ({ id, modify }) => {
@@ -60,7 +61,7 @@ const Attachment_box = ({ id, modify }) => {
 
   const handleDelete = async(fileName) => {
     try {
-      await deleteData('attachments/delete/'+id+'/'+fileName);
+      await deleteData('attachments/delete/'+id+'/'+fileName, "Deleting attachment");
       window.location.reload();
   } catch (error) {
       console.error(`Failed to delete attachment: ${fileName}`, error);
@@ -88,33 +89,55 @@ const Attachment_box = ({ id, modify }) => {
       const fileName = file.split('/').pop();
       
       return (
-        <Card key={index}>
-        <Typography>
-          <a href={`${config.BACKEND_ADDR}${file}`} target="_blank" rel="noopener noreferrer">
-            {fileName}
-          </a>
-        </Typography>
+        <Card key={index} sx={{ mb: -2 }}>
+        <CardContent
+          sx={{
+            gap: '7px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            width: '90%'
+          }}
+        >
 
-        {!modify && (<Box sx={{mt: 1}}></Box>)}
+            <Typography
+              sx={{
+                maxWidth: '240px',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              <a
+                href={`${config.BACKEND_ADDR}${file}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {fileName}
+              </a>
+            </Typography>
 
-        {modify &&(<ConfirmationPopup
-                                    renderTrigger={() => (
-                                    <Function_button
-                                        text="Delete"
-                                        color="error"
-                                        size="small"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            popupRef.current.openPopup(); 
-                                        }}
-                                    />
-                                    )}
-                                onConfirm={() => handleDelete(fileName)}
-                                dialogTitle="Delete Attachment"
-                                dialogText="Are you sure you want to delete this attachment?"
-                                ref={popupRef} // Attach the ref to the popup
-                            />)}
+          {modify && (
+            <ConfirmationPopup
+              renderTrigger={() => (
+                <Function_button
+                  text=""
+                  color="error"
+                  startIcon={<DeleteIcon aria-label="Delete" sx={{ ml: 1.2}} />}
+                  size="small"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    popupRef.current.openPopup();
+                  }}
+                />
+              )}
+              onConfirm={() => handleDelete(fileName)}
+              dialogTitle="Delete Attachment"
+              dialogText="Are you sure you want to delete this attachment?"
+              ref={popupRef} // Attach the ref to the popup
+            />
+          )}
+        </CardContent>
       </Card>
+
       );
     });
   };
@@ -148,7 +171,7 @@ const Attachment_box = ({ id, modify }) => {
         )}
 
         {modify && (<Box sx ={{ mt: 2}}>
-        <input type="file" onChange={handleFileChange}
+        <input aria-label="file_input" type="file" onChange={handleFileChange}
           disabled={attachments && attachments.files && attachments.files.length >= 4} // Disable if 4 or more files
          />
         <Function_button
