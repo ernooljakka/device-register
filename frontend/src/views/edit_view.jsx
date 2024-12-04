@@ -76,7 +76,7 @@ const Edit_view = () => {
     }
     
         try {
-            await patchData('devices/'+id, deviceData);
+            await patchData('devices/'+id, deviceData, "Editing device");
             navigate('/admin/manager');
         } catch (error) {
             console.error(`Failed to patch`, error);

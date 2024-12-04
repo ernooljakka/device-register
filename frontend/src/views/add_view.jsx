@@ -20,7 +20,7 @@ const Add_view = () => {
   const {
     result: devResult,
     postData: postDevData,
-  } = usePostData('devices/');
+  } = usePostData('devices/', "Adding device");
 
 
   const [deviceData, setDeviceData] = useState({

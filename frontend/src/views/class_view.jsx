@@ -19,7 +19,7 @@ const Class_view = () => {
 
   const {
     postData: postAddData,
-  } = usePostData('classes/');
+  } = usePostData('classes/', "Adding class");
   
   const [classData, setClassData] = useState({
     class_name: '',
@@ -54,7 +54,7 @@ const Class_view = () => {
     }
   
     try {
-        await deleteData(`classes/${class_id}`); 
+        await deleteData(`classes/${class_id}, "Deleting class`); 
         window.location.reload();
     
     } catch (err) {

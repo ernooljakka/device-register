@@ -7,8 +7,9 @@ const useDelete = () => {
 
   const access_token = localStorage.getItem("access_token"); // eslint-disable-line no-undef
 
-  const deleteData = async (endpoint, data) => {
+  const deleteData = async (endpoint, data, actionErrorString) => {
     setLoading(true);
+    setError(null);
 
     const url = `${config.BACKEND_ADDR}/${endpoint}`;
 
@@ -25,14 +26,17 @@ const useDelete = () => {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        setError(errorData);
+        const errorMsg = `${actionErrorString} failed: ${response.status} ${response.statusText}`;
+        setError(errorMsg);
+        alert(errorMsg);
         return;
       }
 
       setError(null);
     } catch (err) {
-      setError(err);
+      const errorMsg = `${actionErrorString} failed: ${err.message}`;
+      setError(errorMsg);
+      alert(errorMsg);
     } finally {
       setLoading(false);
     }

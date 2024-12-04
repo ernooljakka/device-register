@@ -26,7 +26,7 @@ const Move_view = () => {
   const {
     result: eventResult,
     postData: postEventData,
-  } = usePostData('events/');
+  } = usePostData('events/', "Moving device");
 
 
   const [deviceMoveData, setDeviceMoveData] = useState({
