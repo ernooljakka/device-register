@@ -15,6 +15,7 @@ const Class_view = () => {
   const { deleteData: deleteData} = useDelete();
   const {data: auth, error: error} = useFetchData('auth/admin');
   const { data: deviceClasses, loading} = useFetchData('classes/');
+  const { data: devices} = useFetchData('devices/');
   const [errorMessage, setErrorMessage] = useState(null);
 
   const {
@@ -54,9 +55,16 @@ const Class_view = () => {
     }
   
     try {
-        await deleteData(`classes/${class_id}, "Deleting class`); 
-        window.location.reload();
-    
+        const classInUse = deviceClasses.find((cls) => cls.class_id === class_id.toString());
+        if (devices.some((device) => device.class_name === classInUse.class_name)){
+            setErrorMessage("There are still devices that use this class.");
+            setTimeout(() => setErrorMessage(null), 5000); // eslint-disable-line no-undef
+        }
+        else {
+            await deleteData(`classes/${class_id}`);    
+            window.location.reload();
+        }
+   
     } catch (err) {
       const errorMsg = err?.message || "Are there still devices with this class?.";
       setErrorMessage(errorMsg);
@@ -133,7 +141,9 @@ const Class_view = () => {
 
         {/* displays error when trying to delete a class that's in use*/}
         {errorMessage && <Typography color="error">{errorMessage}</Typography>}
-        <Form_container onSubmit={onDeleteSubmit} childrenSx={{gap: 20}}>
+
+        {/* only display delete if there are any classes */}
+        {deviceClasses.length > 0 && <Form_container onSubmit={onDeleteSubmit} childrenSx={{gap: 20}}>
 
             <FormControl fullWidth>
                 <InputLabel id="class_id">Device Class</InputLabel>
@@ -156,7 +166,7 @@ const Class_view = () => {
             </FormControl>
 
             <Function_button text='Delete' type="submit" ></Function_button>
-        </Form_container> 
+        </Form_container> }
 
         <Form_container onSubmit={onAddSubmit} childrenSx={{gap: 20}}>
             <TextField
