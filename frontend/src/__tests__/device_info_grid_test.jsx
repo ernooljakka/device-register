@@ -62,4 +62,32 @@ describe('Device_info_grid Component', () => {
         expect(exportButton).toBeInTheDocument();
         expect(expandButton).toBeInTheDocument();
     });
+
+    test('correctly formats move_time into local timezone', () => {
+        const test_time = "2024-12-12 23:59:59"
+        const mockData = {
+            data: [
+                { move_time: test_time, comment: "Test Comment" },
+            ],
+            loading: false,
+            error: null,
+        };
+    
+        useFetchData.mockReturnValue(mockData);
+
+        const test_time_format =  new Date(test_time.replace(' ', 'T') + 'Z').toLocaleString('en-GB', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+          })
+    
+        render(<Device_info_grid id={1} />);
+    
+        // Check formatted time in local timezone
+        expect(screen.getByText(test_time_format)).toBeInTheDocument(); // Adjust this based on your local timezone
+    });
+
 });

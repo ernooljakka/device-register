@@ -11,35 +11,41 @@ const Device_info_grid = ({ id }) => {
   const [cellHeight, setCellHeight] = useState(false);
   const [whiteSpace, setWhiteSpace] = useState('');
 
-  const formattedEvents = Array.isArray(events)
-  ? events.map(event => ({
-      ...event,
-      // Format move_time to DD/MM/YYYY HH:MM:SS, parse forces javascript to treat time as UTC format
-      move_time: new Date(Date.parse(event.move_time + 'Z')).toLocaleString('en-GB', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false,
-      }),
-      // `move_time_iso` in ISO format for easier sorting/filtering
-      move_time_iso: new Date(Date.parse(event.move_time + 'Z')).toISOString(),
-    }))
-  : [];
+  const formattedEvents = events.map(event => ({
+    ...event,
+    move_time: new Date(event.move_time.replace(' ', 'T') + 'Z').toLocaleString('en-GB', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    }),
+  }));
+  
 
   // Tells AG-Grid how to filter EU-formatted datetimes by date
-  var filterParams = {
+  const filterParams = {
     comparator: (filterLocalDateAtMidnight, cellValue) => {
-        const cellDate = new Date(cellValue);
-        if (filterLocalDateAtMidnight.getTime() === cellDate.getTime()) {
-          return 0;
-        }
-        return cellDate < filterLocalDateAtMidnight ? -1 : 1;
-      },
-      minValidYear: 2024,
+      if (!cellValue) return -1; // Handle null or undefined values
       
+      // Parse cellValue into a date
+      const [day, month, year] = cellValue
+        .match(/(\d{2})\/(\d{2})\/(\d{4})/)
+        .slice(1)
+        .map(Number);
+  
+      const cellDate = new Date(year, month - 1, day); // Strip time from the date
+  
+      // Compare by day only
+      if (filterLocalDateAtMidnight.getTime() === cellDate.getTime()) {
+        return 0;
+      }
+      return cellDate < filterLocalDateAtMidnight ? -1 : 1;
+    },
+    minValidYear: 2024,
   };
+  
 
   const handleRowSizing = () => {
     setCellHeight(prev => !prev);
@@ -47,11 +53,9 @@ const Device_info_grid = ({ id }) => {
   };
 
   const columnDefs = [
-      { field: "move_time_iso", filter: "agDateColumnFilter", headerName: "Date/Time", flex: 2.0, minWidth: 160, autoHeight: cellHeight,
+      { field: "move_time", filter: "agDateColumnFilter", headerName: "Date/Time", flex: 2.0, minWidth: 160, autoHeight: cellHeight,
         cellStyle: {whiteSpace: whiteSpace, wordWrap: 'break-word',  lineHeight: 1.2,  paddingTop: '13px', },
         filterParams:filterParams, suppressHeaderFilterButton: false, sort: 'desc'// Enough for showing datetime
-        , valueFormatter: (params) => params.data.move_time, // Display the formatted date
-        valueGetter: (params) => params.data.move_time
       },
       { field: "loc_name", filter: "agTextColumnFilter", headerName: "Location", flex: 2.2, minWidth: 170, autoHeight: cellHeight,
         cellStyle: {whiteSpace: whiteSpace, wordWrap: 'break-word',  lineHeight: 1.2,  paddingTop: '13px', } // text wrapping

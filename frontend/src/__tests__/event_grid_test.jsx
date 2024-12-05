@@ -30,15 +30,14 @@ describe('EventGrid Component', () => {
     });
 
     test('renders the data grid with the fetched data', async () => {
-        const moveTime = new Date('04 Dec 2024 23:59:30 GMT').toISOString();
+        const test_time = "2024-12-12 23:59:59"
     
-        useFetchData.mockReturnValue({
+        const mockData = {
             data: [
                 { 
                     user_email: 'test@example.com',
                     user_name: '020202', 
-                    move_time: moveTime,
-                    move_time_iso: moveTime,
+                    move_time: test_time,
                     loc_name: 'Test Laboratory', 
                     company: "Apple",
                     dev_name: "test device"
@@ -46,16 +45,26 @@ describe('EventGrid Component', () => {
             ],
             loading: false,
             error: null,
-        });
+        };
+        useFetchData.mockReturnValue(mockData);
+
+        const test_time_format =  new Date(test_time.replace(' ', 'T') + 'Z').toLocaleString('en-GB', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+          })
     
         render(<EventGrid />);
 
-    
+
         // Verify cells and headers
         expect(screen.getByText('020202')).toBeInTheDocument();
     
         // Verify datetime with UTC.
-        expect(screen.getByText('04/12/2024, 23:59')).toBeInTheDocument();
+        expect(screen.getByText(test_time_format)).toBeInTheDocument();
         expect(screen.getByText('Test Laboratory')).toBeInTheDocument();
         expect(screen.getByText('test@example.com')).toBeInTheDocument();
         expect(screen.getByText('test device')).toBeInTheDocument();
@@ -73,7 +82,6 @@ describe('EventGrid Component', () => {
         expect(exportButton).toBeInTheDocument();
         expect(expandButton).toBeInTheDocument();
     });
-    
-    
+
 
 });

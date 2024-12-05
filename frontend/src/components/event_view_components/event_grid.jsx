@@ -6,35 +6,45 @@ import Function_button from '../shared/function_button.jsx';
 import Box from '@mui/material/Box';
 
 const Event_grid = () => {
-    const { data, loading, error } = useFetchData('events/');
-    const [cellHeight, setCellHeight] = useState(false);
-    const [whiteSpace, setWhiteSpace] = useState('');
+  const { data, loading, error } = useFetchData('events/');
+  const [cellHeight, setCellHeight] = useState(false);
+  const [whiteSpace, setWhiteSpace] = useState('');
 
-    const formattedData = data.map(event => ({
-        ...event,
-        // Format move_time to DD/MM/YYYY HH:MM:SS, parse forces javascript to treat time as UTC format
-        move_time: new Date(Date.parse(event.move_time)).toLocaleString('en-GB', {
-            day: '2-digit', month: '2-digit', year: 'numeric',
-            hour: '2-digit', minute: '2-digit', 
-            hour12: false, 
-          }),
-          // `move_time_iso` in ISO format for easier sorting/filtering
-        move_time_iso: new Date(Date.parse(event.move_time)).toISOString()
-    }));
+  const formattedData = data.map(event => ({
+    ...event,
+    // Format move_time to DD/MM/YYYY HH:MM:SS, parse forces JavaScript to treat time as UTC format
+    move_time: new Date(event.move_time.replace(' ', 'T') + 'Z').toLocaleString('en-GB', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    }),
+  }));
 
-     // Tells AG-Grid how to filter EU-formatted datetimes by date
-  var filterParams = {
+  // Tells AG-Grid how to filter EU-formatted datetimes by date
+  const filterParams = {
     comparator: (filterLocalDateAtMidnight, cellValue) => {
-        const cellDate = new Date(cellValue); // Use ISO string directly
-        if (filterLocalDateAtMidnight.getTime() === cellDate.getTime()) {
-            return 0;
-        }
-        return cellDate < filterLocalDateAtMidnight ? -1 : 1;
-    },
+      if (!cellValue) return -1; // Handle null or undefined values
+      
+      // Parse cellValue into a date
+      const [day, month, year] = cellValue
+        .match(/(\d{2})\/(\d{2})\/(\d{4})/)
+        .slice(1)
+        .map(Number);
   
+      const cellDate = new Date(year, month - 1, day); // Strip time from the date
+  
+      // Compare by day only
+      if (filterLocalDateAtMidnight.getTime() === cellDate.getTime()) {
+        return 0;
+      }
+      return cellDate < filterLocalDateAtMidnight ? -1 : 1;
+    },
     minValidYear: 2024,
   };
-
+  
     //linking to device info page
     const onRowClicked = (event) => {
         const rowId = event.data.dev_id;  // Access the dev_id from the row
@@ -53,10 +63,9 @@ const Event_grid = () => {
     };
 
     const columnDefs = [
-      { field: "move_time_iso", filter: "agDateColumnFilter", headerName: "Date/Time", flex: 1.0, minWidth: 150,  autoHeight: cellHeight,
+      { field: "move_time", filter: "agDateColumnFilter", headerName: "Date/Time", flex: 2.0, minWidth: 160, autoHeight: cellHeight,
         cellStyle: {whiteSpace: whiteSpace, wordWrap: 'break-word',  lineHeight: 1.2,  paddingTop: '13px', },
-            filterParams:filterParams, suppressHeaderFilterButton: false, sort: 'desc'
-            , valueFormatter: (params) => params.data.move_time
+        filterParams:filterParams, suppressHeaderFilterButton: false, sort: 'desc'// Enough for showing datetime
       },
       { field: "loc_name", filter: "agTextColumnFilter", headerName: "Location", flex: 1.2, minWidth: 130,  autoHeight: cellHeight, 
         cellStyle: {whiteSpace: whiteSpace, wordWrap: 'break-word',  lineHeight: 1.2,  paddingTop: '13px', }
