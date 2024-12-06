@@ -5,6 +5,7 @@ import Function_button from '../shared/function_button.jsx';
 import ConfirmationPopup from './confirmation_popup.jsx';
 import useFetchData from '../shared/fetch_data';
 import useDelete from '../shared/delete_data.jsx';
+import { getRowStyle } from '../../utils/grid_utils.jsx';
 
 const Device_manager_grid = () => {
     const { data: devices, loading, error } = useFetchData('devices/');
@@ -137,10 +138,6 @@ const Device_manager_grid = () => {
     ];
 
     const getRowHeight = (params) => (params.data.isExpanded ? 100 : 60);
-
-    const getRowStyle = () => ({
-        cursor: 'pointer',
-    });
 
     if (loading) {
         return (
