@@ -45,14 +45,16 @@ const ClassView = () => {
       return;
     }
     try {
-      const classInUse = deviceClasses.find((cls) => cls.class_id === class_id.toString());
-      if (devices.some((device) => device.class_name === classInUse.class_name)) {
-        setErrorMessage("There are still devices that use this class.");
-        setTimeout(() => setErrorMessage(null), 5000); // eslint-disable-line no-undef
-      } else {
-        await deleteData(`classes/${class_id}`);
-        window.location.reload();
-      }
+        const classInUse = deviceClasses.find((cls) => cls.class_id === class_id.toString());
+        if (devices.some((device) => device.class_name === classInUse.class_name)){
+            setErrorMessage("There are still devices that use this class.");
+            setTimeout(() => setErrorMessage(null), 5000); // eslint-disable-line no-undef
+        }
+        else {
+            await deleteData(`classes/${class_id}`);    
+            window.location.reload();
+        }
+   
     } catch (err) {
       const errorMsg = err?.message || "Are there still devices with this class?.";
       setErrorMessage(errorMsg);
@@ -62,12 +64,12 @@ const ClassView = () => {
 
   const onAddSubmit = async (e) => {
     e.preventDefault();
-    const { class_name } = classData;
+   /* const { class_name } = classData;
     if (!class_name) {
       setErrorMessage("Please fill out all required fields.");
       setTimeout(() => setErrorMessage(null), 5000); // eslint-disable-line no-undef
       return;
-    }
+    }*/
     try {
       await postAddData(classData);
       window.location.reload();

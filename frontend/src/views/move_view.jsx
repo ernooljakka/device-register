@@ -61,13 +61,14 @@ const Move_view = () => {
 
   const onSubmit = (e) => {
     e.preventDefault()
-    const { loc_name, company, user } = deviceMoveData;
+    const { user } = deviceMoveData;
+    /*const { loc_name, company, user } = deviceMoveData;
     // Check for empty fields
     if (!loc_name || !user.user_name || !user.user_email || !company) {
       setErrorMessage("Please fill out all required fields.");
       setTimeout(() => setErrorMessage(null), 5000); // eslint-disable-line no-undef
       return;
-    }
+    }*/
     //Validate email
     if (!emailRegex.test(user.user_email)) {
       setErrorMessage("Please enter a valid email address.");
@@ -146,7 +147,7 @@ const Move_view = () => {
             mt: 0, 
             mb: 3,
           }}>
-          {error ?  "Device not found!" : "ID: "+id}
+          {error ?  "" : "ID: "+id}
           </Typography>
 
         {/* displays error when trying to submit without required field */}

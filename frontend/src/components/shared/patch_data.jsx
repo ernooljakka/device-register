@@ -15,7 +15,7 @@ const usePatch = () => {
     try {
       const headers = {
         'Content-Type': 'application/json',
-        ...(access_token && { 'Authorization': `Bearer ${access_token}1` }),
+        ...(access_token && { 'Authorization': `Bearer ${access_token}` }),
       };
 
       const response = await fetch(url, {
