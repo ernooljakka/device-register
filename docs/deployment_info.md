@@ -61,15 +61,15 @@ SERVER_NAME/api and frontend to SERVER_NAME
 
 ### 3. Using provided util script to deploy
 
-In the project directory deployment_confs there is utility script to help setting up the software.
+In the project directory confs there is utility script to help setting up the software.
 The utility script assumes apache2 / httpd deployment that is used in TUNI VM that was made available for the project.
-It also assumes the location of the SSL-certs, you can change the SSL cert locations from deployment_confs/devreg.conf_TEMPLATE
+It also assumes the location of the SSL-certs, you can change the SSL cert locations from onfs/devreg.conf_TEMPLATE
   
       lines:
               SSLCertificateFile /etc/pki/tls/certs/{SERVER_NAME}-cert.pem
               SSLCertificateKeyFile /etc/pki/tls/private/{SERVER_NAME}-key.pem
 
-Script can be run with python3 eg python3 ./deployment_confs/devreg_cli_util.py
+Script can be run with python3 eg python3 ./confs/devreg_cli_util.py
 
 Here's some details of the functionalities:
 

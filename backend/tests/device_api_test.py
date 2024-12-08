@@ -477,7 +477,7 @@ def test_device_import_from_csv(client, mocker, auth_header):
                  return_value=True)
 
     test_csv_path = os.path.join(
-        config.PROJECT_ROOT, 'deployment_confs', 'test.csv'
+        config.PROJECT_ROOT, 'confs', 'test.csv'
     )
 
     with open(test_csv_path, 'rb') as csv_file:
