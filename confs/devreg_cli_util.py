@@ -7,6 +7,7 @@ SERVER_NAME: str = "ens-phot-devreg.rd.tuni.fi"
 
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+INSTANCE_DIR = os.path.join(PROJECT_ROOT, "instance")
 BACKUP_DIR = os.path.join(PROJECT_ROOT, "instance", "backup")
 MANUAL_BACKUP_DIR = os.path.join(PROJECT_ROOT, "instance", "manual_backup")
 DATABASE_PATH = os.path.join(PROJECT_ROOT, "instance", "database.db")
@@ -63,6 +64,9 @@ def deploy_backend():
             cwd=os.path.join(PROJECT_ROOT))
 
 def deploy_frontend(update_packages = True):
+    if update_packages:
+        update_frontend_packages()
+
     print("Installing JavaScript dependencies for the frontend...")
     run_com(sudo=False, com=["npm", "install"],
             cwd=os.path.join(PROJECT_ROOT, "frontend"))
@@ -70,9 +74,6 @@ def deploy_frontend(update_packages = True):
     print("Building the frontend...")
     run_com(sudo=False, com=["npm", "run", "build"],
             cwd=os.path.join(PROJECT_ROOT, "frontend"))
-
-    if update_packages:
-        update_frontend_packages()
 
     print("Setting redirection rules...")
     run_com(sudo=False,
@@ -102,14 +103,14 @@ def deploy_application():
     run_com(sudo=True, com=["dnf", "install", "mod_wsgi"], cwd=PROJECT_ROOT)
 
     deploy_backend()
-    deploy_frontend()
+    deploy_frontend(update_packages=False)
 
     # probably shouldn't change all the permissions
     change_rights("775", PROJECT_ROOT)
     run_com(sudo=True,
             com=["chcon", "-R", "-t", "httpd_sys_rw_content_t", PROJECT_ROOT])
 
-    restart_httpd()
+    restart_httpd(hard_reset=True)
 
     print("Changing back to Apache ownership & setting correct rights...")
     change_dir_tree_owners("apache", PROJECT_ROOT)
@@ -121,6 +122,7 @@ def ensure_backup_dirs():
 
 
 def create_manual_backup():
+    change_dir_tree_owners(os.getuid(), INSTANCE_DIR)
     ensure_backup_dirs()
     if os.path.exists(DATABASE_PATH):
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -130,9 +132,12 @@ def create_manual_backup():
         print(f"Manual backup created: {manual_backup_path}")
     else:
         print("No database found to back up.")
+    change_dir_tree_owners("apache", INSTANCE_DIR)
+
 
 
 def list_backups(backup_type="auto"):
+    change_dir_tree_owners(os.getuid(), BACKUP_DIR)
     if backup_type == "auto":
         directory = BACKUP_DIR
     elif backup_type == "manual":
@@ -148,10 +153,13 @@ def list_backups(backup_type="auto"):
     backups = [f for f in os.listdir(directory) if f.endswith(".bak")]
     if not backups:
         print("No backup files found.")
+    change_dir_tree_owners("apache", BACKUP_DIR)
     return backups
 
 
 def restore_backup():
+    change_dir_tree_owners(os.getuid(), INSTANCE_DIR)
+
     ensure_backup_dirs()
     print("\nChoose backup type:")
     print("1. Automatic backups")
@@ -192,19 +200,22 @@ def restore_backup():
     create_manual_backup()
 
     run_com(sudo=True, com=["cp", backup_path, DATABASE_PATH])
+    change_dir_tree_owners("apache", INSTANCE_DIR)
     print(f"Database restored successfully from {selected_backup}.")
 
 def show_menu():
     menu_options = {
         "1": ("Deploy application", deploy_application),
-        "2": ("Set temporary project ownership to user",
+        "2": ("Set temporary file ownership to user",
               lambda: change_dir_tree_owners(os.getuid(), PROJECT_ROOT)),
-        "3": ("Reload httpd (soft)", restart_httpd),
-        "4": ("Restart httpd (hard)", lambda: restart_httpd(hard_reset=True)),
-        "5": ("Deploy backend", deploy_backend),
-        "6": ("Deploy frontend", lambda: deploy_frontend(update_packages=True)),
-        "7": ("Create manual backup", create_manual_backup),
-        "8": ("Restore database from backup", restore_backup),
+        "3": ("Set  file ownership to apache",
+              lambda: change_dir_tree_owners("apache", PROJECT_ROOT)),
+        "4": ("Reload httpd (soft)", restart_httpd),
+        "5": ("Restart httpd (hard)", lambda: restart_httpd(hard_reset=True)),
+        "6": ("Deploy backend", deploy_backend),
+        "7": ("Deploy frontend", lambda: deploy_frontend(update_packages=True)),
+        "8": ("Create manual backup", create_manual_backup),
+        "9": ("Restore database from backup", restore_backup),
         "0": ("Quit", None)
     }
 
